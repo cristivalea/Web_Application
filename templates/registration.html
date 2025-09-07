@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="../style/style.css">
+</head>
+<body>
+    <div class="header">
+        <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
+    </div>
+
+    <div class="container">
+        <h1 class="form-title">Register</h1>
+        <form id="registrationForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input pattern="[A-Z][a-z]*[-,\s][A-Z][a-z]*" type="text" id="firstName" name="firstName" required>
+                    <div class="error-message" id="firstNameError">The First Name is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="secondName">Second Name</label>
+                    <input pattern="[A-Z][a-z]*[-,\s][A-Z][a-z]*" type="text" id="secondName" name="secondName" required>
+                    <div class="error-message" id="secondNameError">The Second name is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input pattern="[a-z0-9]*\@[a-z]*.[a-z]*" type="email" id="email" name="email" required>
+                    <div class="error-message" id="emailError">The email is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="validationEmail">Validation email</label>
+                    <input type="validation" id="validationEmail" name="validationEmail" required>
+                    <div class="error-message" id="validationEmailError">The cod is wrong!</div>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone number</label>
+                    <select id="countryCode" name="countryCode">
+                        <option value="+40">🇷🇴 +40</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                        <option value="+49">🇩🇪 +49</option>
+                    </select>
+                    <input pattern="[0-9]*" type="tel" id="phoneNumber" name="phoneNumber" required>
+                    <div class="error-message" id="phoneError">The phone number is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="validationPhone">Validation phone</label>
+                    <input type="validation" id="validationPhone" name="validationPhone" required>
+                    <div class="error-message" id="validationPhoneError">The validation code is wrong!</div>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input pattern="[A-Za-z0-9]*" type="text" id="username" name="username" required>
+                    <div class="error-message" id="usernameError">The username is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="passwordError">The password must have at least 6 characters!</div>
+                </div>
+            </div>
+
+            <div class="birth-date-group">
+                <div class="form-group">
+                    <label for="birthDate">Birth Date</label>
+                    <input type="date" id="birthDate" name="birthDate" required>
+                    <div class="error-message" id="birthDateError">The birth date is necessary!</div>
+                </div>
+            </div>
+
+            <div class="role-section">
+                <span class="role-label">Role</span>
+                <div class="radio-group">
+                    <input type="radio" id="user" name="role" value="user" checked>
+                    <label for="user">User</label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="admin" name="role" value="admin">
+                    <label for="admin">Admin</label>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms" class="terms-label">I am read the terms and conditions!</label>
+                <div class="error-message" id="termsError">The accept is necessary!</div>
+            </div>
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.style.display = 'none';
+            });
+            
+            let isValid = true;
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            if (!firstName) {
+                document.getElementById('firstNameError').style.display = 'block';
+                isValid = false;
+            }
+            
+
+            const secondName = document.getElementById('secondName').value.trim();
+            if (!secondName) {
+                document.getElementById('secondNameError').style.display = 'block';
+                isValid = false;
+            }
+            
+            const email = document.getElementById('email').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                document.getElementById('emailError').style.display = 'block';
+                isValid = false;
+            }
+            
+
+
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            if (!phoneNumber) {
+                document.getElementById('phoneError').style.display = 'block';
+                isValid = false;
+            }
+
+            
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                document.getElementById('usernameError').style.display = 'block';
+                isValid = false;
+            }
+            
+            const password = document.getElementById('password').value;
+            if (!password || password.length < 6) {
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
+            
+            const birthDate = document.getElementById('birthDate').value;
+            if (!birthDate) {
+                document.getElementById('birthDateError').style.display = 'block';
+                isValid = false;
+            }
+            
+            const terms = document.getElementById('terms').checked;
+            if (!terms) {
+                document.getElementById('termsError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                const formData = {
+                    firstName: firstName,
+                    secondName: secondName,
+                    email: email,
+                    phoneNumber: phoneNumber,
+                    username: username,
+                    password: password,
+                    birthDate: birthDate,
+                    role: document.querySelector('input[name="role"]:checked').value
+                };
+                
+                alert('Înregistrarea a fost realizată cu succes!\n\nDate înregistrate:\n' + 
+                      'Nume: ' + formData.firstName + ' ' + formData.secondName + '\n' +
+                      'Email: ' + formData.email + '\n' +
+                      'Username: ' + formData.username + '\n' +
+                      'Telefon: ' + formData.phoneNumber + '\n' +
+                      'Data nașterii: ' + formData.birthDate + '\n' +
+                      'Rol: ' + formData.role);
+
+                this.reset();
+            }
+        });
+
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentNode.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentNode.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

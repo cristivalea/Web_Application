@@ -1,0 +1,247 @@
+ * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 40px;
+        }
+
+        .logo {
+            height: 60px;
+        }
+
+        .it-labs-logo {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #FF6B35;
+            font-size: 18px;
+        }
+
+        .upt-logo {
+            background: #1e3a8a;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 14px;
+        }
+
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #F4A460 0%, #DEB887 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 32px;
+            color: #4682B4;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: #4682B4;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        input[type="validation"],
+        input[type="date"] {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="password"]:focus,
+        input[type="validation"],
+        input[type="date"]:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 10px rgba(70, 130, 180, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .birth-date-group {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .birth-date-group .form-group {
+            width: 200px;
+        }
+
+        .role-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin: 20px 0;
+        }
+
+        .role-label {
+            color: #4682B4;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4682B4;
+        }
+
+        .radio-group label {
+            margin: 0;
+            color: #4682B4;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .terms-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4682B4;
+        }
+
+        .terms-label {
+            color: #4682B4;
+            font-size: 14px;
+        }
+
+        .register-btn {
+            display: block;
+            margin: 30px auto 0;
+            padding: 12px 40px;
+            background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(70, 130, 180, 0.3);
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(70, 130, 180, 0.4);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .it-labs-logo,
+            .upt-logo,
+            .faculty-logo {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .faculty-logo {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .role-section {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .footer {
+                margin: 0;
+                padding: 15px 20px;
+            }
+
+            .footer p {
+                margin: 5px 0;
+            }
+        }
