@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
@@ -29,28 +29,36 @@
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input pattern="[a-z0-9]*\@[a-z]*.[a-z]*" type="email" id="email" name="email" required>
+                    <div class="with-button">
+                        <input type="email" id="email" name="email" required>
+                        <button type="button" class="send-code-btn" onclick="sendEmailCode()">Send Code</button>
+                    </div>
                     <div class="error-message" id="emailError">The email is necessary!</div>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="validationEmail">Validation Code (Email)</label>
+                    <input type="text" id="validationEmail" name="validationEmail" required>
+                    <div class="error-message" id="validationEmailError">The code is wrong!</div>
                 </div>
                 <div class="form-group">
-                    <label for="validationEmail">Validation email</label>
-                    <input type="validation" id="validationEmail" name="validationEmail" required>
-                    <div class="error-message" id="validationEmailError">The cod is wrong!</div>
-                </div>
-                <div class="form-group">
-                    <label for="phoneNumber">Phone number</label>
-                    <select id="countryCode" name="countryCode">
+                    <label for="phoneNumber">Phone Number</label>
+                    <div class="with-button">
+                        <select id="countryCode" name="countryCode">
                         <option value="+40">🇷🇴 +40</option>
                         <option value="+1">🇺🇸 +1</option>
                         <option value="+44">🇬🇧 +44</option>
                         <option value="+49">🇩🇪 +49</option>
-                    </select>
-                    <input pattern="[0-9]*" type="tel" id="phoneNumber" name="phoneNumber" required>
+                        </select>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" required>
+                        <button type="button" class="send-code-btn" onclick="sendPhoneCode()">Send Code</button>
+                    </div>
                     <div class="error-message" id="phoneError">The phone number is necessary!</div>
-                </div>
-                <div class="form-group">
-                    <label for="validationPhone">Validation phone</label>
-                    <input type="validation" id="validationPhone" name="validationPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="validationPhone">Validation Code (Phone)</label>
+                    <input type="text" id="validationPhone" name="validationPhone" required>
                     <div class="error-message" id="validationPhoneError">The validation code is wrong!</div>
                 </div>
                 <div class="form-group">
@@ -93,6 +101,9 @@
 
             <button type="submit" class="register-btn">Register</button>
         </form>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 ITLabs. All rights reserved.</p>
     </div>
 
     <script>
@@ -170,7 +181,7 @@
                     role: document.querySelector('input[name="role"]:checked').value
                 };
 
-                // Trimitem datele la serverul Node.js
+                
                 fetch("http://localhost:3001/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -178,7 +189,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    alert(data.message); // Afișează mesajul de succes
+                    alert(data.message); 
                     console.log("Răspuns primit de la server:", data);
                 })
                 .catch(error => {
@@ -201,5 +212,253 @@
             });
         });
     </script>
+</body>
+</html>
+ -->
+
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="../frontend/style/style.css">
+</head>
+<body>
+    <div class="header">
+        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+    </div>
+
+    <div class="container">
+        <h1 class="form-title">Register</h1>
+        <form id="registrationForm">
+            <div class="form-grid">
+                <!-- Name Fields -->
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                    <div class="error-message" id="firstNameError">The First Name is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="secondName">Second Name</label>
+                    <input type="text" id="secondName" name="secondName" required>
+                    <div class="error-message" id="secondNameError">The Second Name is necessary!</div>
+                </div>
+
+                <!-- Email & Validation Code -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="with-button">
+                        <input type="email" id="email" name="email" required>
+                        <button type="button" class="send-code-btn" onclick="sendEmailCode()">Send Code</button>
+                    </div>
+                    <div class="error-message" id="emailError">The email is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="validationEmail">Validation Code (Email)</label>
+                    <input type="text" id="validationEmail" name="validationEmail" required>
+                    <div class="error-message" id="validationEmailError">The code is wrong!</div>
+                </div>
+
+                <!-- Phone & Validation Code -->
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <div class="with-button">
+                        <select id="countryCode" name="countryCode">
+                            <option value="+40">🇷🇴 +40</option>
+                            <option value="+1">🇺🇸 +1</option>
+                            <option value="+44">🇬🇧 +44</option>
+                            <option value="+49">🇩🇪 +49</option>
+                        </select>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" required>
+                        <button type="button" class="send-code-btn" onclick="sendPhoneCode()">Send Code</button>
+                    </div>
+                    <div class="error-message" id="phoneError">The phone number is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="validationPhone">Validation Code (Phone)</label>
+                    <input type="text" id="validationPhone" name="validationPhone" required>
+                    <div class="error-message" id="validationPhoneError">The validation code is wrong!</div>
+                </div>
+
+                <!-- Username & Password -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" pattern="[A-Za-z0-9]*" required>
+                    <div class="error-message" id="usernameError">The username is necessary!</div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="passwordError">The password must have at least 6 characters!</div>
+                </div>
+
+                <!-- Birth Date -->
+                <div class="form-group">
+                    <label for="birthDate">Birth Date</label>
+                    <input type="date" id="birthDate" name="birthDate" required>
+                    <div class="error-message" id="birthDateError">The birth date is necessary!</div>
+                </div>
+
+                <!-- Role -->
+                <div class="role-section">
+                    <span class="role-label">Role</span>
+                    <div class="radio-group">
+                        <input type="radio" id="user" name="role" value="user" checked>
+                        <label for="user">User</label>
+                    </div>
+                    <div class="radio-group">
+                        <input type="radio" id="admin" name="role" value="admin">
+                        <label for="admin">Admin</label>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <div class="terms-section">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms" class="terms-label">I have read the terms and conditions!</label>
+                    <div class="error-message" id="termsError">You must accept the terms!</div>
+                </div>
+            </div>
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 ITLabs. All rights reserved.</p>
+    </div>
+
+<script>
+    // --- Trimitere cod email ---
+    async function sendEmailCode() {
+        const email = document.getElementById('email').value.trim();
+        if (!email) { alert("Completează email-ul!"); return; }
+
+        try {
+            const res = await fetch("http://localhost:3001/sendEmailCode", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            alert(data.message);
+        } catch (err) {
+            console.error("Eroare trimitere cod email:", err);
+            alert("Nu s-a putut trimite codul pe email.");
+        }
+    }
+
+
+   async function sendPhoneCode() {
+    const countryCode = document.getElementById('countryCode').value;
+    const phoneInput = document.getElementById('phoneNumber').value.trim();
+
+    // Verificăm să nu fie gol
+    if (!phoneInput) {
+        alert("Completează telefonul!");
+        return;
+    }
+
+    // Scoatem eventualul 0 de la început
+    let phoneNumber = phoneInput.startsWith("0") ? countryCode + phoneInput.slice(1) : countryCode + phoneInput;
+
+    console.log("Număr trimis la backend:", phoneNumber); // Debug
+
+    try {
+        const res = await fetch("http://localhost:3001/sendSMSCode", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phoneNumber }) // asigură-te că cheia e exact 'phoneNumber'
+        });
+        const data = await res.json();
+        alert(data.message);
+    } catch (err) {
+        console.error("Eroare trimitere SMS:", err);
+        alert("Nu s-a putut trimite codul SMS.");
+    }
+}
+
+
+    async function verifyCode(identifier, code) {
+        try {
+            const res = await fetch("http://localhost:3001/verifyCode", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ identifier, code })
+            });
+            const data = await res.json();
+            return data.success;
+        } catch (err) {
+            console.error("Eroare verificare cod:", err);
+            return false;
+        }
+    }
+
+    // --- Form Submit ---
+   document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.error-message').forEach(el => el.style.display='none');
+    let isValid = true;
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const secondName = document.getElementById('secondName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const validationEmail = document.getElementById('validationEmail').value.trim();
+    const countryCode = document.getElementById('countryCode').value;
+    const phoneInput = document.getElementById('phoneNumber').value.trim();
+    const validationPhone = document.getElementById('validationPhone').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const birthDate = document.getElementById('birthDate').value;
+    const terms = document.getElementById('terms').checked;
+    const role = document.querySelector('input[name="role"]:checked').value;
+
+    // 🚀 aici nu mai verificăm telefonul deloc
+    const phoneNumber = countryCode + phoneInput;
+    console.log("Număr format:", phoneNumber);
+    alert("Număr format: " + phoneNumber);
+
+    if (!username) { document.getElementById('usernameError').style.display='block'; isValid=false; }
+    if (!password || password.length<6) { document.getElementById('passwordError').style.display='block'; isValid=false; }
+    if (!birthDate) { document.getElementById('birthDateError').style.display='block'; isValid=false; }
+    if (!terms) { document.getElementById('termsError').style.display='block'; isValid=false; }
+
+    // Verificare coduri email și SMS
+    if (isValid) {
+        const emailValid = await verifyCode(email, validationEmail);
+        if (!emailValid) { document.getElementById('validationEmailError').style.display='block'; isValid=false; }
+
+        const phoneValid = await verifyCode(phoneNumber, validationPhone);
+        if (!phoneValid) { document.getElementById('validationPhoneError').style.display='block'; isValid=false; }
+    }
+
+    if (!isValid) return;
+
+    // Submit final
+    const formData = { firstName, secondName, email, phoneNumber, username, password, birthDate, role };
+    try {
+        const res = await fetch("http://localhost:3001/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+        alert(data.message);
+    } catch (err) {
+        console.error("Eroare trimitere:", err);
+        alert("A apărut o eroare la trimiterea datelor!");
+    }
+});
+
+    // --- Input focus effect ---
+    document.querySelectorAll('input').forEach(input=>{
+        input.addEventListener('focus',()=>input.parentNode.classList.add('focused'));
+        input.addEventListener('blur',()=>{ if(!input.value) input.parentNode.classList.remove('focused'); });
+    });
+</script>
 </body>
 </html>
