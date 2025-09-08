@@ -27,46 +27,6 @@ const SENDER_ID = "4"; // poate fi orice ID valid din cont
 let codes = {}; // { "email sau telefon": "cod" }
 
 
-// app.post("/register", async (req, res) => {
-//   const { firstName, secondName, email, phoneNumber, username, password, birthDate, role, status } = req.body;
-
-//   if (!firstName || !secondName || !email || !phoneNumber || !username || !password || !birthDate || !role || !status) {
-//     return res.status(400).json({ message: "Completează toate câmpurile!" });
-//   }
-
-//   console.log("Date primite de la formular:", req.body);
-
-//   const apiPayload = {
-//     firstName,
-//     secondName,
-//     username,
-//     password,
-//     status,
-//     role,
-//     dataBirth: birthDate,
-//     phoneNumber,
-//     email
-//   };
-
-//   try {
-
-//     const apiResponse = await axios.post("http://localhost:8080/auth/register", apiPayload, {
-//       headers: { "Content-Type": "application/json" }
-//     });
-
-//     console.log("Răspuns de la API extern:", apiResponse.data);
-
- 
-//     res.status(200).json({
-//       message: "Datele au fost trimise cu succes către API-ul extern!",
-//       apiResponse: apiResponse.data
-//     });
-
-//   } catch (err) {
-//     console.error("Eroare la conectarea cu API-ul extern:", err.response?.data || err.message);
-//     res.status(500).json({ message: "Eroare la trimiterea datelor către API-ul extern!" });
-//   }
-// });
 
 app.post("/register", async (req, res) => {
   const { firstName, secondName, email, phoneNumber, username, password, birthDate, role, status } = req.body;
@@ -198,7 +158,59 @@ app.post("/verifyCode", (req, res) => {
   res.json({ success: false, message: "Cod invalid!" });
 });
 
-// === Pornire server ===
-app.listen(PORT, () => {
-  console.log(`✅ Server pornit pe http://localhost:${PORT}`);
+
+
+// === Login ===
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username și parola sunt obligatorii!" });
+  }
+
+  try {
+    // 1️⃣ Trimite datele către API-ul extern pentru login
+    const loginResponse = await axios.post("http://localhost:8080/auth/login", { username, password }, {
+      headers: { "Content-Type": "application/json" }
+    });
+
+    // 🔹 Preluăm token-ul din câmpul accessToken
+    const accessToken = loginResponse.data.accessToken;
+    const userId = loginResponse.data.idUser;
+
+    console.log("Login reușit, accessToken:", accessToken, "userId:", userId);
+
+    // 2️⃣ Folosește userId pentru a obține email-ul
+    const userResponse = await axios.get(`http://localhost:8080/users/${userId}`, {
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const email = userResponse.data.email;
+    if (!email) {
+      return res.status(500).json({ message: "Email-ul asociat contului nu a fost găsit!" });
+    }
+    console.log("Email utilizator:", email);
+
+    // 3️⃣ Trimite token-ul pe email
+    await transporter.sendMail({
+      from: emailUser,
+      to: email,
+      subject: "Token-ul tău de autentificare",
+      text: `Token-ul tău este: ${accessToken}`,
+    });
+
+    console.log(`Token trimis pe email către ${email}`);
+
+    // 🔹 Returnează doar accessToken către frontend
+    res.status(200).json({ token: accessToken });
+
+  } catch (err) {
+    console.error("Eroare la login sau trimitere email:", err.response?.data || err.message);
+    res.status(401).json({ message: "Username sau parola incorectă!" });
+  }
+});
+
+
+app.listen(3001, () => {
+  console.log("✅ Server pornit pe http://localhost:3001");
 });

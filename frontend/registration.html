@@ -134,7 +134,7 @@
     </div>
 
     <div class="footer">
-        <p>&copy; 2024 ITLabs. All rights reserved.</p>
+        <p>&copy; 2025 ITLabs. All rights reserved.</p>
     </div>
 
 <script>
@@ -203,79 +203,6 @@
         }
     }
 
-    // --- Form Submit ---
-// document.getElementById('registrationForm').addEventListener('submit', async function(e) {
-//     e.preventDefault();
-//     document.querySelectorAll('.error-message').forEach(el => el.style.display='none');
-//     let isValid = true;
-
-//     // --- Extragem valorile din input-uri ---
-//     const firstName = document.getElementById('firstName').value.trim();
-//     const secondName = document.getElementById('secondName').value.trim();
-//     const email = document.getElementById('email').value.trim();
-//     const validationEmail = document.getElementById('validationEmail').value.trim();
-//     const countryCode = document.getElementById('countryCode').value;
-//     const phoneInput = document.getElementById('phoneNumber').value.trim();
-//     const validationPhone = document.getElementById('validationPhone').value.trim();
-//     const username = document.getElementById('username').value.trim();
-//     const password = document.getElementById('password').value;
-//     const birthDate = document.getElementById('birthDate').value;
-//     const roleInput = document.querySelector('input[name="role"]:checked').value;
-
-//     // --- Formăm numărul complet ---
-//     const phoneNumber = phoneInput.startsWith("0") ? countryCode + phoneInput.slice(1) : countryCode + phoneInput;
-
-//     // --- Validări simple ---
-//     if (!firstName) { document.getElementById('firstNameError').style.display='block'; isValid=false; }
-//     if (!secondName) { document.getElementById('secondNameError').style.display='block'; isValid=false; }
-//     if (!email) { document.getElementById('emailError').style.display='block'; isValid=false; }
-//     if (!phoneInput) { document.getElementById('phoneError').style.display='block'; isValid=false; }
-//     if (!username) { document.getElementById('usernameError').style.display='block'; isValid=false; }
-//     if (!password || password.length < 6) { document.getElementById('passwordError').style.display='block'; isValid=false; }
-//     if (!birthDate) { document.getElementById('birthDateError').style.display='block'; isValid=false; }
-
-//     // --- Verificare coduri email și SMS ---
-//     if (isValid) {
-//         const emailValid = await verifyCode(email, validationEmail);
-//         if (!emailValid) { document.getElementById('validationEmailError').style.display='block'; isValid=false; }
-
-//         const phoneValid = await verifyCode(phoneNumber, validationPhone);
-//         if (!phoneValid) { document.getElementById('validationPhoneError').style.display='block'; isValid=false; }
-//     }
-
-//     if (!isValid) return;
-//     const formData = {
-//     firstName: firstName,
-//     secondName: secondName,
-//     username: username,
-//     password: password,
-//     status: "ACTIVE", // poți fixa direct
-//     role: roleInput.toUpperCase(), // USER sau ADMIN
-//     birthDate: birthDate,
-//     phoneNumber: phoneNumber,
-//     email: email
-// };
-
-//     console.log("JSON rezultat:", formData); // debug
-
-//     // --- Trimitem la backend ---
-//     try {
-//         const res = await fetch("http://localhost:3001/register", {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify(formData)
-//         });
-//         const data = await res.json();
-//        
-
-//         alert(data.message);
-//     } else {
-//         alert(data.message || "Eroare la înregistrare");
-//     }
-// } catch (err) {
-//     console.error("Eroare trimitere:", err);
-//     alert("A apărut o eroare la trimiterea datelor!");
-// }});
 
 document.getElementById('registrationForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -330,9 +257,8 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
         email: email
     };
 
-    console.log("JSON rezultat:", formData); // debug
+    console.log("JSON rezultat:", formData); 
 
-    // --- Trimitem la backend ---
     try {
         const res = await fetch("http://localhost:3001/register", {
             method: "POST",
