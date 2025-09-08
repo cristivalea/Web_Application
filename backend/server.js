@@ -1,32 +1,3 @@
-// import express from "express";
-// import cors from "cors";
-// import bodyParser from "body-parser";
-
-// const app = express();
-// const PORT = 3001;
-
-// // Middleware
-// app.use(cors());
-// app.use(bodyParser.json());
-
-// // Ruta pentru înregistrare
-// app.post("/register", (req, res) => {
-//     console.log("Date primite de la formular:");
-//     console.log(req.body);
-
-//     // Trimit răspuns către frontend
-//     res.status(200).json({
-//         message: "Datele au fost primite cu succes!",
-//         data: req.body
-//     });
-// });
-
-// // Pornim serverul
-// app.listen(PORT, () => {
-//     console.log(`✅ Server Node.js pornit pe http://localhost:${PORT}`);
-// });
-
-
 import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
@@ -55,23 +26,113 @@ const SENDER_ID = "4"; // poate fi orice ID valid din cont
 // --- Stocare coduri temporar ---
 let codes = {}; // { "email sau telefon": "cod" }
 
-// === Ruta înregistrare utilizator ===
-app.post("/register", (req, res) => {
-  const { firstName, secondName, email, phoneNumber, username, password, birthDate, role } = req.body;
 
-  if (!firstName || !secondName || !email || !phoneNumber || !username || !password || !birthDate) {
+// app.post("/register", async (req, res) => {
+//   const { firstName, secondName, email, phoneNumber, username, password, birthDate, role, status } = req.body;
+
+//   if (!firstName || !secondName || !email || !phoneNumber || !username || !password || !birthDate || !role || !status) {
+//     return res.status(400).json({ message: "Completează toate câmpurile!" });
+//   }
+
+//   console.log("Date primite de la formular:", req.body);
+
+//   const apiPayload = {
+//     firstName,
+//     secondName,
+//     username,
+//     password,
+//     status,
+//     role,
+//     dataBirth: birthDate,
+//     phoneNumber,
+//     email
+//   };
+
+//   try {
+
+//     const apiResponse = await axios.post("http://localhost:8080/auth/register", apiPayload, {
+//       headers: { "Content-Type": "application/json" }
+//     });
+
+//     console.log("Răspuns de la API extern:", apiResponse.data);
+
+ 
+//     res.status(200).json({
+//       message: "Datele au fost trimise cu succes către API-ul extern!",
+//       apiResponse: apiResponse.data
+//     });
+
+//   } catch (err) {
+//     console.error("Eroare la conectarea cu API-ul extern:", err.response?.data || err.message);
+//     res.status(500).json({ message: "Eroare la trimiterea datelor către API-ul extern!" });
+//   }
+// });
+
+app.post("/register", async (req, res) => {
+  const { firstName, secondName, email, phoneNumber, username, password, birthDate, role, status } = req.body;
+
+  if (!firstName || !secondName || !email || !phoneNumber || !username || !password || !birthDate || !role || !status) {
     return res.status(400).json({ message: "Completează toate câmpurile!" });
   }
 
-  console.log("Date primite de la formular:", req.body);
+  const apiPayload = {
+    firstName,
+    secondName,
+    username,
+    password,
+    status,
+    role,
+    dataBirth: birthDate,
+    phoneNumber,
+    email
+  };
 
-  res.status(200).json({
-    message: "Datele au fost primite cu succes!",
-    data: req.body,
-  });
+  try {
+    const apiResponse = await axios.post("http://localhost:8080/auth/register", apiPayload, {
+      headers: { "Content-Type": "application/json" }
+    });
+
+    console.log("Răspuns de la API extern:", apiResponse.data);
+
+    // Extragem userId din răspunsul API-ului extern
+    const userId = apiResponse.data.userId;
+
+    // Returnăm și userId către frontend
+    res.status(200).json({
+      message: "Datele au fost trimise cu succes către API-ul extern!",
+      userId: apiResponse.data.message
+    });
+
+  } catch (err) {
+    console.error("Eroare la conectarea cu API-ul extern:", err.response?.data || err.message);
+    res.status(500).json({ message: "Eroare la trimiterea datelor către API-ul extern!" });
+  }
 });
 
-// === Trimitere cod pe email ===
+app.post("/security_questions", async (req, res) => {
+  const { userId, sec_quest, response } = req.body;
+  if (!userId || !sec_quest || !response) {
+    return res.status(400).json({ message: "Toate câmpurile sunt obligatorii!" });
+  }
+
+  try {
+    const apiResponse = await axios.post("http://localhost:8080/security_questions", {
+      userId,
+      sec_quest,
+      response
+    }, {
+      headers: { "Content-Type": "application/json" }
+    });
+
+    res.status(200).json(apiResponse.data);
+  } catch (err) {
+    console.error("Eroare la trimiterea întrebării de securitate:", err.response?.data || err.message);
+    res.status(500).json({ message: "Eroare la trimiterea întrebării de securitate!" });
+  }
+});
+
+
+
 app.post("/sendEmailCode", async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ message: "Email-ul este obligatoriu!" });

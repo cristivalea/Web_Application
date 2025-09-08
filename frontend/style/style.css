@@ -110,11 +110,11 @@ input[type="radio"] {
 
 /* TERMS SECTION */
 .terms-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin: 20px 0;
+    display: flex;             /* folosește Flexbox */
+    justify-content: center;   /* centrează pe orizontală */
+    align-items: center;       /* aliniere verticală în interiorul secțiunii */
+    gap: 10px;                 /* spațiu între checkbox și text */
+    margin: 20px 0;            /* spațiu sus-jos */
 }
 
 input[type="checkbox"] {
@@ -184,4 +184,10 @@ input[type="checkbox"] {
 .send-code-btn:hover {
     background-color: #8EBFE4;
     transform: scale(1.05);
+}
+
+.security-question {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
 }

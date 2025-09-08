@@ -1,222 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <link rel="stylesheet" href="../frontend/style/style.css">
-</head>
-<body>
-    <div class="header">
-        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
-        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
-        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
-    </div>
-
-    <div class="container">
-        <h1 class="form-title">Register</h1>
-        <form id="registrationForm">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input pattern="[A-Z][a-z]*[-,\s][A-Z][a-z]*" type="text" id="firstName" name="firstName" required>
-                    <div class="error-message" id="firstNameError">The First Name is necessary!</div>
-                </div>
-                <div class="form-group">
-                    <label for="secondName">Second Name</label>
-                    <input pattern="[A-Z][a-z]*[-,\s][A-Z][a-z]*" type="text" id="secondName" name="secondName" required>
-                    <div class="error-message" id="secondNameError">The Second name is necessary!</div>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <div class="with-button">
-                        <input type="email" id="email" name="email" required>
-                        <button type="button" class="send-code-btn" onclick="sendEmailCode()">Send Code</button>
-                    </div>
-                    <div class="error-message" id="emailError">The email is necessary!</div>
-                    </div>
-
-                    <div class="form-group">
-                    <label for="validationEmail">Validation Code (Email)</label>
-                    <input type="text" id="validationEmail" name="validationEmail" required>
-                    <div class="error-message" id="validationEmailError">The code is wrong!</div>
-                </div>
-                <div class="form-group">
-                    <label for="phoneNumber">Phone Number</label>
-                    <div class="with-button">
-                        <select id="countryCode" name="countryCode">
-                        <option value="+40">🇷🇴 +40</option>
-                        <option value="+1">🇺🇸 +1</option>
-                        <option value="+44">🇬🇧 +44</option>
-                        <option value="+49">🇩🇪 +49</option>
-                        </select>
-                        <input type="tel" id="phoneNumber" name="phoneNumber" required>
-                        <button type="button" class="send-code-btn" onclick="sendPhoneCode()">Send Code</button>
-                    </div>
-                    <div class="error-message" id="phoneError">The phone number is necessary!</div>
-                    </div>
-
-                    <div class="form-group">
-                    <label for="validationPhone">Validation Code (Phone)</label>
-                    <input type="text" id="validationPhone" name="validationPhone" required>
-                    <div class="error-message" id="validationPhoneError">The validation code is wrong!</div>
-                </div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input pattern="[A-Za-z0-9]*" type="text" id="username" name="username" required>
-                    <div class="error-message" id="usernameError">The username is necessary!</div>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                    <div class="error-message" id="passwordError">The password must have at least 6 characters!</div>
-                </div>
-            </div>
-
-            <div class="birth-date-group">
-                <div class="form-group">
-                    <label for="birthDate">Birth Date</label>
-                    <input type="date" id="birthDate" name="birthDate" required>
-                    <div class="error-message" id="birthDateError">The birth date is necessary!</div>
-                </div>
-            </div>
-
-            <div class="role-section">
-                <span class="role-label">Role</span>
-                <div class="radio-group">
-                    <input type="radio" id="user" name="role" value="user" checked>
-                    <label for="user">User</label>
-                </div>
-                <div class="radio-group">
-                    <input type="radio" id="admin" name="role" value="admin">
-                    <label for="admin">Admin</label>
-                </div>
-            </div>
-
-            <div class="terms-section">
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms" class="terms-label">I am read the terms and conditions!</label>
-                <div class="error-message" id="termsError">The accept is necessary!</div>
-            </div>
-
-            <button type="submit" class="register-btn">Register</button>
-        </form>
-    </div>
-    <div class="footer">
-        <p>&copy; 2024 ITLabs. All rights reserved.</p>
-    </div>
-
-    <script>
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            document.querySelectorAll('.error-message').forEach(error => {
-                error.style.display = 'none';
-            });
-            
-            let isValid = true;
-            
-            const firstName = document.getElementById('firstName').value.trim();
-            if (!firstName) {
-                document.getElementById('firstNameError').style.display = 'block';
-                isValid = false;
-            }
-            
-
-            const secondName = document.getElementById('secondName').value.trim();
-            if (!secondName) {
-                document.getElementById('secondNameError').style.display = 'block';
-                isValid = false;
-            }
-            
-            const email = document.getElementById('email').value.trim();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!email || !emailRegex.test(email)) {
-                document.getElementById('emailError').style.display = 'block';
-                isValid = false;
-            }
-            
-
-
-            const phoneNumber = document.getElementById('phoneNumber').value.trim();
-            if (!phoneNumber) {
-                document.getElementById('phoneError').style.display = 'block';
-                isValid = false;
-            }
-
-            
-            const username = document.getElementById('username').value.trim();
-            if (!username) {
-                document.getElementById('usernameError').style.display = 'block';
-                isValid = false;
-            }
-            
-            const password = document.getElementById('password').value;
-            if (!password || password.length < 6) {
-                document.getElementById('passwordError').style.display = 'block';
-                isValid = false;
-            }
-            
-            const birthDate = document.getElementById('birthDate').value;
-            if (!birthDate) {
-                document.getElementById('birthDateError').style.display = 'block';
-                isValid = false;
-            }
-            
-            const terms = document.getElementById('terms').checked;
-            if (!terms) {
-                document.getElementById('termsError').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (isValid) {
-                const formData = {
-                    firstName: firstName,
-                    secondName: secondName,
-                    email: email,
-                    phoneNumber: phoneNumber,
-                    username: username,
-                    password: password,
-                    birthDate: birthDate,
-                    role: document.querySelector('input[name="role"]:checked').value
-                };
-
-                
-                fetch("http://localhost:3001/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message); 
-                    console.log("Răspuns primit de la server:", data);
-                })
-                .catch(error => {
-                    console.error("Eroare la trimitere:", error);
-                    alert("A apărut o eroare la trimiterea datelor!");
-                });
-            }
-        });
-
-
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentNode.classList.add('focused');
-            });
-            
-            input.addEventListener('blur', function() {
-                if (!this.value) {
-                    this.parentNode.classList.remove('focused');
-                }
-            });
-        });
-    </script>
-</body>
-</html>
- -->
-
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -322,6 +103,30 @@
                     <label for="terms" class="terms-label">I have read the terms and conditions!</label>
                     <div class="error-message" id="termsError">You must accept the terms!</div>
                 </div>
+
+                <div class="security-question">
+                    <label for="sec_quest1">Security Question 1</label>
+                    <input type="text" id="sec_quest1" name="sec_quest1" required>
+                    <div class="error-message" id="secQuestError">The security question is necessary</div>
+                </div>
+
+                <div class="response">
+                    <label for="response1">Security Response 1</label>
+                    <input type="text" id="response1" name="response1" required>
+                    <div class="error-message" id="response1">The security answer is necessary</div>
+                </div>
+
+                <div class="security-question">
+                    <label for="sec_quest2">Security Question 2</label>
+                    <input type="text" id="sec_quest2" name="sec_quest2" required>
+                    <div class="error-message" id="secQuest2Error">The security question is necessary</div>
+                </div>
+
+                <div class="response">
+                    <label for="response2">Security Response 2</label>
+                    <input type="text" id="response2" name="response2" required>
+                    <div class="error-message" id="response2">The security answer is necessary</div>
+                </div>
             </div>
 
             <button type="submit" class="register-btn">Register</button>
@@ -372,7 +177,7 @@
         const res = await fetch("http://localhost:3001/sendSMSCode", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phoneNumber }) // asigură-te că cheia e exact 'phoneNumber'
+            body: JSON.stringify({ phoneNumber }) 
         });
         const data = await res.json();
         alert(data.message);
@@ -399,11 +204,85 @@
     }
 
     // --- Form Submit ---
-   document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+// document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+//     e.preventDefault();
+//     document.querySelectorAll('.error-message').forEach(el => el.style.display='none');
+//     let isValid = true;
+
+//     // --- Extragem valorile din input-uri ---
+//     const firstName = document.getElementById('firstName').value.trim();
+//     const secondName = document.getElementById('secondName').value.trim();
+//     const email = document.getElementById('email').value.trim();
+//     const validationEmail = document.getElementById('validationEmail').value.trim();
+//     const countryCode = document.getElementById('countryCode').value;
+//     const phoneInput = document.getElementById('phoneNumber').value.trim();
+//     const validationPhone = document.getElementById('validationPhone').value.trim();
+//     const username = document.getElementById('username').value.trim();
+//     const password = document.getElementById('password').value;
+//     const birthDate = document.getElementById('birthDate').value;
+//     const roleInput = document.querySelector('input[name="role"]:checked').value;
+
+//     // --- Formăm numărul complet ---
+//     const phoneNumber = phoneInput.startsWith("0") ? countryCode + phoneInput.slice(1) : countryCode + phoneInput;
+
+//     // --- Validări simple ---
+//     if (!firstName) { document.getElementById('firstNameError').style.display='block'; isValid=false; }
+//     if (!secondName) { document.getElementById('secondNameError').style.display='block'; isValid=false; }
+//     if (!email) { document.getElementById('emailError').style.display='block'; isValid=false; }
+//     if (!phoneInput) { document.getElementById('phoneError').style.display='block'; isValid=false; }
+//     if (!username) { document.getElementById('usernameError').style.display='block'; isValid=false; }
+//     if (!password || password.length < 6) { document.getElementById('passwordError').style.display='block'; isValid=false; }
+//     if (!birthDate) { document.getElementById('birthDateError').style.display='block'; isValid=false; }
+
+//     // --- Verificare coduri email și SMS ---
+//     if (isValid) {
+//         const emailValid = await verifyCode(email, validationEmail);
+//         if (!emailValid) { document.getElementById('validationEmailError').style.display='block'; isValid=false; }
+
+//         const phoneValid = await verifyCode(phoneNumber, validationPhone);
+//         if (!phoneValid) { document.getElementById('validationPhoneError').style.display='block'; isValid=false; }
+//     }
+
+//     if (!isValid) return;
+//     const formData = {
+//     firstName: firstName,
+//     secondName: secondName,
+//     username: username,
+//     password: password,
+//     status: "ACTIVE", // poți fixa direct
+//     role: roleInput.toUpperCase(), // USER sau ADMIN
+//     birthDate: birthDate,
+//     phoneNumber: phoneNumber,
+//     email: email
+// };
+
+//     console.log("JSON rezultat:", formData); // debug
+
+//     // --- Trimitem la backend ---
+//     try {
+//         const res = await fetch("http://localhost:3001/register", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify(formData)
+//         });
+//         const data = await res.json();
+//        
+
+//         alert(data.message);
+//     } else {
+//         alert(data.message || "Eroare la înregistrare");
+//     }
+// } catch (err) {
+//     console.error("Eroare trimitere:", err);
+//     alert("A apărut o eroare la trimiterea datelor!");
+// }});
+
+document.getElementById('registrationForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     document.querySelectorAll('.error-message').forEach(el => el.style.display='none');
     let isValid = true;
 
+    // --- Extragem valorile din input-uri ---
     const firstName = document.getElementById('firstName').value.trim();
     const secondName = document.getElementById('secondName').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -414,20 +293,21 @@
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
     const birthDate = document.getElementById('birthDate').value;
-    const terms = document.getElementById('terms').checked;
-    const role = document.querySelector('input[name="role"]:checked').value;
+    const roleInput = document.querySelector('input[name="role"]:checked').value;
 
-    // 🚀 aici nu mai verificăm telefonul deloc
-    const phoneNumber = countryCode + phoneInput;
-    console.log("Număr format:", phoneNumber);
-    alert("Număr format: " + phoneNumber);
+    // --- Formăm numărul complet ---
+    const phoneNumber = phoneInput.startsWith("0") ? countryCode + phoneInput.slice(1) : countryCode + phoneInput;
 
+    // --- Validări simple ---
+    if (!firstName) { document.getElementById('firstNameError').style.display='block'; isValid=false; }
+    if (!secondName) { document.getElementById('secondNameError').style.display='block'; isValid=false; }
+    if (!email) { document.getElementById('emailError').style.display='block'; isValid=false; }
+    if (!phoneInput) { document.getElementById('phoneError').style.display='block'; isValid=false; }
     if (!username) { document.getElementById('usernameError').style.display='block'; isValid=false; }
-    if (!password || password.length<6) { document.getElementById('passwordError').style.display='block'; isValid=false; }
+    if (!password || password.length < 6) { document.getElementById('passwordError').style.display='block'; isValid=false; }
     if (!birthDate) { document.getElementById('birthDateError').style.display='block'; isValid=false; }
-    if (!terms) { document.getElementById('termsError').style.display='block'; isValid=false; }
 
-    // Verificare coduri email și SMS
+    // --- Verificare coduri email și SMS ---
     if (isValid) {
         const emailValid = await verifyCode(email, validationEmail);
         if (!emailValid) { document.getElementById('validationEmailError').style.display='block'; isValid=false; }
@@ -438,21 +318,70 @@
 
     if (!isValid) return;
 
-    // Submit final
-    const formData = { firstName, secondName, email, phoneNumber, username, password, birthDate, role };
+    const formData = {
+        firstName: firstName,
+        secondName: secondName,
+        username: username,
+        password: password,
+        status: "ACTIVE",
+        role: roleInput.toUpperCase(),
+        birthDate: birthDate,
+        phoneNumber: phoneNumber,
+        email: email
+    };
+
+    console.log("JSON rezultat:", formData); // debug
+
+    // --- Trimitem la backend ---
     try {
         const res = await fetch("http://localhost:3001/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
         });
+
         const data = await res.json();
-        alert(data.message);
+
+        if (res.ok) {
+            const userId = data.userId;  // acum e "U00028"
+            console.log("User ID generat:", userId);
+
+            // --- Extragem întrebările de securitate ---
+            const securityQuestions = [
+                {
+                    question: document.getElementById('sec_quest1').value.trim(),
+                    answer: document.getElementById('response1').value.trim()
+                },
+                {
+                    question: document.getElementById('sec_quest2').value.trim(),
+                    answer: document.getElementById('response2').value.trim()
+                }
+            ];
+
+            // --- Trimitem fiecare întrebare ---
+            for (const sq of securityQuestions) {
+                await fetch("http://localhost:3001/security_questions", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userId, // aici va ajunge "U00028"
+                        sec_quest: sq.question,
+                        response: sq.answer
+                    })
+                });
+            }
+
+            alert("Înregistrarea și întrebările de securitate au fost salvate cu succes!");
+        } else {
+            alert(data.message || "Eroare la înregistrare");
+        }
     } catch (err) {
         console.error("Eroare trimitere:", err);
         alert("A apărut o eroare la trimiterea datelor!");
     }
 });
+
+
 
     // --- Input focus effect ---
     document.querySelectorAll('input').forEach(input=>{
