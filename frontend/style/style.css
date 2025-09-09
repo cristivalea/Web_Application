@@ -286,8 +286,8 @@ input[type="date"] {
 .auth-btn {
     display: block;
     width: 80%;
-    margin: 200px auto 25px auto; /* Spațiu generos deasupra și dedesubt */
-    padding: 16px 0; /* Buton mai înalt */
+    margin: 200px auto 25px auto; 
+    padding: 16px 0; 
     background-color: #8EBFE4;
     color: #4A59AA;
     border: none;
@@ -298,17 +298,6 @@ input[type="date"] {
     transition: 0.3s ease;
 }
 
-/* .main-content {
-    display: flex;           
-    align-items: center;     
-    gap: 75px;      
-    justify-content: flex-end;          
-}
-
-.index_img {
-    margin-left: auto;  
-    display: block;     
-} */
 
 .main-content {
     display: flex;
@@ -366,3 +355,59 @@ input[type="date"] {
     height: 87px;
     align-items: center;
 }
+
+/* ------------------ RESET PASSWORD ------------------ */
+.reset-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+}
+
+.reset-container {
+    background-color: #E18741;
+    width: 600px;
+    min-height: 620px;
+    /* margin: 80px  650px 80px; */
+    margin: 80px auto 80px auto;
+    padding: 60px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+/* Spațiu între câmpurile din formularul de resetare */
+.reset-form-group {
+    margin-bottom: 40px; /* creează mai mult spațiu între Email și Phone Number */
+}
+
+/* Spațiu suplimentar sub titlu */
+.reset-container .title {
+    margin-bottom: 50px;
+    display: block;
+    text-align: center;
+}
+
+/* Centrăm câmpul pentru numărul de telefon */
+.with-button-reset {
+    display: flex;
+    justify-content: center;  /* Centrează selectul și inputul pe orizontală */
+    gap: 15px;                /* Spațiu între codul țării și input */
+    margin-top: 10px;
+}
+
+/* Lățimea pentru select și input ca să arate simetric */
+.with-button-reset select,
+.with-button-reset input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Coborâm butonul mai jos */
+.button-group {
+    margin-top: 90px;   
+    display: flex;
+    justify-content: center; /* Centrează butonul */
+}
+
