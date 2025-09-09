@@ -244,6 +244,44 @@ app.post("/verifyToken", async (req, res) => {
   }
 });
 
+//==========Reset Password==========
+
+app.post("/reset-password", async (req, res) => {
+  const { email, phoneNumber } = req.body; // telefonul și email-ul din frontend
+
+  if (!phoneNumber || !email) {
+    return res.status(400).json({ message: "Telefonul și email-ul sunt obligatorii!" });
+  }
+
+  try {
+    // 🔹 Căutăm utilizatorul după telefon în Spring Boot
+    const url = `http://localhost:8080/users/search/phone?phoneNumber=${phoneNumber}`;
+    const userResponse = await axios.get(url);
+
+    if (!userResponse.data) {
+      return res.status(404).json({ message: `Utilizatorul cu numărul ${phoneNumber} nu a fost găsit.` });
+    }
+
+    // 🔹 Trimitem codul pe emailul introdus în frontend
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    codes[email] = code;
+
+    await transporter.sendMail({
+      from: emailUser,
+      to: email,
+      subject: "Cod resetare parolă",
+      text: `Codul tău pentru resetarea parolei este: ${code}`,
+    });
+
+    console.log(`✅ Cod resetare trimis la ${email} pentru telefon ${phoneNumber}: ${code}`);
+    res.status(200).json({ message: "Cod trimis cu succes pe email!" });
+
+  } catch (err) {
+    console.error("Eroare la reset-password:", err.response?.data || err.message);
+    res.status(500).json({ message: "Eroare la trimiterea codului de resetare!" });
+  }
+});
+
 
 
 app.listen(3001, () => {
