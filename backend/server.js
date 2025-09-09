@@ -180,18 +180,25 @@ app.post("/login", async (req, res) => {
 
     console.log("Login reușit, accessToken:", accessToken, "userId:", userId);
 
-    // 2️⃣ Folosește userId pentru a obține email-ul
-    const userResponse = await axios.get(`http://localhost:8080/users/${userId}`, {
+   // 2️⃣ Folosește userId pentru a obține lista de email-uri
+    const userResponse = await axios.get(`http://localhost:8080/emails/${userId}`, {
       headers: { "Content-Type": "application/json" }
     });
 
-    const email = userResponse.data.email;
-    if (!email) {
-      return res.status(500).json({ message: "Email-ul asociat contului nu a fost găsit!" });
-    }
-    console.log("Email utilizator:", email);
+    const emails = userResponse.data;
+    let email = null;
 
-    // 3️⃣ Trimite token-ul pe email
+    if (emails && emails.length > 0) {
+      email = emails[emails.length - 1]; // ia ULTIMUL email
+    }
+
+    if (!email) {
+      return res.status(500).json({ message: "Nu a fost găsit niciun email pentru utilizator!" });
+    }
+    console.log("Email ales:", email);
+
+
+    
     await transporter.sendMail({
       from: emailUser,
       to: email,
@@ -201,7 +208,7 @@ app.post("/login", async (req, res) => {
 
     console.log(`Token trimis pe email către ${email}`);
 
-    // 🔹 Returnează doar accessToken către frontend
+    
     res.status(200).json({ token: accessToken });
 
   } catch (err) {
@@ -209,6 +216,34 @@ app.post("/login", async (req, res) => {
     res.status(401).json({ message: "Username sau parola incorectă!" });
   }
 });
+
+
+//==========Authorization==========
+app.post("/verifyToken", async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ success: false, message: "Token lipsă!" });
+  }
+
+  try {
+    // Apel către Spring Boot /session/validate
+    const response = await axios.post("http://localhost:8080/session/validate", { token });
+
+    console.log("Răspuns Spring Boot:", response.data);
+
+    res.json({
+      success: true,
+      message: response.data.message,
+      sessionId: response.data.sessionId,
+      userId: response.data.userId
+    });
+  } catch (err) {
+    console.error("Eroare verificare token:", err.response?.data || err.message);
+    res.status(401).json({ success: false, message: "Token invalid sau expirat!" });
+  }
+});
+
 
 
 app.listen(3001, () => {

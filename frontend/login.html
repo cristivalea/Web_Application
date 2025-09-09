@@ -70,7 +70,8 @@
       });
 
       const data = await response.json();
-      alert(data.message); 
+      window.location.href = "../frontend/authorization.html";
+    //   alert(data.message); 
     } catch (err) {
       console.error("Eroare la login:", err);
       alert("A apărut o eroare la login.");

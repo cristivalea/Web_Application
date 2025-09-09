@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../frontend/style/style.css">
+</head>
+<body>
+   <div class="header">
+        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+    </div>
+
+
+    <div class="auth-container">
+        <h1 class="title">Authorization</h1>
+        <form id="authForm">
+            <div class="auth-form-group">
+                <label for="token">Token</label>
+                <input type="text" id="token" name="token" required>
+            </div>
+
+            <div class="auth-group">
+                <button type="submit" class="auth-btn">Authorization</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 ITLabs. All rights reserved.</p>
+    </div>
+
+     <script>
+    const form = document.getElementById("authForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const token = document.getElementById("token").value;
+
+      try {
+        const response = await fetch("http://localhost:3001/verifyToken", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token })
+        });
+
+        const data = await response.json();
+        alert(data.message);
+
+        if (data.success) {
+          // redirect spre dashboard sau aplicația principală
+        //   window.location.href = "dashboard.html";
+        alert("Token valid! Redirecting to dashboard...");
+        }
+      } catch (err) {
+        console.error("Eroare la verificare token:", err);
+        alert("A apărut o eroare la verificarea tokenului.");
+      }
+    });
+  </script>
+</body>
