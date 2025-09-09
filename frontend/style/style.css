@@ -218,6 +218,7 @@ input[type="date"] {
     padding: 10px 40px;
 }
 
+
 /* ------------------ ERROR MESSAGE ------------------ */
 .error-message {
     display: none;
@@ -267,7 +268,8 @@ input[type="date"] {
     background-color: #E18741;
     width: 600px;
     min-height: 620px;
-    margin: 80px  650px 80px;
+    /* margin: 80px  650px 80px; */
+    margin: 80px auto 80px auto;
     padding: 60px;
     border-radius: 20px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
@@ -294,4 +296,73 @@ input[type="date"] {
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s ease;
+}
+
+/* .main-content {
+    display: flex;           
+    align-items: center;     
+    gap: 75px;      
+    justify-content: flex-end;          
+}
+
+.index_img {
+    margin-left: auto;  
+    display: block;     
+} */
+
+.main-content {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 40px;
+    margin-left: 30px;
+}
+
+.right-side {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
+
+.index_img {
+
+    margin-bottom: 20px; 
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column; 
+    gap: 80px; 
+    margin-right: 300px;
+}
+
+.login-btn,
+.register-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.login-btn {
+    background-color: #4A59AA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.register-btn {
+    background-color: #8EBFE4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.welcome-message {
+    font-size: 28px;
+    color: #4A59AA;
+    font-weight: bold;
+    text-align: left;       
+    width: 1080px;
+    height: 87px;
+    align-items: center;
 }

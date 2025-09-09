@@ -309,7 +309,6 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 
 
 
-    // --- Input focus effect ---
     document.querySelectorAll('input').forEach(input=>{
         input.addEventListener('focus',()=>input.parentNode.classList.add('focused'));
         input.addEventListener('blur',()=>{ if(!input.value) input.parentNode.classList.remove('focused'); });
