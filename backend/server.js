@@ -273,33 +273,38 @@ app.post("/update-password", async (req, res) => {
   console.log("Update parola:", { userId, phoneNumber, code, newPassword });
 
   if (!code || !newPassword || !confirmPassword) {
-    return res.status(400).json({ message: "Toate câmpurile sunt obligatorii!" });
+    return res.status(400).json({ message: "All fields ar erequired!" });
   }
 
   if (newPassword !== confirmPassword) {
-    return res.status(400).json({ message: "Parolele nu coincid!" });
+    return res.status(400).json({ message: "Password differ!" });
   }
 
   if (!codes[phoneNumber] || codes[phoneNumber] !== code) {
-    return res.status(400).json({ message: "Cod invalid sau expirat!" });
+    return res.status(400).json({ message: "Invalid code !" });
   }
 
   try {
-      const apiResponse = await axios.put(
-      "http://localhost:8080/users/${userId}/password?newPassword=${encodeURIComponent(newPassword)}",
+    //   const apiResponse = await axios.put(
+    //   `http://localhost:8080/users/${userId}/password?newPassword=${encodeURIComponent(newPassword)}`,
+    //   { headers: { "Content-Type": "application/json" } }
+    // );
+
+    const apiResponse = await axios.put(
+      `http://localhost:8080/users/${userId}/password?newPassword=${encodeURIComponent(newPassword)}`,
+      null,
       { headers: { "Content-Type": "application/json" } }
     );
 
 
+    console.log("Respopnse Spring Boot update password:", apiResponse.data);
 
-    console.log("Răspuns Spring Boot update parola:", apiResponse.data);
+    delete codes[phoneNumber]; 
 
-    delete codes[phoneNumber]; // ștergem codul după succes
-
-    res.json({ success: true, message: "Parola a fost actualizată cu succes!" });
+    res.json({ success: true, message: "Password updated successfully!" });
   } catch (err) {
-    console.error("Eroare la update parola:", err.response?.data || err.message);
-    res.status(500).json({ success: false, message: "Eroare la actualizarea parolei!" });
+    console.error("Error updating password:", err.response?.data || err.message);
+    res.status(500).json({ success: false, message: "Error updating password!" });
   }
 });
 
