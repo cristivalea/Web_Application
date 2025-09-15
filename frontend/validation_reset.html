@@ -1,0 +1,138 @@
+<!-- <!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Reset Password</title>
+    <link rel="stylesheet" href="../frontend/style/style.css">
+</head>
+<body>
+   <div class="header">
+        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+    </div>
+
+
+    <div class="login-container" style="min-height: 300px;">
+    <h1 class="title">Validation new Password</h1>
+    <form id="loginForm">
+
+        <div class="login-form-group" style="margin-bottom: 30px;">
+            <label for="username">Code</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 30px;">
+            <label for="password">New Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 30px;">
+            <label for="confirm_password">Confirm New Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="login-btn">Update Password</button>
+        </div>
+    </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 ITLabs. All rights reserved.</p>
+    </div> -->
+
+    <!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validation Reset Password</title>
+  <link rel="stylesheet" href="../frontend/style/style.css">
+</head>
+<body>
+  <div class="header">
+    <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+    <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
+    <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+  </div>
+
+  <div class="login-container">
+    <h1 class="title">Validation new Password</h1>
+    <form id="resetForm">
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label for="code">Cod primit pe email</label>
+        <input type="text" id="code" name="code" required>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label for="password">Noua parolă</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label for="confirmPassword">Confirmă noua parolă</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="login-btn">Update Password</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 ITLabs. All rights reserved.</p>
+  </div>
+
+  <script>
+    document.getElementById("resetForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const userId = localStorage.getItem("resetUserId");
+      const phoneNumber = localStorage.getItem("resetPhone");
+      const code = document.getElementById("code").value;
+      const newPassword = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (!userId) {
+        alert("Date lipsă! Reia procesul de resetare a parolei.");
+        return;
+      }
+
+      try {
+        // const response = await fetch("http://localhost:3001/update-password", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({
+        //     userId,
+        //     email,
+        //     code,
+        //     newPassword,
+        //     confirmPassword
+        //   })
+
+          const response = await fetch("http://localhost:3001/update-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, phoneNumber, code, newPassword, confirmPassword })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert("✅ Parola a fost schimbată cu succes!");
+          // localStorage.removeItem("resetUserId");
+          // localStorage.removeItem("resetEmail");
+          // window.location.href = "login.html";
+        } else {
+          alert("❌ " + data.message);
+        }
+      } catch (err) {
+        console.error("Eroare:", err);
+        alert("A apărut o eroare la conectarea cu serverul!");
+      }
+    });
+  </script>
+</body>
+</html>

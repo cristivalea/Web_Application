@@ -247,7 +247,7 @@ app.post("/verifyToken", async (req, res) => {
 //==========Reset Password==========
 
 app.post("/reset-password", async (req, res) => {
-  const { email, phoneNumber } = req.body; // telefonul și email-ul din frontend
+  const { email, phoneNumber } = req.body;
 
   if (!phoneNumber || !email) {
     return res.status(400).json({ message: "Telefonul și email-ul sunt obligatorii!" });
@@ -257,14 +257,14 @@ app.post("/reset-password", async (req, res) => {
     // 🔹 Căutăm utilizatorul după telefon în Spring Boot
     const url = `http://localhost:8080/users/search/phone?phoneNumber=${phoneNumber}`;
     const userResponse = await axios.get(url);
-
-    if (!userResponse.data) {
+    const user = userResponse.data;
+    if (!user || !user.idUser) {
       return res.status(404).json({ message: `Utilizatorul cu numărul ${phoneNumber} nu a fost găsit.` });
     }
 
-    // 🔹 Trimitem codul pe emailul introdus în frontend
+    // 🔹 Generăm cod și îl trimitem pe email
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    codes[email] = code;
+    codes[phoneNumber] = code;
 
     await transporter.sendMail({
       from: emailUser,
@@ -273,14 +273,60 @@ app.post("/reset-password", async (req, res) => {
       text: `Codul tău pentru resetarea parolei este: ${code}`,
     });
 
-    console.log(`✅ Cod resetare trimis la ${email} pentru telefon ${phoneNumber}: ${code}`);
-    res.status(200).json({ message: "Cod trimis cu succes pe email!" });
+    console.log(`✅ Cod resetare trimis la ${email} pentru userId ${user.idUser}: ${code}`);
+
+    res.status(200).json({ 
+    message: "Cod trimis cu succes pe email!",
+    userId: user.idUser,
+    phoneNumber: phoneNumber,  // trimitem și telefonul
+    email: email               // păstrăm doar pentru trimitere mail
+  });
 
   } catch (err) {
     console.error("Eroare la reset-password:", err.response?.data || err.message);
     res.status(500).json({ message: "Eroare la trimiterea codului de resetare!" });
   }
 });
+
+
+
+//======update password=======
+app.post("/update-password", async (req, res) => {
+  const { userId, phoneNumber, code, newPassword, confirmPassword } = req.body;
+
+  console.log("Update parola:", { userId, phoneNumber, code, newPassword });
+
+  if (!code || !newPassword || !confirmPassword) {
+    return res.status(400).json({ message: "Toate câmpurile sunt obligatorii!" });
+  }
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ message: "Parolele nu coincid!" });
+  }
+
+  if (!codes[phoneNumber] || codes[phoneNumber] !== code) {
+    return res.status(400).json({ message: "Cod invalid sau expirat!" });
+  }
+
+  try {
+      const apiResponse = await axios.put(
+      "http://localhost:8080/users/${userId}/password?newPassword=${encodeURIComponent(newPassword)}",
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+
+
+    console.log("Răspuns Spring Boot update parola:", apiResponse.data);
+
+    delete codes[phoneNumber]; // ștergem codul după succes
+
+    res.json({ success: true, message: "Parola a fost actualizată cu succes!" });
+  } catch (err) {
+    console.error("Eroare la update parola:", err.response?.data || err.message);
+    res.status(500).json({ success: false, message: "Eroare la actualizarea parolei!" });
+  }
+});
+
 
 
 
