@@ -10,7 +10,7 @@ body {
     padding: 0;
 }
 
-/* ------------------ HEADER ------------------ */
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -23,17 +23,17 @@ body {
     height: 60px;
 }
 
-/* ------------------ FORM CONTAINER ------------------ */
+
 .container {
     max-width: 850px;
     margin: 30px auto;
     background-color: #E18741;
     border-radius: 20px;
     padding: 40px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 25px #5365A8;
 }
 
-/* ------------------ LOGIN FORM ------------------ */
+
 .login-container {
     background-color: #E18741;
     width: 600px;
@@ -41,19 +41,19 @@ body {
     margin: 50px auto;
     padding: 60px;
     border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 20px #5365A8;
     text-align: center;
 }
 
-/* Titlu Login */
+
 .login-title {
     font-size: 32px;
     color: #4A59AA;
-    margin-bottom: 40px; /* Mai mult spațiu sub titlu */
+    margin-bottom: 40px; 
     font-weight: bold;
 }
 
-/* Grupurile de input */
+
 .login-form-group {
     display: flex;
     flex-direction: column;
@@ -61,7 +61,7 @@ body {
     margin: 35px 0 25px 0;
 }
 
-/* Label-urile */
+
 .login-form-group label {
     color: #4A59AA;
     font-size: 16px;
@@ -69,7 +69,7 @@ body {
     text-align: center;
 }
 
-/* Input-urile */
+
 .login-form-group input {
     width: 100%;
     padding: 16px 14px; 
@@ -86,11 +86,12 @@ body {
     box-shadow: 0 0 8px #8EBFE4;
 }
 
-/* Resetare parolă */
+
 .reset-password {
     margin: 15px 0 25px 0;
     text-align: center;
 }
+
 
 .reset-password a {
     color: #4A59AA;
@@ -99,7 +100,7 @@ body {
     cursor: pointer;
 }
 
-/* Termeni și condiții */
+
 .login-terms {
     display: flex;
     align-items: center;
@@ -118,12 +119,12 @@ body {
     font-size: 15px;
 }
 
-/* Buton Login */
+
 .login-btn {
     display: block;
     width: 80%;
-    margin: 30px auto 25px auto; /* Spațiu generos deasupra și dedesubt */
-    padding: 16px 0; /* Buton mai înalt */
+    margin: 30px auto 25px auto; 
+    padding: 16px 0; 
     background-color: #8EBFE4;
     color: #4A59AA;
     border: none;
@@ -135,11 +136,11 @@ body {
 }
 
 .login-btn:hover {
-    background-color: #7bb0d8;
+    background-color: #8EBFE4;
     transform: scale(1.05);
 }
 
-/* Secțiunea Register */
+
 .register-section {
     margin-top: 20px;
     font-size: 15px;
@@ -147,7 +148,7 @@ body {
     text-align: center;
 }
 
-/* Buton Register */
+
 .register-btn {
     display: block;
     margin: 15px auto;
@@ -168,8 +169,6 @@ body {
 }
 
 
-
-/* ------------------ REGISTER FORM ------------------ */
 .form-title {
     text-align: center;
     font-size: 28px;
@@ -196,7 +195,7 @@ label {
     font-size: 14px;
 }
 
-/* INPUTS REGISTER */
+
 input[type="text"],
 input[type="email"],
 input[type="tel"],
@@ -209,7 +208,7 @@ input[type="date"] {
     font-size: 14px;
 }
 
-/* ------------------ FOOTER ------------------ */
+
 .footer {
     display: flex;
     justify-content: space-between;
@@ -219,7 +218,7 @@ input[type="date"] {
 }
 
 
-/* ------------------ ERROR MESSAGE ------------------ */
+
 .error-message {
     display: none;
     color: red;
@@ -227,7 +226,7 @@ input[type="date"] {
     margin-top: 5px;
 }
 
-/* ------------------ EXTRA BUTTONS ------------------ */
+
 .with-button {
     display: flex;
     gap: 10px;
@@ -247,7 +246,7 @@ input[type="date"] {
 }
 
 .send-code-btn:hover {
-    background-color: #7bb0d8;
+    background-color: #8EBFE4;
     transform: scale(1.05);
 }
 
@@ -264,15 +263,15 @@ input[type="date"] {
     margin: 50px 0 25px 0;
 }
 
+
 .auth-container {
     background-color: #E18741;
     width: 600px;
     min-height: 620px;
-    /* margin: 80px  650px 80px; */
     margin: 80px auto 80px auto;
     padding: 60px;
     border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 20px #5365A8;
     text-align: center;
 }
 
@@ -333,15 +332,15 @@ input[type="date"] {
 }
 
 .login-btn {
-    background-color: #4A59AA;
-    color: white;
+    background-color: #8EBFE4;
+    color: #5365A8;
     border: none;
     border-radius: 5px;
 }
 
 .register-btn {
     background-color: #8EBFE4;
-    color: white;
+    color: #5365A8;
     border: none;
     border-radius: 5px;
 }
@@ -356,7 +355,7 @@ input[type="date"] {
     align-items: center;
 }
 
-/* ------------------ RESET PASSWORD ------------------ */
+
 .reset-form-group {
     display: flex;
     flex-direction: column;
@@ -367,47 +366,53 @@ input[type="date"] {
     background-color: #E18741;
     width: 600px;
     min-height: 620px;
-    /* margin: 80px  650px 80px; */
     margin: 80px auto 80px auto;
     padding: 60px;
     border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 20px #5365A8;
     text-align: center;
 }
 
-/* Spațiu între câmpurile din formularul de resetare */
-.reset-form-group {
-    margin-bottom: 40px; /* creează mai mult spațiu între Email și Phone Number */
+.title {
+    font-size: 32px;
+    color: #4A59AA;
+    margin-bottom: 40px;
+    font-weight: bold;
 }
 
-/* Spațiu suplimentar sub titlu */
+.reset-form-group {
+    margin-bottom: 40px; 
+}
+
+
 .reset-container .title {
     margin-bottom: 50px;
     display: block;
     text-align: center;
+    color: #5365A8;
 }
 
-/* Centrăm câmpul pentru numărul de telefon */
 .with-button-reset {
     display: flex;
-    justify-content: center;  /* Centrează selectul și inputul pe orizontală */
-    gap: 15px;                /* Spațiu între codul țării și input */
+    justify-content: center;  
+    gap: 15px;                
     margin-top: 10px;
 }
 
-/* Lățimea pentru select și input ca să arate simetric */
+
 .with-button-reset select,
 .with-button-reset input {
     padding: 10px;
     font-size: 16px;
     border-radius: 8px;
     border: 1px solid #ccc;
+
 }
 
-/* Coborâm butonul mai jos */
+
 .button-group {
     margin-top: 90px;   
     display: flex;
-    justify-content: center; /* Centrează butonul */
+    justify-content: center; 
 }
 

@@ -9,7 +9,7 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
-// --- Nodemailer (Email) ---
+//Email transmission 
 const emailUser = "appt31205@gmail.com";
 const emailPass = "gvvz sina lejt lpqd";
 
@@ -18,21 +18,21 @@ const transporter = nodemailer.createTransport({
   auth: { user: emailUser, pass: emailPass },
 });
 
-// --- SMSO API v1 ---
+// SMS transmission
 const SMSO_API_URL = "https://app.smso.ro/api/v1/send";
 const SMSO_API_KEY = "mTr3xmoP3M9usuncicnqdD57DbxHlXWTpz4uePpz";
-const SENDER_ID = "4"; // poate fi orice ID valid din cont
+const SENDER_ID = "4"; 
 
-// --- Stocare coduri temporar ---
-let codes = {}; // { "email sau telefon": "cod" }
+// Codes TEMPORARY Store
+let codes = {}; 
 
 
-
+//============Registration============
 app.post("/register", async (req, res) => {
   const { firstName, secondName, email, phoneNumber, username, password, birthDate, role, status } = req.body;
 
   if (!firstName || !secondName || !email || !phoneNumber || !username || !password || !birthDate || !role || !status) {
-    return res.status(400).json({ message: "Completează toate câmpurile!" });
+    return res.status(400).json({ message: "All fields are required!" });
   }
 
   const apiPayload = {
@@ -52,27 +52,27 @@ app.post("/register", async (req, res) => {
       headers: { "Content-Type": "application/json" }
     });
 
-    console.log("Răspuns de la API extern:", apiResponse.data);
+    console.log("Answer from API:", apiResponse.data);
 
-    // Extragem userId din răspunsul API-ului extern
     const userId = apiResponse.data.userId;
 
-    // Returnăm și userId către frontend
     res.status(200).json({
-      message: "Datele au fost trimise cu succes către API-ul extern!",
+      message: "Data sent successfully!",
       userId: apiResponse.data.message
     });
 
   } catch (err) {
-    console.error("Eroare la conectarea cu API-ul extern:", err.response?.data || err.message);
-    res.status(500).json({ message: "Eroare la trimiterea datelor către API-ul extern!" });
+    console.error("Error connect to API", err.response?.data || err.message);
+    res.status(500).json({ message: "Error sending data to API!" });
   }
 });
 
+
+//===Security Questions===
 app.post("/security_questions", async (req, res) => {
   const { userId, sec_quest, response } = req.body;
   if (!userId || !sec_quest || !response) {
-    return res.status(400).json({ message: "Toate câmpurile sunt obligatorii!" });
+    return res.status(400).json({ message: "All fields are required!" });
   }
 
   try {
@@ -86,16 +86,16 @@ app.post("/security_questions", async (req, res) => {
 
     res.status(200).json(apiResponse.data);
   } catch (err) {
-    console.error("Eroare la trimiterea întrebării de securitate:", err.response?.data || err.message);
-    res.status(500).json({ message: "Eroare la trimiterea întrebării de securitate!" });
+    console.error("Error sent security question:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error sending security question!" });
   }
 });
 
 
-
+// === Sent Email Code ===
 app.post("/sendEmailCode", async (req, res) => {
   const { email } = req.body;
-  if (!email) return res.status(400).json({ message: "Email-ul este obligatoriu!" });
+  if (!email) return res.status(400).json({ message: "Email is necessary" });
 
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   codes[email] = code;
@@ -104,25 +104,25 @@ app.post("/sendEmailCode", async (req, res) => {
     await transporter.sendMail({
       from: emailUser,
       to: email,
-      subject: "Codul tău de validare",
-      text: `Codul tău de validare este: ${code}`,
+      subject: "Validation code ",
+      text: `The validation code is: ${code}`,
     });
 
-    console.log(`Cod email trimis către ${email}: ${code}`);
-    res.json({ message: "Cod trimis cu succes pe email!" });
+    console.log(`Email code sent to ${email}: ${code}`);
+    res.json({ message: "Code successfully sent to email!" });
   } catch (err) {
-    console.error("Eroare la trimiterea email-ului:", err);
-    res.status(500).json({ message: "Eroare la trimiterea email-ului" });
+    console.error("Error sending email", err);
+    res.status(500).json({ message: "Error sending email" });
   }
 });
 
-// === Trimitere cod pe SMS (SMSO API v1) ===
+// === Sending SMS ===
 app.post("/sendSMSCode", async (req, res) => {
-    console.log("Body primit la backend:", req.body);
+    console.log("Body received at the backend:", req.body);
     const { phoneNumber } = req.body;
     if (!phoneNumber) {
-        console.log("Număr telefon gol!");
-        return res.status(400).json({ message: "Telefonul este obligatoriu!" });
+        console.log("Empty phone number!");
+        return res.status(400).json({ message: "The phone number is required!" });
     }
 
   const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -131,7 +131,7 @@ app.post("/sendSMSCode", async (req, res) => {
   const params = new URLSearchParams();
   params.append("sender", SENDER_ID);
   params.append("to", phoneNumber);
-  params.append("body", `Codul tău de validare este: ${code}`);
+  params.append("body", `Validation code: ${code}`);
 
   try {
     const response = await axios.post(SMSO_API_URL, params, {
@@ -141,21 +141,21 @@ app.post("/sendSMSCode", async (req, res) => {
       },
     });
 
-    console.log("Răspuns SMSO:", response.data);
-    res.json({ message: "Cod SMS trimis cu succes!" });
+    console.log("SMSO response:", response.data);
+    res.json({ message: "SMS code sent successfully!" });
   } catch (err) {
-    console.error("Eroare SMSO:", err.response?.data || err.message);
-    res.status(500).json({ message: "Eroare la trimiterea SMS-ului" });
+    console.error("Error SMSO:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error sending SMSO" });
   }
 });
 
-// === Verificare cod ===
+// === Code validation ===
 app.post("/verifyCode", (req, res) => {
-  const { identifier, code } = req.body; // identifier = email sau telefon
+  const { identifier, code } = req.body; 
   if (codes[identifier] && codes[identifier] === code) {
-    return res.json({ success: true, message: "Cod valid!" });
+    return res.json({ success: true, message: "Valide code" });
   }
-  res.json({ success: false, message: "Cod invalid!" });
+  res.json({ success: false, message: "Invalid code" });
 });
 
 
@@ -163,57 +163,42 @@ app.post("/verifyCode", (req, res) => {
 // === Login ===
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-
   if (!username || !password) {
-    return res.status(400).json({ message: "Username și parola sunt obligatorii!" });
+    return res.status(400).json({ message: "All fields are required!" });
   }
-
   try {
-    // 1️⃣ Trimite datele către API-ul extern pentru login
     const loginResponse = await axios.post("http://localhost:8080/auth/login", { username, password }, {
       headers: { "Content-Type": "application/json" }
     });
-
-    // 🔹 Preluăm token-ul din câmpul accessToken
     const accessToken = loginResponse.data.accessToken;
     const userId = loginResponse.data.idUser;
-
-    console.log("Login reușit, accessToken:", accessToken, "userId:", userId);
-
-   // 2️⃣ Folosește userId pentru a obține lista de email-uri
+    console.log("Login successfull, accessToken:", accessToken, "userId:", userId);
     const userResponse = await axios.get(`http://localhost:8080/emails/${userId}`, {
       headers: { "Content-Type": "application/json" }
     });
-
     const emails = userResponse.data;
     let email = null;
-
     if (emails && emails.length > 0) {
-      email = emails[emails.length - 1]; // ia ULTIMUL email
+      email = emails[emails.length - 1]; 
     }
-
     if (!email) {
-      return res.status(500).json({ message: "Nu a fost găsit niciun email pentru utilizator!" });
+      return res.status(500).json({ message: "No email found for the user!!" });
     }
-    console.log("Email ales:", email);
-
-
-    
+    console.log("Email:", email);    
     await transporter.sendMail({
       from: emailUser,
       to: email,
-      subject: "Token-ul tău de autentificare",
-      text: `Token-ul tău este: ${accessToken}`,
+      subject: "Authentication Token",
+      text: `Token: ${accessToken}`,
     });
-
-    console.log(`Token trimis pe email către ${email}`);
+    console.log(`Token sendiong to ${email}`);
 
     
     res.status(200).json({ token: accessToken });
 
   } catch (err) {
-    console.error("Eroare la login sau trimitere email:", err.response?.data || err.message);
-    res.status(401).json({ message: "Username sau parola incorectă!" });
+    console.error("Error login or sending email:", err.response?.data || err.message);
+    res.status(401).json({ message: "Incorrect username or password!" });
   }
 });
 
@@ -221,16 +206,12 @@ app.post("/login", async (req, res) => {
 //==========Authorization==========
 app.post("/verifyToken", async (req, res) => {
   const { token } = req.body;
-
   if (!token) {
-    return res.status(400).json({ success: false, message: "Token lipsă!" });
+    return res.status(400).json({ success: false, message: "Empty token!" });
   }
-
   try {
-    // Apel către Spring Boot /session/validate
     const response = await axios.post("http://localhost:8080/session/validate", { token });
-
-    console.log("Răspuns Spring Boot:", response.data);
+    console.log("Serber response:", response.data);
 
     res.json({
       success: true,
@@ -239,52 +220,47 @@ app.post("/verifyToken", async (req, res) => {
       userId: response.data.userId
     });
   } catch (err) {
-    console.error("Eroare verificare token:", err.response?.data || err.message);
-    res.status(401).json({ success: false, message: "Token invalid sau expirat!" });
+    console.error("Error token varification:", err.response?.data || err.message);
+    res.status(401).json({ success: false, message: "Invalid token" });
   }
 });
 
 //==========Reset Password==========
-
 app.post("/reset-password", async (req, res) => {
   const { email, phoneNumber } = req.body;
 
   if (!phoneNumber || !email) {
-    return res.status(400).json({ message: "Telefonul și email-ul sunt obligatorii!" });
+    return res.status(400).json({ message: "All fields are required!" });
   }
 
   try {
-    // 🔹 Căutăm utilizatorul după telefon în Spring Boot
     const url = `http://localhost:8080/users/search/phone?phoneNumber=${phoneNumber}`;
     const userResponse = await axios.get(url);
     const user = userResponse.data;
     if (!user || !user.idUser) {
-      return res.status(404).json({ message: `Utilizatorul cu numărul ${phoneNumber} nu a fost găsit.` });
+      return res.status(404).json({ message: `User with phone number ${phoneNumber} not found!.` });
     }
-
-    // 🔹 Generăm cod și îl trimitem pe email
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     codes[phoneNumber] = code;
-
     await transporter.sendMail({
       from: emailUser,
       to: email,
-      subject: "Cod resetare parolă",
-      text: `Codul tău pentru resetarea parolei este: ${code}`,
+      subject: "Reset password code!",
+      text: `reset password code: ${code}`,
     });
 
-    console.log(`✅ Cod resetare trimis la ${email} pentru userId ${user.idUser}: ${code}`);
+    console.log(`Sending code to ${email} for userId ${user.idUser}: ${code}`);
 
     res.status(200).json({ 
-    message: "Cod trimis cu succes pe email!",
+    message: "Sendiing code to email was successful!",
     userId: user.idUser,
-    phoneNumber: phoneNumber,  // trimitem și telefonul
-    email: email               // păstrăm doar pentru trimitere mail
+    phoneNumber: phoneNumber,  
+    email: email               
   });
 
   } catch (err) {
-    console.error("Eroare la reset-password:", err.response?.data || err.message);
-    res.status(500).json({ message: "Eroare la trimiterea codului de resetare!" });
+    console.error("Error reset-password:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error sendin reset paSSWORD code!" });
   }
 });
 

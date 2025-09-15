@@ -17,7 +17,6 @@
         <h1 class="form-title">Register</h1>
         <form id="registrationForm">
             <div class="form-grid">
-                <!-- Name Fields -->
                 <div class="form-group">
                     <label for="firstName">First Name</label>
                     <input type="text" id="firstName" name="firstName" required>
@@ -29,7 +28,6 @@
                     <div class="error-message" id="secondNameError">The Second Name is necessary!</div>
                 </div>
 
-                <!-- Email & Validation Code -->
                 <div class="form-group">
                     <label for="email">Email</label>
                     <div class="with-button">
@@ -44,7 +42,7 @@
                     <div class="error-message" id="validationEmailError">The code is wrong!</div>
                 </div>
 
-                <!-- Phone & Validation Code -->
+ 
                 <div class="form-group">
                     <label for="phoneNumber">Phone Number</label>
                     <div class="with-button">
@@ -65,7 +63,7 @@
                     <div class="error-message" id="validationPhoneError">The validation code is wrong!</div>
                 </div>
 
-                <!-- Username & Password -->
+
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" pattern="[A-Za-z0-9]*" required>
@@ -77,14 +75,14 @@
                     <div class="error-message" id="passwordError">The password must have at least 6 characters!</div>
                 </div>
 
-                <!-- Birth Date -->
+    
                 <div class="form-group">
                     <label for="birthDate">Birth Date</label>
                     <input type="date" id="birthDate" name="birthDate" required>
                     <div class="error-message" id="birthDateError">The birth date is necessary!</div>
                 </div>
 
-                <!-- Role -->
+        
                 <div class="role-section">
                     <span class="role-label">Role</span>
                     <div class="radio-group">
@@ -97,7 +95,6 @@
                     </div>
                 </div>
 
-                <!-- Terms -->
                 <div class="terms-section">
                     <input type="checkbox" id="terms" name="terms" required>
                     <label for="terms" class="terms-label">I have read the terms and conditions!</label>
@@ -138,7 +135,7 @@
     </div>
 
 <script>
-    // --- Trimitere cod email ---
+
     async function sendEmailCode() {
         const email = document.getElementById('email').value.trim();
         if (!email) { alert("Completează email-ul!"); return; }
@@ -162,16 +159,16 @@
     const countryCode = document.getElementById('countryCode').value;
     const phoneInput = document.getElementById('phoneNumber').value.trim();
 
-    // Verificăm să nu fie gol
+
     if (!phoneInput) {
         alert("Completează telefonul!");
         return;
     }
 
-    // Scoatem eventualul 0 de la început
+
     let phoneNumber = phoneInput.startsWith("0") ? countryCode + phoneInput.slice(1) : countryCode + phoneInput;
 
-    console.log("Număr trimis la backend:", phoneNumber); // Debug
+    // console.log("Număr trimis la backend:", phoneNumber); 
 
     try {
         const res = await fetch("http://localhost:3001/sendSMSCode", {
@@ -209,7 +206,6 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
     document.querySelectorAll('.error-message').forEach(el => el.style.display='none');
     let isValid = true;
 
-    // --- Extragem valorile din input-uri ---
     const firstName = document.getElementById('firstName').value.trim();
     const secondName = document.getElementById('secondName').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -222,10 +218,8 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
     const birthDate = document.getElementById('birthDate').value;
     const roleInput = document.querySelector('input[name="role"]:checked').value;
 
-    // --- Formăm numărul complet ---
     const phoneNumber = phoneInput.startsWith("0") ? countryCode + phoneInput.slice(1) : countryCode + phoneInput;
 
-    // --- Validări simple ---
     if (!firstName) { document.getElementById('firstNameError').style.display='block'; isValid=false; }
     if (!secondName) { document.getElementById('secondNameError').style.display='block'; isValid=false; }
     if (!email) { document.getElementById('emailError').style.display='block'; isValid=false; }
@@ -234,7 +228,7 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
     if (!password || password.length < 6) { document.getElementById('passwordError').style.display='block'; isValid=false; }
     if (!birthDate) { document.getElementById('birthDateError').style.display='block'; isValid=false; }
 
-    // --- Verificare coduri email și SMS ---
+
     if (isValid) {
         const emailValid = await verifyCode(email, validationEmail);
         if (!emailValid) { document.getElementById('validationEmailError').style.display='block'; isValid=false; }
@@ -269,10 +263,10 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
         const data = await res.json();
 
         if (res.ok) {
-            const userId = data.userId;  // acum e "U00028"
+            const userId = data.userId;  
             console.log("User ID generat:", userId);
 
-            // --- Extragem întrebările de securitate ---
+
             const securityQuestions = [
                 {
                     question: document.getElementById('sec_quest1').value.trim(),
@@ -284,13 +278,12 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
                 }
             ];
 
-            // --- Trimitem fiecare întrebare ---
             for (const sq of securityQuestions) {
                 await fetch("http://localhost:3001/security_questions", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        userId, // aici va ajunge "U00028"
+                        userId, 
                         sec_quest: sq.question,
                         response: sq.answer
                     })
