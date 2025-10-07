@@ -457,3 +457,14 @@ textarea {
     box-shadow: 0 8px 20px #5365A8;
     text-align: center;
 }
+
+.profile-container {
+    background-color: #E18741;
+    width: 1400px;
+    height: 700px;
+    margin: 50px auto;
+    padding: 60px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px #5365A8;
+    text-align: center;
+}

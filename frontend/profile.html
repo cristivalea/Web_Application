@@ -1,0 +1,210 @@
+<!-- <!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization</title>
+    <link rel="stylesheet" href="../frontend/style/style.css">
+</head>
+<body>
+   <div class="header">
+        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+    </div>
+
+    <div class="profile-container">
+        <h1 class="title">Me Profile</h1>
+    
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 ITLabs. All rights reserved.</p>
+        <a href="../frontend/feedback.html" class="feedback">Feedback</a>
+        <a href="../frontend/contact.html" class="contact">Contact Information</a>
+    </div>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil utilizator</title>
+  <link rel="stylesheet" href="../frontend/style/style.css">
+  <style>
+    .profile-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .profile-container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .profile-group {
+      margin-bottom: 15px;
+    }
+    .profile-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    .profile-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .profile-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .profile-buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+    }
+    .save-btn { background: #4caf50; }
+    .logout-btn { background: #e53935; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+    <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
+    <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+  </div>
+
+  <div class="profile-container">
+    <h1>Profil Utilizator</h1>
+
+    <form id="profileForm">
+      <div class="profile-group">
+        <label for="userId">User ID</label>
+        <input type="text" id="userId" name="userId" readonly>
+      </div>
+
+      <div class="profile-group">
+        <label for="firstName">Prenume</label>
+        <input type="text" id="firstName" name="firstName" required>
+      </div>
+
+      <div class="profile-group">
+        <label for="secondName">Nume</label>
+        <input type="text" id="secondName" name="secondName" required>
+      </div>
+
+      <div class="profile-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" readonly>
+      </div>
+
+      <div class="profile-group">
+        <label for="role">Rol</label>
+        <input type="text" id="role" name="role" readonly>
+      </div>
+
+      <div class="profile-group">
+        <label for="status">Status</label>
+        <input type="text" id="status" name="status" readonly>
+      </div>
+
+      <div class="profile-buttons">
+        <button type="submit" class="save-btn">Salvează modificări</button>
+        <button type="button" class="logout-btn" id="logoutBtn">Logout</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 ITLabs. All rights reserved.</p>
+    <a href="../frontend/feedback.html" class="feedback">Feedback</a>
+    <a href="../frontend/contact.html" class="contact">Contact Information</a>
+  </div>
+
+  <script>
+    // =============================
+    // 1️⃣ Obține userId din tokenul salvat
+    // =============================
+    async function getUserProfile() {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        alert("Nu ești logat!");
+        window.location.href = "../frontend/login.html";
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3001/profile/${userId}`);
+        const user = await response.json();
+
+        document.getElementById("userId").value = user.idUser;
+        document.getElementById("firstName").value = user.firstName;
+        document.getElementById("secondName").value = user.secondName;
+        document.getElementById("email").value = user.email;
+        document.getElementById("role").value = user.role;
+        document.getElementById("status").value = user.status;
+      } catch (err) {
+        console.error("Eroare la obținerea profilului:", err);
+        alert("Eroare la încărcarea profilului!");
+      }
+    }
+
+    // =============================
+    // 2️⃣ Actualizare profil
+    // =============================
+    document.getElementById("profileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const userId = document.getElementById("userId").value;
+      const firstName = document.getElementById("firstName").value;
+      const secondName = document.getElementById("secondName").value;
+
+      try {
+        await fetch(`http://localhost:3001/profile/${userId}/first-name`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newName: firstName }),
+        });
+
+        await fetch(`http://localhost:3001/profile/${userId}/second-name`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newName: secondName }),
+        });
+
+        alert("Profil actualizat cu succes!");
+      } catch (err) {
+        console.error("Eroare la actualizare:", err);
+        alert("Eroare la actualizarea profilului!");
+      }
+    });
+
+    // =============================
+    // 3️⃣ Logout
+    // =============================
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
+      window.location.href = "../frontend/login.html";
+    });
+
+    // =============================
+    // 4️⃣ Încarcă profilul automat
+    // =============================
+    window.addEventListener("DOMContentLoaded", getUserProfile);
+  </script>
+
+</body>
+</html>

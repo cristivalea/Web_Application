@@ -194,7 +194,13 @@ app.post("/login", async (req, res) => {
     console.log(`Token sendiong to ${email}`);
 
     
-    res.status(200).json({ token: accessToken });
+    // res.status(200).json({ 
+    //   token: accessToken });
+
+    res.status(200).json({ 
+      token: accessToken,
+      userId: userId  
+    });
 
   } catch (err) {
     console.error("Error login or sending email:", err.response?.data || err.message);
@@ -313,4 +319,24 @@ app.post("/update-password", async (req, res) => {
 
 app.listen(3001, () => {
   console.log("✅ Server pornit pe http://localhost:3001");
+});
+
+// Get user profile by ID
+app.get("/profile/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required!" });
+  }
+
+  try {
+    const response = await axios.get(`http://localhost:8080/users/${userId}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+
+    res.status(200).json(response.data);
+  } catch (err) {
+    console.error("Error fetching profile:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error fetching user profile!" });
+  }
 });

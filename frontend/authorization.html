@@ -52,9 +52,8 @@
         alert(data.message);
 
         if (data.success) {
-          // redirect spre dashboard sau aplicația principală
-        //   window.location.href = "dashboard.html";
-        alert("Token valid! Redirecting to dashboard...");
+        window.location.href = "profile.html";
+        alert("Token valid! Redirecting to profile...");
         }
       } catch (err) {
         console.error("Eroare la verificare token:", err);

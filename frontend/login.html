@@ -56,7 +56,7 @@
         <a href="../frontend/contact.html" class="contact">Contact Information</a>
     </div>
 
-    <script>
+    <!-- <script>
   const form = document.getElementById("loginForm");
 
   form.addEventListener("submit", async (e) => {
@@ -80,7 +80,50 @@
       alert("A apărut o eroare la login.");
     }
   });
+</script> -->
+
+<script>
+  const form = document.getElementById("loginForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const response = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!response.ok) {
+        throw new Error("Eroare la autentificare");
+      }
+
+     const data = await response.json();
+    console.log("Răspuns backend login:", data);
+
+      if (data.userId && data.token) {
+
+        localStorage.setItem("userId", data.userId);
+
+        sessionStorage.setItem("serverToken", data.token);
+
+        alert("Autentificare reușită! Introdu tokenul pentru verificare.");
+        window.location.href = "../frontend/authorization.html";
+      } else {
+        alert("Datele de autentificare nu sunt valide.");
+      }
+
+    } catch (err) {
+      console.error("Eroare la login:", err);
+      alert("A apărut o eroare la login.");
+    }
+  });
 </script>
+
 
 </body>
 </html>
