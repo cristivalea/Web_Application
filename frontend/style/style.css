@@ -459,12 +459,47 @@ textarea {
 }
 
 .profile-container {
-    background-color: #E18741;
-    width: 1400px;
-    height: 700px;
-    margin: 50px auto;
-    padding: 60px;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px #5365A8;
-    text-align: center;
+  background-color: #E18741;
+  width: 1400px;
+  height: 700px;
+  margin: 50px auto;
+  padding: 60px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px #5365A8;
+  text-align: center;
+}
+
+#profileForm {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 25px;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-group {
+  display: flex;
+  flex-direction: row;  
+  align-items: center;
+  gap: 10px;
+  background: transparent; 
+  padding: 0;              
+  border-radius: 0;
+}
+
+
+label {
+  font-weight: 600;
+  color: #2B4FA1; 
+  font-size: 16px;
+}
+
+.profile-value {
+  color: #2B4FA1;
+  font-size: 16px;
+  font-weight: 500;
+  background: none;      
+  border: none;          
+  padding: 0;
+  margin: 0;
 }

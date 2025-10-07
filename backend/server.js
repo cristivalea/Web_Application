@@ -199,7 +199,8 @@ app.post("/login", async (req, res) => {
 
     res.status(200).json({ 
       token: accessToken,
-      userId: userId  
+      userId: userId,
+      emails: emails  
     });
 
   } catch (err) {
@@ -314,14 +315,6 @@ app.post("/update-password", async (req, res) => {
   }
 });
 
-
-
-
-app.listen(3001, () => {
-  console.log("✅ Server pornit pe http://localhost:3001");
-});
-
-// Get user profile by ID
 app.get("/profile/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -339,4 +332,9 @@ app.get("/profile/:userId", async (req, res) => {
     console.error("Error fetching profile:", err.response?.data || err.message);
     res.status(500).json({ message: "Error fetching user profile!" });
   }
+});
+
+
+app.listen(3001, () => {
+  console.log("✅ Server pornit pe http://localhost:3001");
 });

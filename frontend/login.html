@@ -107,8 +107,8 @@
 
       if (data.userId && data.token) {
 
-        localStorage.setItem("userId", data.userId);
-
+         localStorage.setItem("userId", data.userId);
+        localStorage.setItem("emails", JSON.stringify(data.emails)); 
         sessionStorage.setItem("serverToken", data.token);
 
         alert("Autentificare reușită! Introdu tokenul pentru verificare.");
