@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Security Question</title>
+    <link rel="stylesheet" href="../frontend/style/style.css">
+</head>
+<body>
+    <div class="header">
+        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+    </div>
+
+    <div class="secQuest-container">
+        <h1 class="title">Delete Security Question</h1>
+
+        <form id="profileForm">
+           <div class="profile-group">
+                <label style="color:#5365A8;">Security Questions:</label>
+                <div id="secQuestList"></div>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 ITLabs. All rights reserved.</p>
+        <a href="../frontend/feedback.html" class="feedback">Feedback</a>
+        <a href="../frontend/contact.html" class="contact">Contact Information</a>
+    </div>
+
+    <script>
+        async function loadSecurityQuestions() {
+        const userId = localStorage.getItem("userId");
+        const listEl = document.getElementById("secQuestList");
+
+        try {
+            const response = await fetch(`http://localhost:3001/getActiveSecurityQuestions/${userId}`);
+            const questions = await response.json();
+
+            listEl.innerHTML = ""; 
+
+            if (!questions.length) {
+            const li = document.createElement("li");
+            li.textContent = "Nu există întrebări de securitate active.";
+            li.style.color = "#5365A8";
+            li.style.fontWeight = "500";
+            li.style.listStyleType = "none";
+            li.style.margin = "5px 0";
+            listEl.appendChild(li);
+            return;
+            }
+
+            questions.forEach(q => {
+            const container = document.createElement("div");
+            container.style.display = "flex";
+            container.style.alignItems = "center";
+            container.style.margin = "5px 0";
+            container.style.color = "#5365A8"; 
+
+            const span = document.createElement("span");
+            span.textContent = q.member1; 
+
+            const btn = document.createElement("button");
+            btn.textContent = "Delete";
+            btn.style.marginLeft = "10px";
+            btn.classList.add("add-secQuest-btn"); 
+            btn.style.marginLeft = "10px";
+
+        btn.onclick = async () => {
+            if (!confirm("Sigur vrei să ștergi această întrebare?")) return;
+
+            try {
+            const res = await fetch(
+                `http://localhost:3001/deleteSecurityQuestion?userId=${userId}&question=${q.member1}`,
+                { method: "DELETE" }
+            );
+            const data = await res.json();
+            alert(data.message);
+
+            await loadSecurityQuestions();
+            } catch (err) {
+            console.error("Error deleting question:", err);
+            alert("Eroare la ștergerea întrebării!");
+            }
+        };
+
+        container.appendChild(span);
+        container.appendChild(btn);
+        secQuestList.appendChild(container);
+        });
+
+        } catch (err) {
+            console.error("Error loading security questions:", err);
+            listEl.innerHTML = "<li>Eroare la încărcarea întrebărilor!</li>";
+        }
+        }
+
+        // Apelăm funcția la încărcarea paginii
+        window.addEventListener("DOMContentLoaded", loadSecurityQuestions);
+    </script>
+</body>
+</html>

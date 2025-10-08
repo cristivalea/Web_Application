@@ -560,3 +560,24 @@ label {
   margin-top: 40px;
   transition: background-color 0.2s ease;
 }
+
+.secQuest-container {
+  background-color: #E18741;
+  width: 900px;
+  height: 500px;
+  margin: 50px auto;
+  padding: 60px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px #5365A8;
+  text-align: center;
+}
+
+.secQuest-group {
+  display: flex;
+  flex-direction: row;  
+  align-items: left;
+  gap: 5px;
+  background: transparent; 
+  padding: 0;              
+  border-radius: 0;
+}

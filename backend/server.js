@@ -396,6 +396,48 @@ app.post("/addNewSecurityQuestion", async (req, res) => {
   }
 });
 
+// === Get Active Security Questions ===
+app.get("/getActiveSecurityQuestions/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const response = await axios.get(`http://localhost:8080/security_questions/${userId}`);
+    // Filtrăm doar întrebările ACTIVE
+    const activeQuestions = response.data.filter(q => q.status === "ACTIVE");
+    res.json(activeQuestions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching security questions" });
+  }
+});
+
+
+// === Delete (Deactivate) Specific Security Question ===
+app.delete("/deleteSecurityQuestion", async (req, res) => {
+  try {
+    const { userId, question } = req.query; // preluăm din query
+
+    if (!userId || !question) {
+      return res.status(400).json({ message: "userId și question sunt necesare!" });
+    }
+
+    console.log(`🗑️ Ștergere întrebare pentru userId=${userId}, question=${question}`);
+
+    // URL exact pentru Spring Boot
+    const url = `http://localhost:8080/security_questions/delete?userId=${encodeURIComponent(userId)}&question=${encodeURIComponent(question)}`;
+
+    const springResponse = await axios.delete(url, {
+      headers: { "Content-Type": "application/json" }
+    });
+
+    console.log("✅ Răspuns Spring Boot:", springResponse.data);
+
+    res.status(200).json({ message: "Întrebare ștearsă cu succes!" });
+  } catch (err) {
+    console.error("❌ Eroare la ștergerea întrebării:", err.response?.data || err.message);
+    res.status(500).json({ message: "Eroare la ștergerea întrebării!" });
+  }
+});
+
 
 
 app.listen(3001, () => {
