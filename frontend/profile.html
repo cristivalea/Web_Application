@@ -47,6 +47,7 @@
           <ul id="emailList"></ul>
         </div>
     </form>
+    <button id="addEmailBtn" class="add-email-btn">Adaugă un email nou</button>
   </div>
 
   <div class="footer">
@@ -81,7 +82,7 @@
             if (emails.length === 0) {
               const li = document.createElement("li");
               li.textContent = "Nu există emailuri asociate acestui cont.";
-              li.style.color = "#2B4FA1";
+              li.style.color = "#5365A8";
               li.style.fontWeight = "500";
               li.style.listStyleType = "none";
               li.style.margin = "5px 0";
@@ -90,7 +91,7 @@
               emails.forEach(email => {
                 const li = document.createElement("li");
                 li.textContent = email;
-                li.style.color = "#2B4FA1";
+                li.style.color = "#5365A8";
                 li.style.fontWeight = "500";
                 li.style.listStyleType = "none";
                 li.style.margin = "5px 0";
@@ -130,6 +131,9 @@
         });
 
         window.addEventListener("DOMContentLoaded", getUserProfile);
+        document.getElementById("addEmailBtn").addEventListener("click", () => {
+          window.location.href = "../frontend/add_new_email_address.html";
+        });
     </script>
   </body>
 </html>

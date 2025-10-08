@@ -334,6 +334,36 @@ app.get("/profile/:userId", async (req, res) => {
   }
 });
 
+// === Add new email ===
+app.post("/addEmail", async (req, res) => {
+  const { userId, newEmail } = req.body;
+
+  if (!userId || !newEmail) {
+    return res.status(400).json({ message: "User ID and email are required!" });
+  }
+
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/emails",
+      {
+        address: newEmail, 
+        userId: userId
+      },
+      {
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+
+    console.log("✅ Email added successfully:", response.data);
+    res.status(200).json({ message: "Email added successfully!", data: response.data });
+
+  } catch (err) {
+    console.error("❌ Error adding email:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error adding email!" });
+  }
+});
+
+
 
 app.listen(3001, () => {
   console.log("✅ Server pornit pe http://localhost:3001");
