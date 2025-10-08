@@ -358,8 +358,41 @@ app.post("/addEmail", async (req, res) => {
     res.status(200).json({ message: "Email added successfully!", data: response.data });
 
   } catch (err) {
-    console.error("❌ Error adding email:", err.response?.data || err.message);
+    console.error(" Error adding email:", err.response?.data || err.message);
     res.status(500).json({ message: "Error adding email!" });
+  }
+});
+
+// === Add new security question ===
+app.post("/addNewSecurityQuestion", async (req, res) => {
+  const { userId, sec_quest, response } = req.body;
+
+  if (!userId || !sec_quest || !response) {
+    return res.status(400).json({ message: "User ID, security question and response are required!" });
+  }
+
+  try {
+    const axios_response = await axios.post(
+      "http://localhost:8080/security_questions",
+      {
+        userId: userId,
+        sec_quest: sec_quest,
+        response: response
+      },
+      {
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+
+    console.log("Security Question added successfully:", axios_response.data);
+    res.status(200).json({
+      message: "Security Question added successfully!",
+      data: axios_response.data
+    });
+
+  } catch (err) {
+    console.error("Error adding security question:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error adding security question!" });
   }
 });
 

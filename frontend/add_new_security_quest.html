@@ -13,16 +13,21 @@
         <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
     </div>
 
-    <div class="add-email-container">
-        <h1 class="title">Adaugă o nouă adresă de email</h1>
+    <div class="add-secQuest-container">
+        <h1 class="title">Add New Security Question</h1>
 
-        <form id="addEmailForm">
+        <form id="addNewSecurityQuestionForm">
             <div class="auth-form-group">
-                <label for="newEmail">Adresă de email nouă:</label>
-                <input type="email" id="newEmail" name="newEmail" required>
+                <label for="secQuest">Security Question:</label>
+                <input type="text" id="secQuest" name="secQuest" required>
             </div>
 
-            <button type="submit" class="auth-btn">Adaugă email</button>
+            <div class="auth-form-group">
+                <label for="response">Response:</label>
+                <input type="text" id="response" name="response" required>
+            </div>
+
+            <button type="submit" class="add-secQuest-btn">Add New Security Question</button>
         </form>
     </div>
 
@@ -33,29 +38,31 @@
     </div>
 
     <script>
-        document.getElementById("addEmailForm").addEventListener("submit", async (e) => {
+        document.getElementById("addNewSecurityQuestionForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const newEmail = document.getElementById("newEmail").value;
+        const sec_quest = document.getElementById("secQuest").value;
+        const responseText = document.getElementById("response").value;
         const userId = localStorage.getItem("userId");
 
         if (!userId) {
-            alert("Trebuie să fii autentificat pentru a adăuga un email!");
+            alert("Trebuie să fii autentificat pentru a adăuga o întrebare de securitate!");
             return;
         }
 
         try {
-            const response = await fetch("http://localhost:3001/addEmail", {
+            const res = await fetch("http://localhost:3001/addNewSecurityQuestion", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, newEmail })
+            body: JSON.stringify({ userId, sec_quest, response: responseText })
             });
 
-            const data = await response.json();
+            const data = await res.json();
 
-            if (response.ok) {
-            alert("Email adăugat cu succes!");
-            document.getElementById("newEmail").value = "";
+            if (res.ok) {
+            alert("Security Question added successfully!");
+            document.getElementById("secQuest").value = "";
+            document.getElementById("response").value = "";
             } else {
             alert("Eroare: " + data.message);
             }
@@ -66,6 +73,5 @@
         }
         });
     </script>
-
 </body>
 </html>
