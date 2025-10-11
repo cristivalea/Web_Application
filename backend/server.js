@@ -401,8 +401,7 @@ app.get("/getActiveSecurityQuestions/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
     const response = await axios.get(`http://localhost:8080/security_questions/${userId}`);
-    // Filtrăm doar întrebările ACTIVE
-    const activeQuestions = response.data.filter(q => q.status === "ACTIVE");
+    const activeQuestions = response.data;
     res.json(activeQuestions);
   } catch (err) {
     console.error(err);
@@ -412,7 +411,7 @@ app.get("/getActiveSecurityQuestions/:userId", async (req, res) => {
 
 
 // === Delete (Deactivate) Specific Security Question ===
-app.delete("/deleteSecurityQuestion", async (req, res) => {
+app.put("/deleteSecurityQuestion", async (req, res) => {
   try {
     const { userId, question } = req.query; // preluăm din query
 
@@ -422,7 +421,7 @@ app.delete("/deleteSecurityQuestion", async (req, res) => {
 
     console.log(`🗑️ Ștergere întrebare pentru userId=${userId}, question=${question}`);
 
-    // URL exact pentru Spring Boot
+
     const url = `http://localhost:8080/security_questions/delete?userId=${encodeURIComponent(userId)}&question=${encodeURIComponent(question)}`;
 
     const springResponse = await axios.delete(url, {
@@ -438,6 +437,30 @@ app.delete("/deleteSecurityQuestion", async (req, res) => {
   }
 });
 
+//=====Update Security Question Response =====
+app.put("/updateSecurityQuestionResponse", async (req, res) => {
+  try {
+    const { userId, question, newResponse} = req.query; 
+
+    if (!userId || !question || !newResponse) {
+      return res.status(400).json({ message: "userId și question sunt necesare!" });
+    }
+
+
+    const url = `http://localhost:8080/security_questions/${encodeURIComponent(userId)}?question=${encodeURIComponent(question)}&newResponse=${encodeURIComponent(newResponse)}`;
+
+    const springResponse = await axios.put(url, {
+      headers: { "Content-Type": "application/json" }
+    });
+
+    console.log("✅ Răspuns Spring Boot:", springResponse.data);
+
+    res.status(200).json({ message: "Modify response successfully!" });
+  } catch (err) {
+    console.error("Error nodify security question response", err.response?.data || err.message);
+    res.status(500).json({ message: "Error modify security question response" });
+  }
+});
 
 
 app.listen(3001, () => {

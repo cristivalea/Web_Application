@@ -63,6 +63,7 @@
             alert("Security Question added successfully!");
             document.getElementById("secQuest").value = "";
             document.getElementById("response").value = "";
+            localStorage.setItem("questionsUpdated", "true");
             } else {
             alert("Eroare: " + data.message);
             }
