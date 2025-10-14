@@ -513,6 +513,27 @@ app.put("/updateSecondName", async (req, res) => {
   }
 });
 
+// ===== Update Password =====
+app.put("/updatePassword", async (req, res) => {
+try {
+    const { userId, password } = req.body;
+    if (!userId || !password) {
+      return res.status(400).json({ message: "userId and password are required!" });
+    }
+
+    const url = `http://localhost:8080/users/${encodeURIComponent(userId)}/password?newPassword=${encodeURIComponent(password)}`;
+
+    const springResponse = await axios.put(url, null, {
+      headers: { "Content-Type": "application/json" } 
+    });
+
+    console.log("✅ Răspuns Spring Boot:", springResponse.data);
+    res.status(200).json({ message: "password updated successfully!" });
+  } catch (err) {
+    console.error("Error updating password:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error updating password!" });
+  }
+});
 
 app.listen(3001, () => {
   console.log("✅ Server pornit pe http://localhost:3001");

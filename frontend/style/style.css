@@ -650,3 +650,36 @@ label {
       border-color: #5365A8;
       box-shadow: 0 0 6px rgba(83, 101, 168, 0.5);
     }
+
+.profile-menu {
+  display: flex;
+  justify-content: flex-start; 
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0px 5px;
+  margin-bottom: 30px; 
+  /* border-radius: 8px; */
+  margin-top: 0;
+}
+
+.profile-menu button {
+  background-color: #8EBFE4;
+  color: #5365A8;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.1s ease;
+  width: 170px; /* toate butoanele au aceeași lățime */
+  text-align: center; /* centrăm textul */
+}
+
+.profile-menu button:hover {
+  background-color: #415298;
+  transform: translateY(-1px);
+}
+
+.profile-menu button:active {
+  transform: translateY(1px);
+}
