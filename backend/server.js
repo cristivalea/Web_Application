@@ -6,7 +6,14 @@ import axios from "axios";
 const app = express();
 const PORT = 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: "*",  
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  preflightContinue: false,
+  optionsSuccessStatus: 200
+}));
+
 app.use(express.json());
 
 //Email transmission 
@@ -411,15 +418,15 @@ app.get("/getActiveSecurityQuestions/:userId", async (req, res) => {
 
 
 // === Delete (Deactivate) Specific Security Question ===
-app.put("/deleteSecurityQuestion", async (req, res) => {
+app.delete("/deleteSecurityQuestion", async (req, res) => {
   try {
-    const { userId, question } = req.query; // preluăm din query
+    const { userId, question } = req.query; 
 
     if (!userId || !question) {
       return res.status(400).json({ message: "userId și question sunt necesare!" });
     }
 
-    console.log(`🗑️ Ștergere întrebare pentru userId=${userId}, question=${question}`);
+    console.log(`Ștergere întrebare pentru userId=${userId}, question=${question}`);
 
 
     const url = `http://localhost:8080/security_questions/delete?userId=${encodeURIComponent(userId)}&question=${encodeURIComponent(question)}`;

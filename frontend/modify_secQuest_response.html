@@ -12,26 +12,11 @@
         <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
         <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
     </div>
-  <!-- <div class="secQuest-container">
-    <h1 class="title">Update Security Question Response</h2>
-
-    <form id="profileForm">
-        <div class="profile-group">
-            <label style="color:#5365A8;">Security Questions:</label>
-            <div id="secQuestList"></div>
-        </div>
-
-      <label for="newResponse">Răspuns nou:</label>
-      <input type="text" id="newResponse" placeholder="Introdu răspunsul nou" />
-    </form>
-  </div> -->
-  <!-- <div class="secQuest-container">
-    <h1 class="title">Update Security Question Response</h1> -->
 
     <div class="secQuest-container">
-    <h1 class="title">Update Security Question Response</h1>
-    <div id="secQuestList"></div>
-</div>
+        <h1 class="title">Update Security Question Response</h1>
+        <div id="secQuestList"></div>
+    </div>
 </div>
     <div class="footer">
         <p>&copy; 2025 ITLabs. All rights reserved.</p>
@@ -39,186 +24,99 @@
         <a href="../frontend/contact.html" class="contact">Contact Information</a>
     </div>
 
-<!-- <script>
-async function loadSecurityQuestions() {
-    const userId = localStorage.getItem("userId");
-    const listEl = document.getElementById("secQuestList");
+    <script>
+        async function loadSecurityQuestions() {
+            const userId = localStorage.getItem("userId");
+            const listEl = document.getElementById("secQuestList");
 
-    if (!userId) {
-        alert("Trebuie să fii autentificat pentru a modifica întrebările de securitate!");
-        return;
-    }
+            if (!userId) {
+                alert("Trebuie să fii autentificat pentru a modifica întrebările de securitate!");
+                return;
+            }
 
-    try {
-        const response = await fetch(`http://localhost:3001/getActiveSecurityQuestions/${userId}`);
+            try {
+                const response = await fetch(`http://localhost:3001/getActiveSecurityQuestions/${userId}`);
+
+        if (!response.ok) {
+            const text = await response.text();
+            console.error("Răspuns backend:", text);
+            throw new Error(`Eroare la încărcarea întrebărilor: ${response.status}`);
+        }
+
         const questions = await response.json();
-
         console.log("Întrebări primite:", questions);
-        listEl.innerHTML = "";
 
-        if (!questions.length) {
-            const li = document.createElement("li");
-            li.textContent = "Nu există întrebări de securitate active.";
-            li.style.color = "#5365A8";
-            li.style.listStyleType = "none";
-            listEl.appendChild(li);
-            return;
-        }
+                console.log("Întrebări primite:", questions);
+                listEl.innerHTML = "";
 
-        questions.forEach(q => {
-            const container = document.createElement("div");
-            container.classList.add("sec-question-item");
-            container.style.marginBottom = "10px";
-
-            const span = document.createElement("span");
-            span.textContent = q.member1;
-            span.style.color = "#5365A8";
-            span.style.fontWeight = "500";
-            span.style.display = "block";
-
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "Răspuns nou";
-            input.classList.add("sec-question-input");
-            input.style.marginRight = "8px";
-
-            const updateBtn = document.createElement("button");
-            updateBtn.textContent = "Update";
-            updateBtn.classList.add("add-secQuest-btn");
-            updateBtn.onclick = async () => {
-                const newResponse = input.value.trim();
-                if (!newResponse) { alert("Introdu un răspuns nou!"); return; }
-                try {
-                    const res = await fetch(
-                        `http://localhost:3001/updateSecurityQuestionResponse?userId=${userId}&question=${encodeURIComponent(q.member1)}&newResponse=${encodeURIComponent(newResponse)}`,
-                        { method: "PUT" }
-                    );
-                    const data = await res.json();
-                    alert(data.message);
-                    await loadSecurityQuestions();
-                } catch (err) {
-                    console.error("Eroare la actualizarea răspunsului:", err);
-                    alert("Eroare la actualizarea răspunsului!");
-                }
-            };
-
-        
-
-            container.appendChild(span);
-            container.appendChild(input);
-            container.appendChild(updateBtn);
-
-            listEl.appendChild(container);
-        });
-    } catch (err) {
-        console.error("Eroare la încărcarea întrebărilor:", err);
-        listEl.innerHTML = "<li>Eroare la încărcarea întrebărilor!</li>";
-    }
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-    loadSecurityQuestions();
-
-    if (localStorage.getItem("questionsUpdated") === "true") {
-        loadSecurityQuestions(); 
-        localStorage.removeItem("questionsUpdated");
-    }
-});
-</script> -->
-<script>
-async function loadSecurityQuestions() {
-    const userId = localStorage.getItem("userId");
-    const listEl = document.getElementById("secQuestList");
-
-    if (!userId) {
-        alert("Trebuie să fii autentificat pentru a modifica întrebările de securitate!");
-        return;
-    }
-
-    try {
-        const response = await fetch(`http://localhost:3001/getActiveSecurityQuestions/${userId}`);
-
-if (!response.ok) {
-    const text = await response.text();
-    console.error("Răspuns backend:", text);
-    throw new Error(`Eroare la încărcarea întrebărilor: ${response.status}`);
-}
-
-const questions = await response.json();
-console.log("Întrebări primite:", questions);
-
-        console.log("Întrebări primite:", questions);
-        listEl.innerHTML = "";
-
-        if (!questions.length) {
-            const noQuestionsDiv = document.createElement("div");
-            noQuestionsDiv.textContent = "Nu există întrebări de securitate active.";
-            noQuestionsDiv.style.color = "#5365A8";
-            noQuestionsDiv.style.fontStyle = "italic";
-            listEl.appendChild(noQuestionsDiv);
-            return;
-        }
-
-        questions.forEach(q => {
-            const container = document.createElement("div");
-            container.classList.add("sec-question-item");
-            container.style.marginBottom = "15px";
-            container.style.border = "1px solid #ccc";
-            container.style.padding = "10px";
-            container.style.borderRadius = "8px";
-            container.style.backgroundColor = "#f9f9f9";
-
-            // Întrebarea
-            const questionSpan = document.createElement("span");
-            questionSpan.textContent = q.member1;
-            questionSpan.style.color = "#5365A8";
-            questionSpan.style.fontWeight = "500";
-            questionSpan.style.display = "block";
-            questionSpan.style.marginBottom = "5px";
-
-            // Input răspuns nou
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "Răspuns nou";
-            input.style.marginRight = "10px";
-
-            // Buton Update
-            const updateBtn = document.createElement("button");
-            updateBtn.textContent = "Update";
-            updateBtn.classList.add("add-secQuest-btn");
-            updateBtn.onclick = async () => {
-                const newResponse = input.value.trim();
-                if (!newResponse) {
-                    alert("Introdu un răspuns nou!");
+                if (!questions.length) {
+                    const noQuestionsDiv = document.createElement("div");
+                    noQuestionsDiv.textContent = "Nu există întrebări de securitate active.";
+                    noQuestionsDiv.style.color = "#5365A8";
+                    noQuestionsDiv.style.fontStyle = "italic";
+                    listEl.appendChild(noQuestionsDiv);
                     return;
                 }
-                try {
-                    const res = await fetch(
-                        `http://localhost:3001/updateSecurityQuestionResponse?userId=${userId}&question=${encodeURIComponent(q.member1)}&newResponse=${encodeURIComponent(newResponse)}`,
-                        { method: "PUT" }
-                    );
-                    const data = await res.json();
-                    alert(data.message);
-                    await loadSecurityQuestions(); // reîncarcă lista
-                } catch (err) {
-                    console.error("Eroare la actualizarea răspunsului:", err);
-                    alert("Eroare la actualizarea răspunsului!");
-                }
-            };
 
-            container.appendChild(questionSpan);
-            container.appendChild(input);
-            container.appendChild(updateBtn);
+                questions.forEach(q => {
+                    const container = document.createElement("div");
+                    container.classList.add("sec-question-item");
+                    container.style.marginBottom = "15px";
+                    container.style.border = "1px solid #5365A8";
+                    container.style.padding = "10px";
+                    container.style.borderRadius = "8px";
+                    container.style.backgroundColor = "#8EBFE4";
 
-            listEl.appendChild(container);
-        });
-    } catch (err) {
-        console.error("Eroare la încărcarea întrebărilor:", err);
-        listEl.innerHTML = "<div>Eroare la încărcarea întrebărilor!</div>";
-    }
-}
+                    const questionSpan = document.createElement("span");
+                    questionSpan.textContent = q.member1;
+                    questionSpan.style.color = "#5365A8";
+                    questionSpan.style.fontWeight = "500";
+                    questionSpan.style.display = "block";
+                    questionSpan.style.marginBottom = "5px";
 
-window.addEventListener("DOMContentLoaded", loadSecurityQuestions);
-</script>
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.placeholder = "Răspuns nou";
+                    input.style.marginRight = "10px";
+
+                    
+                    const updateBtn = document.createElement("button");
+                    updateBtn.textContent = "Update";
+                    updateBtn.classList.add("add-secQuest-btn");
+                    updateBtn.style.border = "#5365A8";
+                    updateBtn.onclick = async () => {
+                        const newResponse = input.value.trim();
+                        if (!newResponse) {
+                            alert("Introdu un răspuns nou!");
+                            return;
+                        }
+                        try {
+                            const res = await fetch(
+                                `http://localhost:3001/updateSecurityQuestionResponse?userId=${userId}&question=${encodeURIComponent(q.member1)}&newResponse=${encodeURIComponent(newResponse)}`,
+                                { method: "PUT" }
+                            );
+                            const data = await res.json();
+                            alert(data.message);
+                            await loadSecurityQuestions(); 
+                        } catch (err) {
+                            console.error("Eroare la actualizarea răspunsului:", err);
+                            alert("Eroare la actualizarea răspunsului!");
+                        }
+                    };
+
+                    container.appendChild(questionSpan);
+                    container.appendChild(input);
+                    container.appendChild(updateBtn);
+
+                    listEl.appendChild(container);
+                });
+            } catch (err) {
+                console.error("Eroare la încărcarea întrebărilor:", err);
+                listEl.innerHTML = "<div>Eroare la încărcarea întrebărilor!</div>";
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", loadSecurityQuestions);
+    </script>
 </body>
 </html>
