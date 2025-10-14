@@ -469,6 +469,7 @@ app.put("/updateSecurityQuestionResponse", async (req, res) => {
   }
 });
 
+// === Update First Name ===
 app.put("/updateFirstName", async (req, res) => {
   try {
     const { userId, newFirstName } = req.body;
@@ -490,6 +491,27 @@ app.put("/updateFirstName", async (req, res) => {
   }
 });
 
+// === Update Second Name ===
+app.put("/updateSecondName", async (req, res) => {
+   try {
+    const { userId, newSecondName } = req.body;
+    if (!userId || !newSecondName) {
+      return res.status(400).json({ message: "userId and newFirstName are required!" });
+    }
+
+    const url = `http://localhost:8080/users/${encodeURIComponent(userId)}/second_name?newName=${encodeURIComponent(newSecondName)}`;
+
+    const springResponse = await axios.put(url, null, {
+      headers: { "Content-Type": "application/json" } 
+    });
+
+    console.log("✅ Răspuns Spring Boot:", springResponse.data);
+    res.status(200).json({ message: "Second name updated successfully!" });
+  } catch (err) {
+    console.error("Error updating second name:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error updating second name!" });
+  }
+});
 
 
 app.listen(3001, () => {

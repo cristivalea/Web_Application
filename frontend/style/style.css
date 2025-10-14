@@ -637,3 +637,16 @@ label {
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(83, 101, 168, 0.3);
     }
+
+#secondNameInput {
+      width: 80%;        
+      padding: 12px 16px; 
+      font-size: 18px;;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    #secondNameInput:focus {
+      border-color: #5365A8;
+      box-shadow: 0 0 6px rgba(83, 101, 168, 0.5);
+    }
