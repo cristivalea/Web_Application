@@ -469,6 +469,28 @@ app.put("/updateSecurityQuestionResponse", async (req, res) => {
   }
 });
 
+app.put("/updateFirstName", async (req, res) => {
+  try {
+    const { userId, newFirstName } = req.body;
+    if (!userId || !newFirstName) {
+      return res.status(400).json({ message: "userId and newFirstName are required!" });
+    }
+
+    const url = `http://localhost:8080/users/${encodeURIComponent(userId)}/name?newName=${encodeURIComponent(newFirstName)}`;
+
+    const springResponse = await axios.put(url, null, {
+      headers: { "Content-Type": "application/json" } 
+    });
+
+    console.log("✅ Răspuns Spring Boot:", springResponse.data);
+    res.status(200).json({ message: "First name updated successfully!" });
+  } catch (err) {
+    console.error("Error updating first name:", err.response?.data || err.message);
+    res.status(500).json({ message: "Error updating first name!" });
+  }
+});
+
+
 
 app.listen(3001, () => {
   console.log("✅ Server pornit pe http://localhost:3001");
