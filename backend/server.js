@@ -322,6 +322,7 @@ app.post("/update-password", async (req, res) => {
   }
 });
 
+// === Get User Profile ===
 app.get("/profile/:userId", async (req, res) => {
   const { userId } = req.params;
 
