@@ -1,0 +1,224 @@
+<obiective>
+  <obiectiv id="1">
+    <name>Java Basics</name>
+    <label>JavaBasics</label>
+    <subobiective>
+      <obiectiv id="11">
+        <name>Define the scope of variables</name>
+        <label>VarScope</label>
+      </obiectiv>
+      <obiectiv id="12">
+        <name>Define the structure of Java Class</name>
+        <label>JavaClassStructure</label>
+      </obiectiv>
+      <obiectiv id="13">
+        <name>Create executable Java applications with a main method; run a Java program from the command line, including console output</name>
+        <label>JavaClassStructure</label>
+      </obiectiv>
+      <obiectiv id="14">
+        <name>Import other Java packages to make them accessible in your code</name>
+        <label>JavaPackages</label>
+      </obiectiv>
+      <obiectiv id="15">
+        <name>Compare and contrast the features and components of Java, such as platform independence, object orientation, encapsulation, and so on</name>
+        <label>JavaFeatures</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+
+  <obiectiv id="2">
+    <name>Working With Java Data Types</name>
+    <label>JavaDataTypes</label>
+    <subobiective>
+      <obiectiv id="21">
+        <name>Declare and initialize variables (including casting of primitive data types)</name>
+        <label>VarDeclarInit</label>
+      </obiectiv>
+      <obiectiv id="22">
+        <name>Differentiate between object reference variables and primitive variables</name>
+        <label>ObjRefVarAndPrimitives</label>
+      </obiectiv>
+      <obiectiv id="23">
+        <name>Know how to read or write to object fields</name>
+        <label>ReadWriteObjFields</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+
+  <obiectiv id="3">
+    <name>Using Operators and Decision Constructs</name>
+    <label>OperatorsAndDecisions</label>
+    <subobiective>
+      <obiectiv id="31">
+        <name>Use Java operators; use parentheses to override operator precedence</name>
+        <label>JavaOperators</label>
+      </obiectiv>
+      <obiectiv id="32">
+        <name>Test equality between Strings and other objects using == and equals()</name>
+        <label>TestStringsEquals</label>
+      </obiectiv>
+      <obiectiv id="33">
+        <name>Create if and if/else and ternary constructs</name>
+        <label>IfElseConstructs</label>
+      </obiectiv>
+      <obiectiv id="34">
+        <name>Use a switch statement</name>
+        <label>SwitchStatement</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+
+  <obiectiv id="4">
+    <name>Creating and Using Arrays</name>
+    <label>CreateUsingArrays</label>
+    <subobiective>
+      <obiectiv id="41">
+        <name>Declare, instantiate, initialize and use a one-dimensional array</name>
+        <label>Array</label>
+      </obiectiv>
+      <obiectiv id="42">
+        <name>Declare, instantiate, initialize and use multi-dimensional arrays</name>
+        <label>Arrays</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+
+  <obiectiv id="5">
+    <name>Using Loop Constructs</name>
+    <label>LoopConstructs</label>
+    <subobiective>
+      <obiectiv id="51">
+        <name>Create and use while loops</name>
+        <label>WhileLoops</label>
+      </obiectiv>
+      <obiectiv id="52">
+        <name>Create and use for loops including the enhanced for loop</name>
+        <label>ForLoops</label>
+      </obiectiv>
+      <obiectiv id="53">
+        <name>Create and use do/while loops</name>
+        <label>DoWhileLoops</label>
+      </obiectiv>
+      <obiectiv id="54">
+        <name>Compare loop constructs</name>
+        <label>CompareLoop</label>
+      </obiectiv>
+      <obiectiv id="55">
+        <name>Use break and continue</name>
+        <label>BreakContinue</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+
+  <obiectiv id="6">
+    <name>Working with Methods and Encapsulation</name>
+    <label>MethodsEncapsulation</label>
+    <subobiective>
+      <obiectiv id="61">
+        <name>Create methods with arguments and return values; including overloaded methods</name>
+        <label>CreateMethods</label>
+      </obiectiv>
+      <obiectiv id="62">
+        <name>Apply the static keyword to methods and fields</name>
+        <label>Static</label>
+      </obiectiv>
+      <obiectiv id="63">
+        <name>Create and overload constructors; differentiate between default and user defined constructors</name>
+        <label>Constructors</label>
+      </obiectiv>
+      <obiectiv id="64">
+        <name>Apply access modifiers</name>
+        <label>AccessModifiers</label>
+      </obiectiv>
+      <obiectiv id="65">
+        <name>Apply encapsulation principles to a class</name>
+        <label>Encapsulation</label>
+      </obiectiv>
+      <obiectiv id="66">
+        <name>Determine the effect upon object references and primitive values when they are passed into methods that change the values</name>
+        <label>ObjectReferences</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+
+  <obiectiv id="7">
+    <name>Working with Inheritance</name>
+    <label>Inheritance</label>
+    <subobiective>
+      <obiectiv id="71">
+        <name>Describe inheritance and its benefits</name>
+        <label>DescribeInheritance</label>
+      </obiectiv>
+      <obiectiv id="72">
+        <name>Develop code that makes use of polymorphism; develop code that overrides methods; differentiate between the type of a reference and the type of an object</name>
+        <label>Code</label>
+      </obiectiv>
+      <obiectiv id="73">
+        <name>Determine when casting is necessary</name>
+        <label>Casting</label>
+      </obiectiv>
+      <obiectiv id="74">
+        <name>Use super and this to access objects and constructors</name>
+        <label>SuperAndThis</label>
+      </obiectiv>
+      <obiectiv id="75">
+        <name>Use abstract classes and interfaces</name>
+        <label>AbstractClassesAndInterfaces</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+
+  <obiectiv id="8">
+    <name>Handling Exceptions</name>
+    <label>Exceptions</label>
+    <subobiective>
+      <obiectiv id="81">
+        <name>Differentiate among checked exceptions, unchecked exceptions, and Errors</name>
+        <label>DifferentiateAmongExceptionsErrors</label>
+      </obiectiv>
+      <obiectiv id="82">
+        <name>Create a try-catch block and determine how exceptions alter normal program flow</name>
+        <label>TryCatch</label>
+      </obiectiv>
+      <obiectiv id="83">
+        <name>Describe the advantages of Exception handling</name>
+        <label>ExceptionHandling</label>
+      </obiectiv>
+      <obiectiv id="84">
+        <name>Create and invoke a method that throws an exception</name>
+        <label>CreateInvokeException</label>
+      </obiectiv>
+      <obiectiv id="85">
+        <name>Recognize common exception classes (such as NullPointerException, ArithmeticException, ArrayIndexOutOfBoundsException, ClassCastException)</name>
+        <label>RecognizeExceptionClasses</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+
+  <obiectiv id="9">
+    <name>Working with Selected classes from the Java API</name>
+    <label>JavaAPI</label>
+    <subobiective>
+      <obiectiv id="91">
+        <name>Manipulate data using the StringBuilder class and its methods</name>
+        <label>ManipulateDataUsingStringBuilder</label>
+      </obiectiv>
+      <obiectiv id="92">
+        <name>Create and manipulate Strings</name>
+        <label>CreateManipulateStrings</label>
+      </obiectiv>
+      <obiectiv id="93">
+        <name>Create and manipulate calendar data using classes from java.time.LocalDateTime, java.time.LocalDate, java.time.LocalTime, java.time.format.DateTimeFormatter, java.time.Period</name>
+        <label>CreateManipulateCalendarData</label>
+      </obiectiv>
+      <obiectiv id="94">
+        <name>Declare and use an ArrayList of a given type</name>
+        <label>DeclareUseArrayList</label>
+      </obiectiv>
+      <obiectiv id="95">
+        <name>Write a simple Lambda expression that consumes a Lambda Predicate expression</name>
+        <label>LambdaExpression</label>
+      </obiectiv>
+    </subobiective>
+  </obiectiv>
+</obiective>

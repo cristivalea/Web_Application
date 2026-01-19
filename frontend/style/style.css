@@ -683,3 +683,210 @@ label {
 .profile-menu button:active {
   transform: translateY(1px);
 }
+
+/* .objectives-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.objectives-list li {
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #4A59AA;
+}
+
+.objectives-list input[type="checkbox"] {
+    transform: scale(1.3);
+    margin-right: 12px;
+} */
+
+.objectives-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.objectives-container {
+    max-height: 350px;          /* 🔑 */
+    overflow-y: auto;           /* 🔑 */
+    border: 1px solid #dcdcdc;
+    padding: 15px;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.objectives-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.objective-item {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.objective-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #4A59AA; /* ALBASTRU */
+}
+
+.profile-menu-test{
+  display: flex;
+  justify-content: center; 
+  flex-wrap: wrap;
+  gap: 60px;
+  padding: 0px 5px;
+  margin-bottom: 30px; 
+  /* border-radius: 8px; */
+  margin-top: 0;
+}
+
+.profile-menu-test button {
+background-color: #8EBFE4;
+  color: #5365A8;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.1s ease;
+  width: 170px; /* toate butoanele au aceeași lățime */
+  text-align: center; /* centrăm textul */
+}
+
+.objectives-container {
+    max-height: 320px;      /* înălțime fixă */
+    overflow-y: auto;       /* scroll vertical */
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f9f9ff;
+}
+
+.difficulty-panel {
+    margin-top: 20px;
+    text-align: center;
+    color: #5365A8;
+}
+
+.difficulty-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.diff-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.easy   { background: #8EBFE4; color: #5365A8; }
+.medium { background: #8EBFE4; color: #5365A8; }
+.hard   { background: #8EBFE4; color: #5365A8; }
+
+.diff-btn:hover {
+    transform: scale(1.05);
+}
+
+
+body {
+  margin: 0;
+  background: #eef6fb;
+  font-family: Segoe UI, Arial, sans-serif;
+}
+
+.app {
+  width: 95%;
+  margin: auto;
+  background: #fff;
+  border: 2px solid #3b6ea5;
+}
+
+/* ===== HEADER ===== */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  background: #dbe8f4;
+  border-bottom: 2px solid #3b6ea5;
+}
+
+.toolbar button {
+  padding: 6px 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.toolbar .danger {
+  background: #d9534f;
+  color: white;
+}
+
+.toolbar .mark {
+  background: #777;
+  color: white;
+}
+
+/* ===== QUESTION HEADER ===== */
+.question-header {
+  padding: 10px;
+  border-bottom: 1px solid #aaa;
+}
+
+.question-number {
+  color: #2c6fb7;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.question-id {
+  font-size: 12px;
+  color: #666;
+}
+
+.question-header h2 {
+  color: #6fa8dc;
+  margin-top: 5px;
+}
+
+/* ===== CONTENT ===== */
+.content {
+  min-height: 300px;
+  border: 1px solid #aaa;
+  margin: 10px;
+  text-align: center;
+}
+
+.content img {
+  max-height: 200px;
+  margin: 20px auto;
+}
+
+/* ===== ANSWERS ===== */
+.answers {
+  padding: 10px;
+  border-top: 1px solid #aaa;
+}
+
+.answer {
+  margin: 5px 0;
+}
+
+/* ===== FOOTER ===== */
+.progress {
+  border-top: 2px solid #3b6ea5;
+  padding: 10px;
+  text-align: center;
+  background: #f4faff;
+}

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Tests</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+
+<body>
+
+<div class="header">
+    <img src="/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+    <img src="/images/upt.png" alt="University Logo" width="257" height="88">
+    <img src="images/ac.png" alt="Faculty Logo" width="296" height="90">
+</div>
+
+<!-- MAIN CONTAINER -->
+<div class="profile-container">
+    <h1 class="title">Generate Tests</h1>
+
+    <div class="profile-menu-test">
+        <button onclick="loadMainObjectives()">Main Objectives</button>
+        <button onclick="loadSecondaryObjectives()">Secondary Objectives</button>
+        <button>Final Test</button>
+    </div>
+
+     <!-- <ul id="main-objectives" class="objectives-list"></ul>
+     <ul id="secondary-objectives" class="objectives-list"></ul> -->
+     <div class="objectives-container">
+        <ul id="main-objectives" class="objectives-list"></ul>
+        <ul id="secondary-objectives" class="objectives-list"></ul>
+    </div>
+
+    <div class="difficulty-panel">
+    <h3>Select Difficulty</h3>
+
+        <div class="difficulty-buttons">
+            <button onclick="setDifficulty('easy')" class="diff-btn easy">Easy</button>
+            <button onclick="setDifficulty('medium')" class="diff-btn medium">Medium</button>
+            <button onclick="setDifficulty('hard')" class="diff-btn hard">Hard</button>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px; text-align: center;">
+        <button class="login-btn" onclick="confirmSelection()">
+            Confirm Selection
+        </button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <p>&copy; 2025 ITLabs. All rights reserved.</p>
+    <a href="../frontend/feedback.html" class="feedback">Feedback</a>
+    <a href="../frontend/contact.html" class="contact">Contact Information</a>
+</div>
+
+<!-- SCRIPT -->
+<script>
+    function loadMainObjectives() {
+        document.getElementById("main-objectives").style.display = "block";
+        document.getElementById("secondary-objectives").style.display = "none";
+        fetch("/data/objectives.xml")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.text();
+            })
+            .then(xmlText => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+
+                const mainObjectives = xmlDoc.querySelectorAll("obiective > obiectiv");
+                const container = document.getElementById("main-objectives");
+                container.innerHTML = "";
+
+                // mainObjectives.forEach(obj => {
+                //     const id = obj.getAttribute("id");
+                //     const name = obj.querySelector("name").textContent;
+
+                //     const block = document.createElement("div");
+                //     block.className = "container";
+                //     block.style.display = "flex";
+                //     block.style.alignItems = "center";
+                //     block.style.gap = "15px";
+                //     block.style.marginBottom = "15px";
+
+                //     block.innerHTML = `
+                //         <input type="checkbox" value="${id}" style="transform:scale(1.4)">
+                //         <span style="font-size:18px; font-weight:600; color:#4A59AA">
+                //             ${name}
+                //         </span>
+                //     `;
+
+                //     container.appendChild(block);
+                // });
+                mainObjectives.forEach(obj => {
+                const id = obj.getAttribute("id");
+                const name = obj.querySelector("name").textContent;
+
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <label>
+                        <input 
+                        type="checkbox"
+                        class="objective-checkbox"
+                        value="${id}"
+                        data-name="${name}"
+                        >
+                        ${name}
+                    </label>
+                `;
+
+                container.appendChild(li);
+            });
+
+                
+            })
+            .catch(err => {
+                console.error("Eroare la încărcarea XML:", err);
+            });
+    }
+
+    function loadSecondaryObjectives() {
+        document.getElementById("secondary-objectives").style.display = "block";
+        document.getElementById("main-objectives").style.display = "none";
+        fetch("/data/objectives.xml")
+            .then(res => res.text())
+            .then(xmlText => {
+                const xmlDoc = new DOMParser().parseFromString(xmlText, "text/xml");
+
+                const container = document.getElementById("secondary-objectives");
+                container.innerHTML = "";
+
+                const secondaryObjectives = xmlDoc.querySelectorAll("subobiective > obiectiv");
+
+                secondaryObjectives.forEach(obj => {
+                    const id = obj.getAttribute("id");
+                    const name = obj.querySelector("name").textContent;
+
+                    const li = document.createElement("li");
+                    li.className = "objective-item";
+
+                    li.innerHTML = `
+                        <input
+                            type="checkbox"
+                            class="objective-checkbox"
+                            value="${id}"
+                            data-name="${name}"
+                        >
+                        <span class="objective-text">${name}</span>
+                    `;
+
+                    container.appendChild(li);
+                });
+            })
+            .catch(err => console.error("Eroare XML:", err));
+    }
+
+
+
+    function confirmSelection() {
+        const selectedObjectives = [];
+
+        document.querySelectorAll(".objective-checkbox:checked").forEach(cb => {
+            selectedObjectives.push({
+                id: cb.value,
+                name: cb.dataset.name
+            });
+        });
+
+        if (selectedObjectives.length === 0) {
+            alert("Selectează cel puțin un obiectiv!");
+            return;
+        }
+
+        console.log("Obiective selectate:", selectedObjectives);
+
+        // 🔹 EXEMPLU: salvare locală (util pentru pasul următor)
+        localStorage.setItem("selectedObjectives", JSON.stringify(selectedObjectives));
+
+        // 🔹 EXEMPLU: trimitere către backend
+        /*
+        fetch("http://localhost:8080/api/generate-test", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedObjectives)
+        });
+        */
+
+        alert("Obiectivele au fost salvate!");
+    }
+
+
+</script>
+
+</body>
+</html>

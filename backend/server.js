@@ -15,6 +15,15 @@ app.use(cors({
 }));
 
 app.use(express.json());
+import path from "path";
+import { fileURLToPath } from "url";
+
+// necesar pentru ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// SERVIRE FRONTEND + XML
+app.use(express.static(path.join(__dirname, "../frontend")));
 
 //Email transmission 
 const emailUser = "appt31205@gmail.com";
@@ -535,6 +544,16 @@ try {
     res.status(500).json({ message: "Error updating password!" });
   }
 });
+
+
+
+app.use(express.static('public'));
+
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
+});
+
+
 
 app.listen(3001, () => {
   console.log("✅ Server pornit pe http://localhost:3001");
