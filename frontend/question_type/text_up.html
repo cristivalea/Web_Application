@@ -38,13 +38,6 @@
         <h2 id="textUp"></h2>
     </section>
 
-    <!-- CONȚINUT -->
-    <section class="content">
-        <img id="questionImage" alt="Question image">
-        
-    </section>
-    <h3 id="textDown" style="color:#6fa8dc;"></h3>
-
 
     <!-- RĂSPUNSURI -->
     <section class="answers" id="answersForm"></section>
@@ -69,43 +62,53 @@
 <script>
 /* ===== JSON EXACT ===== */
 const question = {
-  "format" : "TEXT_UP_IMG_TEXT_DOWN_RASPUNSURI",
-  "type" : "MIDLELEVELQUESTION",
-  "id" : "ManipulateDataUsingStringBuilder102",
-  "estimateSeconds" : 100,
-  "Content": {
-    "text": {
-      "textUP": "What is the output ...",
-      "img": "../images/itlabs.png",
-      "textDown": "Text down Test"
-    }
-  },
-  "responses" : [
-    { "respoonse" : "cars" },
-    { "respoonse" : "cars carts" },
-    { "respoonse" : "ccars arts" },
-    { "respoonse" : "The code does not compile." },
-    { "respoonse" : "The code compiles but throws an exception at runtime." }
-  ],
-  "answers" : [
-    { "answer" : false },
-    { "answer" : false },
-    { "answer" : false },
-    { "answer" : false },
-    { "answer" : true }
-  ],
-  "hint" : "Use invalid index"
-};
+   "format" : "TEXT_UP",
+               "type" : "MIDLELEVELQUESTION",
+               "id" : "ManipulateDataUsingStringBuilder102",
+               "mainObjectives" : [ {
+                 "id" : "9",
+                 "name" : "Working with Selected classes from the Java API"
+               } ],
+               "secondaryObjectives" : [ {
+                 "id" : "92",
+                 "name" : "Manipulate data using the StringBuilder class and its methods"
+               } ],
+               "estimateSeconds" : 100,
+               "Content" : {
+                 "text": {
+                            "textUP": "What is the output if this class is run with java Indexing cars carts?"
+                          }
+
+               },
+               "responses" : [ {
+                 "respoonse" : "cars"
+               }, {
+                 "respoonse" : "cars carts"
+               }, {
+                 "respoonse" : "ccars arts"
+               }, {
+                 "respoonse" : "The code does not compile."
+               }, {
+                 "respoonse" : "The code compiles but throws an exception at runtime."
+               } ],
+               "answers" : [ {
+                 "answer" : false
+               }, {
+                 "answer" : false
+               }, {
+                 "answer" : false
+               }, {
+                 "answer" : false
+               }, {
+                 "answer" : true
+               } ],
+               "hint" : "Use invalid index"
+             };
 
 /* ===== RANDĂRE ÎNTREBARE ===== */
 document.getElementById("textUp").textContent =
     question.Content.text.textUP;
 
-document.getElementById("questionImage").src =
-    question.Content.text.img;
-
-document.getElementById("textDown").textContent =
-    question.Content.text.textDown;
 
 /* ===== RANDĂRE RĂSPUNSURI ===== */
 const answersForm = document.getElementById("answersForm");

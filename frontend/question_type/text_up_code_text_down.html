@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextUp Image TextDown Responses</title>
+    <link rel="stylesheet" href="../style/style.css">
+       
+
+</head>
+<body>
+
+<!-- ===== HEADER CU LOGO-URI ===== -->
+<div class="header">
+    <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+    <img src="../images/upt.png" alt="University Logo" width="257" height="88">
+    <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
+</div>
+
+<!-- ===== APLICAȚIE TEST ===== -->
+<div class="app">
+
+    <!-- TOOLBAR -->
+    <header class="toolbar">
+        <button>Submit</button>
+        <button>Previous Question</button>
+        <button>Next</button>
+        <button>Review questions!</button>
+        <button class="danger">Done the test</button>
+        <button class="mark">Mark this Question for Review!</button>
+    </header>
+
+    <!-- HEADER ÎNTREBARE -->
+    <section class="question-header">
+        <span class="question-number">Question#4</span>
+        <span class="question-id">SERIAL_NUMBER @ManipulateDataUsingStringBuilder102</span>
+        <h2 id="textUp"></h2>
+    </section>
+
+    <!-- CODE EDITOR -->
+    <section class="content">
+        <div class="code-editor">
+            <div class="line-numbers" id="lines"></div>
+            <pre><code id="code"></code></pre>
+        </div>
+    </section>
+
+    <h3 id="textDown" style="color:#6fa8dc;"></h3>
+
+    <!-- RĂSPUNSURI -->
+    <section class="answers" id="answersForm"></section>
+
+    <!-- FOOTER PROGRES -->
+    <footer class="progress">
+        <div>Test Progress</div>
+        <progress value="0" max="100"></progress>
+        <div>Question 4 from 20</div>
+    </footer>
+
+</div>
+
+<!-- ===== FOOTER GENERAL ===== -->
+<div class="footer">
+    <p>&copy; 2025 ITLabs. All rights reserved.</p>
+    <a href="/feedback.html" class="feedback">Feedback</a>
+    <a href="/contact.html" class="contact">Contact Information</a>
+</div>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+/* ===== JSON EXACT ===== */
+const question = {
+  "format" : "TEXT_UP_COD_TEXT_DOWN",
+  "type" : "MIDLELEVELQUESTION",
+  "id" : "ManipulateDataUsingStringBuilder102",
+  "Content": {
+      "text": {
+          "textUP": "What is the output ...",
+          "code" : 'public class Indexing {\n    public static void main(String... books) {\n        StringBuilder sb = new StringBuilder();\n        for (String book : books)\n            sb.insert(sb.indexOf(\"c\"), book);\n        System.out.println(sb);\n    }\n}',
+          "textDown": "Text down Test"
+      }
+  },
+  "responses" : [ {"respoonse":"cars"}, {"respoonse":"cars carts"},
+                  {"respoonse":"ccars arts"},
+                  {"respoonse":"The code does not compile."},
+                  {"respoonse":"The code compiles but throws an exception at runtime."}]
+};
+
+/* ===== RENDER TEXT ===== */
+document.getElementById("textUp").textContent = question.Content.text.textUP;
+document.getElementById("textDown").textContent = question.Content.text.textDown;
+
+/* ============================================================
+   🔥 VARIANTA 1 – HIGHLIGHTER MANUAL JAVA
+   ============================================================ */
+
+function simpleJavaHighlight(code) {
+    // 1. Escape HTML
+    code = code
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+    // 2. Protejăm stringurile temporar
+    const strings = [];
+    code = code.replace(/"(.*?)"/g, (m) => {
+        strings.push(m); // stocăm stringul
+        return "___STR___" + (strings.length - 1); // înlocuim cu placeholder
+    });
+
+    // 3. Aplicăm regex pe keywords
+    const keywords = ["public", "class", "static", "void", "for", "if", "else", "new", "return", "import", "package", "private", "protected"];
+    keywords.forEach(k => {
+        const r = new RegExp(`\\b${k}\\b`, "g");
+        // code = code.replace(r, `<span class="kw">${k}</span>`);
+    });
+
+    // 4. Aplicăm regex pentru tipuri speciale
+    code = code.replace(/\b(StringBuilder|String|System|Indexing)\b/g, '<span class="type">$1</span>');
+
+    // 5. Punem stringurile înapoi
+    code = code.replace(/___STR___(\d+)/g, (_, i) => `<span class="str">${strings[i]}</span>`);
+
+    return code;
+}
+
+/* ===== RENDER CODE ===== */
+const codeText = question.Content.text.code;
+const codeEl = document.getElementById("code");
+codeEl.innerHTML = simpleJavaHighlight(codeText);
+
+/* ===== LINE NUMBERS ===== */
+const lineCount = codeText.split("\n").length;
+document.getElementById("lines").innerHTML = Array.from({ length: lineCount }, (_, i) => i + 1).join("<br>");
+
+/* ===== ANSWERS ===== */
+const answersForm = document.getElementById("answersForm");
+question.responses.forEach((resp) => {
+    const div = document.createElement("div");
+    div.className = "answer";
+    div.innerHTML = `
+        <label>
+            <input type="checkbox">
+            ${resp.respoonse}
+        </label>`;
+    answersForm.appendChild(div);
+});
+</script>
+
+</body>
+</html>

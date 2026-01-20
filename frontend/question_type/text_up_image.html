@@ -43,7 +43,6 @@
         <img id="questionImage" alt="Question image">
         
     </section>
-    <h3 id="textDown" style="color:#6fa8dc;"></h3>
 
 
     <!-- RĂSPUNSURI -->
@@ -77,7 +76,6 @@ const question = {
     "text": {
       "textUP": "What is the output ...",
       "img": "../images/itlabs.png",
-      "textDown": "Text down Test"
     }
   },
   "responses" : [
@@ -103,9 +101,6 @@ document.getElementById("textUp").textContent =
 
 document.getElementById("questionImage").src =
     question.Content.text.img;
-
-document.getElementById("textDown").textContent =
-    question.Content.text.textDown;
 
 /* ===== RANDĂRE RĂSPUNSURI ===== */
 const answersForm = document.getElementById("answersForm");
