@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <div class="header">
+        <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
+    </div>
+</head>
+<body>
+
+     <!-- TOOLBAR -->
+ <header class="toolbar">
+    <button id="submitBtn">Submit</button>
+    <button id="prevBtn">Previous Question</button>
+    <button id="nextBtn">Next</button>
+    <button id="reviewBtn">Review questions!</button>
+    <button class="danger">Done the test</button>
+    <button class="mark">Mark this Question for Review!</button>
+</header>
+
+    <div id="question-container"></div>
+     <!-- FOOTER PROGRES -->
+    <footer class="progress">
+        <div>Test Progress</div>
+        <progress value="0" max="100"></progress>
+        <div>Question 4 from 20</div>
+    </footer>
+
+<script>
+//     const testData = JSON.parse(localStorage.getItem("currentTest"));
+//     console.log("Test primit în test.html:", testData);
+
+// let currentQuestionIndex = 0;
+// const questions = testData.quesyions;
+
+// // loadQuestion(currentQuestionIndex);
+// if (!questions || questions.length === 0) {
+//     console.error("Nu există întrebări în test:", testData);
+// } else {
+//     loadQuestion(currentQuestionIndex);
+// }
+
+
+// function loadQuestion(index) {
+//     const q = questions[index];
+
+//     let questionObj;
+//     try {
+//         questionObj = JSON.parse(q.question);
+//     } catch (e) {
+//         console.error("JSON invalid pentru întrebare:", q.question);
+//         return;
+//     }
+
+//     const format = questionObj.format;
+//     console.log("FORMAT:", format);
+
+//     // mapare format → fișier HTML
+//     const formatMap = {
+//         "TEXT_UP": "text_up.html",
+//         "TEXT_UP_COD": "text_up_code.html",  // Fișierul specific pentru întrebările cu cod
+//         "TEXT_UP_IMAGE": "text_up_image.html",  // Și alte fișiere specifice
+//         "TEXT_UP_COD_IMAGE_TEXT_DOWN": "text_up_code_image_text_down.html",
+//         "TEXT_UP_IMAGE_TEXT_DOWN": "text_up_image_text_down_responses.html",
+//         "TEXT_UP_COD_TEXT_DOWN": "text_up_code_text_down.html"
+//     };
+
+//     const page = formatMap[format];
+//     if (!page) {
+//         console.error("Format necunoscut:", format);
+//         return;
+//     }
+
+//     // fetch(`../question_type/${page}`)
+//     // .then(res => res.text())
+//     // .then(html => {
+//     //     const container = document.getElementById("question-container");
+//     //     container.innerHTML = html;
+
+//     //     // Apelăm funcția renderQuestion definită în fișierul specific
+//     //     if (typeof renderQuestion === "function") {
+//     //         renderQuestion(questionObj, index, questions.length);
+//     //     }
+
+//     //     // Adăugăm event listener pentru Next
+//     //     const nextBtn = container.querySelector("#nextButton");
+//     //     if (nextBtn) nextBtn.addEventListener("click", nextQuestion);
+
+//     //     // Adăugăm event listener pentru Previous
+//     //     const prevBtn = container.querySelector("#prevButton");
+//     //     if (prevBtn) prevBtn.addEventListener("click", prevQuestion);
+//     // });
+//     fetch(`../question_type/${page}`)
+//     .then(res => res.text())
+//     .then(html => {
+//         const container = document.getElementById("question-container");
+//         container.innerHTML = html;
+
+//         // Căutăm scripturile în HTML-ul proaspăt injectat
+//         const scripts = container.querySelectorAll("script");
+//         scripts.forEach(oldScript => {
+//             const newScript = document.createElement("script");
+//             newScript.textContent = oldScript.textContent;
+//             document.body.appendChild(newScript); // Această linie forțează execuția
+//         });
+
+//         // Așteptăm un mic delay pentru ca browserul să proceseze scriptul nou
+//         setTimeout(() => {
+//             if (typeof renderQuestion === "function") {
+//                 renderQuestion(questionObj, index, questions.length);
+//             } else {
+//                 console.error("renderQuestion nu a fost găsită în " + page);
+//             }
+//         }, 50);
+//     });
+// }
+
+
+// // navigare
+// function nextQuestion() {
+//     if (currentQuestionIndex < questions.length - 1) {
+//         currentQuestionIndex++;
+//         loadQuestion(currentQuestionIndex);
+//     }
+// }
+
+// function prevQuestion() {
+//     if (currentQuestionIndex > 0) {
+//         currentQuestionIndex--;
+//         loadQuestion(currentQuestionIndex);
+//     }
+// }
+
+const testData = JSON.parse(localStorage.getItem("currentTest"));
+let currentQuestionIndex = 0;
+
+// ATENȚIE: Verifică dacă în API cheia este "quesyions" sau "questions"
+// Din log-ul tău rezultă că este "quesyions" (cu 'y')
+const questions = testData.quesyions || testData.questions;
+
+// 1. Inițializare butoane din Toolbar (cele de sus)
+document.addEventListener("DOMContentLoaded", () => {
+    const nextBtn = document.getElementById("nextBtn");
+    const prevBtn = document.getElementById("prevBtn");
+
+    if (nextBtn) nextBtn.addEventListener("click", nextQuestion);
+    if (prevBtn) prevBtn.addEventListener("click", prevQuestion);
+
+    // Încărcăm prima întrebare
+    if (questions && questions.length > 0) {
+        loadQuestion(currentQuestionIndex);
+    } else {
+        console.error("Nu există întrebări în test.");
+    }
+});
+
+function loadQuestion(index) {
+    const q = questions[index];
+    let questionObj;
+
+    try {
+        questionObj = JSON.parse(q.question);
+    } catch (e) {
+        console.error("JSON invalid:", q.question);
+        return;
+    }
+
+    const format = questionObj.format;
+    const formatMap = {
+        "TEXT_UP": "text_up.html",
+        "TEXT_UP_COD": "text_up_code.html",
+        "TEXT_UP_IMG_RASPUNSURI": "text_up_image.html",
+        "TEXT_UP_COD_IMAGE_TEXT_DOWN": "text_up_code_image_text_down.html",
+        "TEXT_UP_IMG_TEXT_DOWN_RASPUNSURI": "text_up_image_text_down_responses.html",
+        "TEXT_UP_CODE_IMG_TEXT_DOWN_RESPONSES": "text_up_code_text_down.html"
+    };
+
+    const page = formatMap[format];
+    if (!page) return;
+
+    fetch(`../question_type/${page}`)
+    .then(res => res.text())
+    .then(html => {
+        const container = document.getElementById("question-container");
+        container.innerHTML = html;
+
+        // Executăm manual scripturile din fișierul importat (pentru a activa renderQuestion)
+        const scripts = container.querySelectorAll("script");
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement("script");
+            newScript.textContent = oldScript.textContent;
+            document.body.appendChild(newScript);
+            // Opțional: ștergem scriptul după execuție pentru a nu aglomera DOM-ul
+            newScript.remove(); 
+        });
+
+        // Apelăm funcția de randare după un mic delay ca să fim siguri că scriptul e încărcat
+        setTimeout(() => {
+            if (typeof renderQuestion === "function") {
+                renderQuestion(questionObj, index, questions.length);
+                updateProgressBar(index, questions.length);
+            }
+        }, 50);
+    });
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        loadQuestion(currentQuestionIndex);
+    } else {
+        alert("Aceasta este ultima întrebare.");
+    }
+}
+
+function prevQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion(currentQuestionIndex);
+    }
+}
+
+// Funcție extra pentru a actualiza bara de progres de jos
+function updateProgressBar(index, total) {
+    const progress = document.querySelector("progress");
+    const progressText = document.querySelector(".progress div:last-child");
+    
+    if (progress) progress.value = ((index + 1) / total) * 100;
+    if (progressText) progressText.innerText = `Question ${index + 1} from ${total}`;
+}
+
+</script>
+</body>
+</html>
+

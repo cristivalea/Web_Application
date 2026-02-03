@@ -10,25 +10,25 @@
 </head>
 <body>
 
-<!-- ===== HEADER CU LOGO-URI ===== -->
+<!-- ===== HEADER CU LOGO-URI =====
 <div class="header">
     <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
     <img src="../images/upt.png" alt="University Logo" width="257" height="88">
     <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
-</div>
+</div> -->
 
 <!-- ===== APLICAȚIE TEST ===== -->
 <div class="app">
 
     <!-- TOOLBAR -->
-    <header class="toolbar">
+    <!-- <header class="toolbar">
         <button>Submit</button>
         <button>Previous Question</button>
         <button>Next</button>
         <button>Review questions!</button>
         <button class="danger">Done the test</button>
         <button class="mark">Mark this Question for Review!</button>
-    </header>
+    </header> -->
 
     <!-- HEADER ÎNTREBARE -->
     <section class="question-header">
@@ -55,11 +55,11 @@
     <section class="answers" id="answersForm"></section>
 
     <!-- FOOTER PROGRES -->
-    <footer class="progress">
+    <!-- <footer class="progress">
         <div>Test Progress</div>
         <progress value="0" max="100"></progress>
         <div>Question 4 from 20</div>
-    </footer>
+    </footer> -->
 
 </div>
 
@@ -73,58 +73,115 @@
 <!-- ===== SCRIPT ===== -->
 <script>
 /* ===== JSON EXACT ===== */
-const question = {
-   "format" : "TEXT_UP_CODE_IMG_TEXT_DOWN_RESPONSES",
-                  "type" : "MIDLELEVELQUESTION",
-                  "id" : "ManipulateDataUsingStringBuilder102",
-                  "mainObjectives" : [ {
-                    "id" : "9",
-                    "name" : "Working with Selected classes from the Java API"
-                  } ],
-                  "secondaryObjectives" : [ {
-                    "id" : "92",
-                    "name" : "Create and manipulate Strings"
-                  } ],
-                  "estimateSeconds" : 100,
-                  "Content": {
-                            "text": {
-                                "textUP": "What is the output ...",
-                                 "code" : "public class Indexing {\n    public static void main(String... books) {\n        StringBuilder sb = new StringBuilder();\n        for (String book : books)\n            sb.insert(sb.indexOf(\"c\"), book);\n        System.out.println(sb);\n    }\n}",
-                                "img": "../images/itlabs.png",
-                                "textDown": "Text down Test"
-                            }
-                        },
+// const question = {
+//    "format" : "TEXT_UP_CODE_IMG_TEXT_DOWN_RESPONSES",
+//                   "type" : "MIDLELEVELQUESTION",
+//                   "id" : "ManipulateDataUsingStringBuilder102",
+//                   "mainObjectives" : [ {
+//                     "id" : "9",
+//                     "name" : "Working with Selected classes from the Java API"
+//                   } ],
+//                   "secondaryObjectives" : [ {
+//                     "id" : "92",
+//                     "name" : "Create and manipulate Strings"
+//                   } ],
+//                   "estimateSeconds" : 100,
+//                   "Content": {
+//                             "text": {
+//                                 "textUP": "What is the output ...",
+//                                  "code" : "public class Indexing {\n    public static void main(String... books) {\n        StringBuilder sb = new StringBuilder();\n        for (String book : books)\n            sb.insert(sb.indexOf(\"c\"), book);\n        System.out.println(sb);\n    }\n}",
+//                                 "img": "../images/itlabs.png",
+//                                 "textDown": "Text down Test"
+//                             }
+//                         },
 
-                  "responses" : [ {
-                    "respoonse" : "cars"
-                  }, {
-                    "respoonse" : "cars carts"
-                  }, {
-                    "respoonse" : "ccars arts"
-                  }, {
-                    "respoonse" : "The code does not compile."
-                  }, {
-                    "respoonse" : "The code compiles but throws an exception at runtime."
-                  } ],
-                  "answers" : [ {
-                    "answer" : false
-                  }, {
-                    "answer" : false
-                  }, {
-                    "answer" : false
-                  }, {
-                    "answer" : false
-                  }, {
-                    "answer" : true
-                  } ],
-                  "hint" : "Use invalid index"
-                };
+//                   "responses" : [ {
+//                     "respoonse" : "cars"
+//                   }, {
+//                     "respoonse" : "cars carts"
+//                   }, {
+//                     "respoonse" : "ccars arts"
+//                   }, {
+//                     "respoonse" : "The code does not compile."
+//                   }, {
+//                     "respoonse" : "The code compiles but throws an exception at runtime."
+//                   } ],
+//                   "answers" : [ {
+//                     "answer" : false
+//                   }, {
+//                     "answer" : false
+//                   }, {
+//                     "answer" : false
+//                   }, {
+//                     "answer" : false
+//                   }, {
+//                     "answer" : true
+//                   } ],
+//                   "hint" : "Use invalid index"
+//                 };
 
-/* ===== RENDER TEXT ===== */
-document.getElementById("textUp").textContent = question.Content.text.textUP;
-document.getElementById("textDown").textContent = question.Content.text.textDown;
+// /* ===== RENDER TEXT ===== */
+// document.getElementById("textUp").textContent = question.Content.text.textUP;
+// document.getElementById("textDown").textContent = question.Content.text.textDown;
 
-document.getElementById("questionImage").src =question.Content.text.img;
+// document.getElementById("questionImage").src =question.Content.text.img;
+
+window.renderQuestion = function(question, index, total) {
+  console.log("QUESTION OBJECT:", question);
+
+    /* ===== HEADER ===== */
+    document.querySelector(".question-number").textContent =
+        `Question ${index + 1}`;
+
+    document.querySelector(".question-id").textContent =
+        question.id;
+
+    /* ===== TEXT UP ===== */
+    document.getElementById("textUp").textContent =
+        question.Content.text.textUP || "";
+
+    /* ===== IMAGE ===== */
+    const img = document.getElementById("questionImage");
+    if (question.Content.img) {
+        img.src = question.Content.img;
+        img.style.display = "block";
+    } else {
+        img.style.display = "none";
+    }
+
+    /* ===== CODE ===== */
+    const codeText = question.Content.code || "";
+    document.getElementById("code").innerHTML =
+        simpleJavaHighlight(codeText);
+
+    /* ===== LINE NUMBERS ===== */
+    const lineCount = codeText.split("\n").length;
+    document.getElementById("lines").innerHTML =
+        Array.from({ length: lineCount }, (_, i) => i + 1).join("<br>");
+
+    /* ===== TEXT DOWN ===== */
+    document.getElementById("textDown").textContent =
+        question.Content.text.textDown || "";
+
+    /* ===== ANSWERS ===== */
+    const answersForm = document.getElementById("answersForm");
+    answersForm.innerHTML = "";
+
+    question.responses.forEach((resp, i) => {
+        answersForm.innerHTML += `
+            <div class="answer">
+                <label>
+                    <input type="checkbox" data-index="${i}">
+                    ${resp.respoonse}
+                </label>
+            </div>
+        `;
+    });
+
+    /* ===== PROGRESS ===== */
+    const progress = document.querySelector("progress");
+    progress.value = Math.round(((index + 1) / total) * 100);
+};
 
 /* ============================================================
    🔥 VARIANTA 1 – HIGHLIGHTER MANUAL JAVA
@@ -160,27 +217,27 @@ function simpleJavaHighlight(code) {
     return code;
 }
 
-/* ===== RENDER CODE ===== */
-const codeText = question.Content.text.code;
-const codeEl = document.getElementById("code");
-codeEl.innerHTML = simpleJavaHighlight(codeText);
+// /* ===== RENDER CODE ===== */
+// const codeText = question.Content.text.code;
+// const codeEl = document.getElementById("code");
+// codeEl.innerHTML = simpleJavaHighlight(codeText);
 
-/* ===== LINE NUMBERS ===== */
-const lineCount = codeText.split("\n").length;
-document.getElementById("lines").innerHTML = Array.from({ length: lineCount }, (_, i) => i + 1).join("<br>");
+// /* ===== LINE NUMBERS ===== */
+// const lineCount = codeText.split("\n").length;
+// document.getElementById("lines").innerHTML = Array.from({ length: lineCount }, (_, i) => i + 1).join("<br>");
 
-/* ===== ANSWERS ===== */
-const answersForm = document.getElementById("answersForm");
-question.responses.forEach((resp) => {
-    const div = document.createElement("div");
-    div.className = "answer";
-    div.innerHTML = `
-        <label>
-            <input type="checkbox">
-            ${resp.respoonse}
-        </label>`;
-    answersForm.appendChild(div);
-});
+// /* ===== ANSWERS ===== */
+// const answersForm = document.getElementById("answersForm");
+// question.responses.forEach((resp) => {
+//     const div = document.createElement("div");
+//     div.className = "answer";
+//     div.innerHTML = `
+//         <label>
+//             <input type="checkbox">
+//             ${resp.respoonse}
+//         </label>`;
+//     answersForm.appendChild(div);
+// });
 </script>
 
 </body>

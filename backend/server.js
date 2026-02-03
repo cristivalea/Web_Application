@@ -553,6 +553,644 @@ app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
 });
 
+// ================= TEST API CONFIG =================
+const TEST_API_BASE = "http://localhost:8080/test/writeTest/";
+
+
+
+//=================== GENERATE BEGINNER TESTS ONE AND MORE OBJECTIVES ==================
+//http://localhost:3001/generate-test-beginner-subobjectives?userId=U00033&objectives=1, 2, 3
+
+/**
+ * Generate tests with one or more objectives with beginner difficulty
+ * @param {string} userId
+ * @param {...number} obj
+ */
+async function loadBeginnerTestOneAndMoreObjectives(userId, ...obj) {
+    try {
+        // construim string-ul "1,2,3"
+        const objectives = obj.join(',');
+
+        const apiUrl = `http://localhost:8080/test/writeTest/${userId}/SOFTQUESTION?objectives=${objectives}`;
+
+        console.log(objectives);
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-test-one-more-obj-beginner", async (req, res) => {
+    try {
+        const { userId, objectives } = req.query;
+
+        if (!userId || !objectives) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        // objectives vine ca string: "1,2,3"
+        const objArray = objectives.split(',').map(n => parseInt(n));
+
+        const result = await loadBeginnerTestOneAndMoreObjectives(userId, ...objArray);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+// ================================= GENERATE INTERMEDIATE TESTS ONE AND MORE OBJECTIVES ==================
+
+/**
+ * Generate tests with one or more objectives with intermediate difficulty
+ * @param {string} userId
+ * @param {...number} obj
+ */
+async function loadIntermediateTestOneAndMoreObjectives(userId, ...obj) {
+    try {
+        // construim string-ul "1,2,3"
+        const objectives = obj.join(',');
+
+        const apiUrl = `http://localhost:8080/test/writeTest/${userId}/MIDLELEVELQUESTION?objectives=${objectives}`;
+
+        console.log(objectives);
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-test-one-more-obj-intermediate", async (req, res) => {
+    try {
+        const { userId, objectives } = req.query;
+
+        if (!userId || !objectives) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        // objectives vine ca string: "1,2,3"
+        const objArray = objectives.split(',').map(n => parseInt(n));
+
+        const result = await loadIntermediateTestOneAndMoreObjectives(userId, ...objArray);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+
+//========================== GENERATE HARD TESTS ONE AND MORE OBJECTIVES ==================
+
+/**
+ * Generate tests with one or more objectives with intermediate difficulty
+ * @param {string} userId
+ * @param {...number} obj
+ */
+async function loadHardTestOneAndMoreObjectives(userId, ...obj) {
+    try {
+        // construim string-ul "1,2,3"
+        const objectives = obj.join(',');
+
+        const apiUrl = `http://localhost:8080/test/writeTest/${userId}/HARD?objectives=${objectives}`;
+
+        console.log(objectives)
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-test-one-more-obj-hard", async (req, res) => {
+    try {
+        const { userId, objectives } = req.query;
+
+        if (!userId || !objectives) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        // objectives vine ca string: "1,2,3"
+        const objArray = objectives.split(',').map(n => parseInt(n));
+
+        const result = await loadHardTestOneAndMoreObjectives(userId, ...objArray);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+
+// ================================= GENERATE BEGIINNER FINAL TESTS ==================
+//http://localhost:3001/generate-test-beginner-subobjectives?userId=U00033
+
+/**
+ * Generate tests with one or more objectives with intermediate difficulty
+ * @param {string} userId
+ * @param {...number} obj
+ */
+async function loadBeginnerFinalTest(userId) {
+    try {
+
+        const apiUrl = `http://localhost:8080/test/writeFinalTest/${userId}/SOFTQUESTION`;
+
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-beginner-final-test", async (req, res) => {
+    try {
+        const { userId} = req.query;
+
+        if (!userId ) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        const result = await loadBeginnerFinalTest(userId);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+// ================================= GENERATE INTERMEDIATE FINAL TESTS ==================
+
+/**
+ * Generate tests with one or more objectives with intermediate difficulty
+ * @param {string} userId
+ * @param {...number} obj
+ */
+async function loadIntermediateFinalTest(userId) {
+    try {
+
+        const apiUrl = `http://localhost:8080/test/writeFinalTest/${userId}/MIDLELEVELQUESTION`;
+
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-intermediate-final-test", async (req, res) => {
+    try {
+        const { userId} = req.query;
+
+        if (!userId ) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        const result = await loadIntermediateFinalTest(userId);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+// ================================= GENERATE HARD FINAL TESTS ==================
+
+/**
+ * Generate tests with one or more objectives with intermediate difficulty
+ * @param {string} userId
+ * @param {...number} obj
+ */
+async function loadHardFinalTest(userId) {
+    try {
+
+        const apiUrl = `http://localhost:8080/test/writeFinalTest/${userId}/HARD`;
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-hard-final-test", async (req, res) => {
+    try {
+        const { userId} = req.query;
+
+        if (!userId ) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        const result = await loadHardFinalTest(userId);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+
+//================================ GENERATE SUBOBJECTIVES BEGINNER TESTS ==================
+//http://localhost:3001/generate-test-beginner-subobjectives?userId=U00033&objectives=11, 12
+
+async function loadBeginnerSubobjectivesTests(userId, ...obj) {
+    try {
+        // construim string-ul "1,2,3"
+        const objectives = obj.join(',');
+
+        const apiUrl = `http://localhost:8080/test/writeTestWithSubObjectives?userId=${userId}&level=SOFTQUESTION&subobjectives=${objectives}`;
+
+        console.log(objectives)
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-test-beginner-subobjectives", async (req, res) => {
+    try {
+        const { userId, objectives } = req.query;
+
+        if (!userId || !objectives) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        // objectives vine ca string: "1,2,3"
+        const objArray = objectives.split(',').map(n => parseInt(n));
+
+        const result = await loadBeginnerSubobjectivesTests(userId, ...objArray);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+//================================ GENERATE SUBOBJECTIVES INTERMEDIATE TESTS ==================
+
+
+async function loadIntermediateSubobjectivesTests(userId, ...obj) {
+    try {
+        // construim string-ul "1,2,3"
+        const objectives = obj.join(',');
+
+        const apiUrl = `http://localhost:8080/test/writeTestWithSubObjectives?userId=${userId}&level=MIDLELEVELQUESTION&subobjectives=${objectives}`;
+
+        console.log(objectives)
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-test-intermediate-subobjectives", async (req, res) => {
+    try {
+        const { userId, objectives } = req.query;
+
+        if (!userId || !objectives) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        // objectives vine ca string: "1,2,3"
+        const objArray = objectives.split(',').map(n => parseInt(n));
+
+        const result = await loadIntermediateSubobjectivesTests(userId, ...objArray);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+//================================ GENERATE SUBOBJECTIVES INTERMEDIATE TESTS ==================
+
+
+async function loadHardSubobjectivesTests(userId, ...obj) {
+    try {
+        // construim string-ul "1,2,3"
+        const objectives = obj.join(',');
+
+        const apiUrl = `http://localhost:8080/test/writeTestWithSubObjectives?userId=${userId}&level=HARDQUESTION&subobjectives=${objectives}`;
+
+        console.log(objectives)
+        console.log(apiUrl);
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const testOfQuestions = response.data;
+
+        console.log(testOfQuestions);
+
+        return testOfQuestions;
+
+    } catch (error) {
+        if (error.response) {
+            console.error(
+                `Error (${error.response.status}):`,
+                error.response.data
+            );
+        } else {
+            console.error("Connection error:", error.message);
+        }
+    }
+}
+
+// ===== TEST GENERARE TESTE =====
+app.get("/generate-test-hard-subobjectives", async (req, res) => {
+    try {
+        const { userId, objectives } = req.query;
+
+        if (!userId || !objectives) {
+            return res.status(400).json({
+                message: "userId si objectives sunt necesare!"
+            });
+        }
+
+        // objectives vine ca string: "1,2,3"
+        const objArray = objectives.split(',').map(n => parseInt(n));
+
+        const result = await loadHardSubobjectivesTests(userId, ...objArray);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("Error generate test:", err.message);
+        res.status(500).json({ message: "Error generating test!" });
+    }
+});
+
+app.post("/generate-test", async (req, res) => {
+   console.log("📥 BODY primit din frontend:");
+  console.log(JSON.stringify(req.body, null, 2));
+  try {
+    const { testType, difficulty, userId, objectives } = req.body;
+
+    if (!testType || !difficulty || !userId) {
+      return res.status(400).json({ message: "Date incomplete!" });
+    }
+
+    let result;
+    console.log("Generating test:", { testType, difficulty, userId, objectives });
+
+    // ================= MAIN OBJECTIVES =================
+    if (testType === "main") {
+      if (!objectives || objectives.length === 0) {
+        return res.status(400).json({ message: "Objectives required!" });
+      }
+
+      if (difficulty === "beginner") {
+        result = await loadBeginnerTestOneAndMoreObjectives(userId, ...objectives);
+      }
+
+      if (difficulty === "intermediate") {
+        result = await loadIntermediateTestOneAndMoreObjectives(userId, ...objectives);
+      }
+
+      if (difficulty === "hard") {
+        result = await loadHardTestOneAndMoreObjectives(userId, ...objectives);
+      }
+    }
+
+    // ================= SUBOBJECTIVES =================
+    if (testType === "sub") {
+      if (!objectives || objectives.length === 0) {
+        return res.status(400).json({ message: "Subobjectives required!" });
+      }
+
+      if (difficulty === "beginner") {
+        result = await loadBeginnerSubobjectivesTests(userId, ...objectives);
+      }
+
+      if (difficulty === "intermediate") {
+        result = await loadIntermediateSubobjectivesTests(userId, ...objectives);
+      }
+
+      if (difficulty === "hard") {
+        result = await loadHardSubobjectivesTests(userId, ...objectives);
+      }
+    }
+
+    // ================= FINAL TEST =================
+    if (testType === "final") {
+      if (difficulty === "beginner") {
+        result = await loadBeginnerFinalTest(userId);
+      }
+
+      if (difficulty === "intermediate") {
+        result = await loadIntermediateFinalTest(userId);
+      }
+
+      if (difficulty === "hard") {
+        result = await loadHardFinalTest(userId);
+      }
+    }
+
+    console.log( result);
+    return res.status(200).json(result);
+
+  } catch (err) {
+    console.error("❌ Error generate test:", err.message);
+    res.status(500).json({ message: "Error generating test!" });
+  }
+});
 
 
 app.listen(3001, () => {

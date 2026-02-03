@@ -22,7 +22,7 @@
     <div class="profile-menu-test">
         <button onclick="loadMainObjectives()">Main Objectives</button>
         <button onclick="loadSecondaryObjectives()">Secondary Objectives</button>
-        <button>Final Test</button>
+        <button onclick="showFinalTest()">Final Test</button>
     </div>
 
      <!-- <ul id="main-objectives" class="objectives-list"></ul>
@@ -57,7 +57,7 @@
 </div>
 
 <!-- SCRIPT -->
-<script>
+<!-- <script>
     function loadMainObjectives() {
         document.getElementById("main-objectives").style.display = "block";
         document.getElementById("secondary-objectives").style.display = "none";
@@ -161,40 +161,309 @@
 
 
 
-    function confirmSelection() {
-        const selectedObjectives = [];
+    // function confirmSelection() {
+    //     const selectedObjectives = [];
 
+    //     document.querySelectorAll(".objective-checkbox:checked").forEach(cb => {
+    //         selectedObjectives.push({
+    //             id: cb.value,
+    //             name: cb.dataset.name
+    //         });
+    //     });
+
+    //     if (selectedObjectives.length === 0) {
+    //         alert("Selectează cel puțin un obiectiv!");
+    //         return;
+    //     }
+
+    //     console.log("Obiective selectate:", selectedObjectives);
+
+    //     // 🔹 EXEMPLU: salvare locală (util pentru pasul următor)
+    //     localStorage.setItem("selectedObjectives", JSON.stringify(selectedObjectives));
+
+    //     // 🔹 EXEMPLU: trimitere către backend
+    //     /*
+    //     fetch("http://localhost:8080/api/generate-test", {
+    //         method: "POST",
+    //         headers: { "Content-Type": "application/json" },
+    //         body: JSON.stringify(selectedObjectives)
+    //     });
+    //     */
+
+    //     alert("Obiectivele au fost salvate!");
+    // }
+
+    function confirmSelection() {
+        const userId = localStorage.getItem("userId");
+
+        const objectives = [];
         document.querySelectorAll(".objective-checkbox:checked").forEach(cb => {
-            selectedObjectives.push({
-                id: cb.value,
-                name: cb.dataset.name
-            });
+            objectives.push(parseInt(cb.value));
         });
 
-        if (selectedObjectives.length === 0) {
-            alert("Selectează cel puțin un obiectiv!");
-            return;
-        }
+        const payload = {
+            testType: selectedTestType,       // "main" | "sub" | "final"
+            difficulty: selectedDifficulty,   // "beginner" | "intermediate" | "hard"
+            userId: userId,
+            objectives: objectives            // ignorat la final test
+        };
 
-        console.log("Obiective selectate:", selectedObjectives);
-
-        // 🔹 EXEMPLU: salvare locală (util pentru pasul următor)
-        localStorage.setItem("selectedObjectives", JSON.stringify(selectedObjectives));
-
-        // 🔹 EXEMPLU: trimitere către backend
-        /*
-        fetch("http://localhost:8080/api/generate-test", {
+        fetch("http://localhost:3001/generate-test", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedObjectives)
-        });
-        */
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Test generat:", data);
+        })
+        .catch(err => console.error(err));
+        }
 
-        alert("Obiectivele au fost salvate!");
+
+    function showFinalTest() {
+    // ascunde obiectivele
+    document.getElementById("main-objectives").style.display = "none";
+    document.getElementById("secondary-objectives").style.display = "none";
+
+    // opțional: dezactivează checkbox-urile
+    document.querySelectorAll(".objective-checkbox").forEach(cb => {
+        cb.disabled = true;
+    });
+
+    // afișează panelul de dificultate
+    document.querySelector(".difficulty-panel").style.display = "block";
+}
+
+
+
+</script> -->
+
+<script>
+    // Variabile globale pentru testul selectat și dificultate
+    let selectedTestType = null;       // "main" | "sub" | "final"
+    let selectedDifficulty = null;     // "beginner" | "intermediate" | "hard"
+
+    // === Load main objectives ===
+    function loadMainObjectives() {
+        selectedTestType = "main";
+        document.getElementById("main-objectives").style.display = "block";
+        document.getElementById("secondary-objectives").style.display = "none";
+
+        fetch("/data/objectives.xml")
+            .then(response => {
+                if (!response.ok) throw new Error("HTTP error " + response.status);
+                return response.text();
+            })
+            .then(xmlText => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+
+                const mainObjectives = xmlDoc.querySelectorAll("obiective > obiectiv");
+                const container = document.getElementById("main-objectives");
+                container.innerHTML = "";
+
+                mainObjectives.forEach(obj => {
+                    const id = obj.getAttribute("id");
+                    const name = obj.querySelector("name").textContent;
+
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <label>
+                            <input type="checkbox" class="objective-checkbox" value="${id}" data-name="${name}">
+                            ${name}
+                        </label>
+                    `;
+                    container.appendChild(li);
+                });
+            })
+            .catch(err => console.error("Eroare la încărcarea XML:", err));
     }
 
+    // === Load secondary objectives ===
+    function loadSecondaryObjectives() {
+        selectedTestType = "sub";
+        document.getElementById("secondary-objectives").style.display = "block";
+        document.getElementById("main-objectives").style.display = "none";
+
+        fetch("/data/objectives.xml")
+            .then(res => res.text())
+            .then(xmlText => {
+                const xmlDoc = new DOMParser().parseFromString(xmlText, "text/xml");
+                const container = document.getElementById("secondary-objectives");
+                container.innerHTML = "";
+
+                const secondaryObjectives = xmlDoc.querySelectorAll("subobiective > obiectiv");
+                secondaryObjectives.forEach(obj => {
+                    const id = obj.getAttribute("id");
+                    const name = obj.querySelector("name").textContent;
+
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <input type="checkbox" class="objective-checkbox" value="${id}" data-name="${name}">
+                        <span>${name}</span>
+                    `;
+                    container.appendChild(li);
+                });
+            })
+            .catch(err => console.error("Eroare XML:", err));
+    }
+
+    // === Show final test panel ===
+    function showFinalTest() {
+        selectedTestType = "final";
+        document.getElementById("main-objectives").style.display = "none";
+        document.getElementById("secondary-objectives").style.display = "none";
+
+        document.querySelectorAll(".objective-checkbox").forEach(cb => cb.disabled = true);
+        document.querySelector(".difficulty-panel").style.display = "block";
+    }
+
+    // === Set difficulty ===
+    function setDifficulty(level) {
+        selectedDifficulty = level;
+        console.log("Dificultate selectată:", selectedDifficulty);
+    }
+
+    // === Confirm selection and send payload ===
+//    function confirmSelection() {
+//     // simulăm autentificarea
+//     localStorage.setItem("userId", "U00033");  
+//     const userId = localStorage.getItem("userId");
+//     if (!userId) {
+//         alert("Nu ești autentificat!");
+//         return;
+//     }
+
+//     if (!selectedTestType) {
+//         alert("Selectează tipul de test!");
+//         return;
+//     }
+
+//     if (selectedTestType === "final" && !selectedDifficulty) {
+//         alert("Selectează dificultatea!");
+//         return;
+//     }
+
+//     const objectives = [];
+//     document.querySelectorAll(".objective-checkbox:checked").forEach(cb => {
+//         objectives.push(parseInt(cb.value));
+//     });
+
+//     if ((selectedTestType === "main" || selectedTestType === "sub") && objectives.length === 0) {
+//         alert("Selectează cel puțin un obiectiv!");
+//         return;
+//     }
+
+//     const payload = {
+//         testType: selectedTestType,
+//         difficulty: selectedDifficulty,
+//         userId: userId,
+//         objectives: objectives
+//     };
+
+//     console.log("Payload trimis:", payload);
+
+//     fetch("http://localhost:3001/generate-test", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(payload)
+//     })
+//     .then(res => res.json())
+//     .then(data => {
+//         console.log("Test generat:", data);
+//         alert("Test generat cu succes! Verifică consola pentru răspuns.");
+//         const questions = data.questions;
+
+//         // Afișăm întrebările în container
+//         displayQuestions(questions);
+//     })
+//     .catch(err => console.error("Eroare la generare test:", err));
+// }
+
+// function displayQuestions(questions) {
+//     const container = document.getElementById("questions-container");
+//     container.innerHTML = ""; // golim containerul înainte
+
+//     questions.forEach((q, index) => {
+//         const div = document.createElement("div");
+//         div.className = "question-block";
+//         div.style.marginBottom = "20px";
+
+//         div.innerHTML = `
+//             <p><strong>Întrebarea ${index + 1}:</strong> ${q.text}</p>
+//             <ul>
+//                 ${q.options.map(opt => `<li>${opt}</li>`).join("")}
+//             </ul>
+//         `;
+
+//         container.appendChild(div);
+//     });
+// }
+function confirmSelection() {
+    let userId = localStorage.getItem("userId");
+    localStorage.setItem("userId", "U00033");
+    if (!userId) {
+        alert("Nu ești autentificat!");
+        return;
+    }
+
+    if (!selectedTestType) {
+        alert("Selectează tipul de test!");
+        return;
+    }
+
+    if (selectedTestType === "final" && !selectedDifficulty) {
+        alert("Selectează dificultatea!");
+        return;
+    }
+
+    const objectives = [];
+    document.querySelectorAll(".objective-checkbox:checked").forEach(cb => {
+        objectives.push(parseInt(cb.value));
+    });
+
+    if ((selectedTestType === "main" || selectedTestType === "sub") && objectives.length === 0) {
+        alert("Selectează cel puțin un obiectiv!");
+        return;
+    }
+
+    // 🔹 Transformare dificultate pentru backend
+    let backendDifficulty;
+    if (selectedDifficulty === "easy") backendDifficulty = "beginner";
+    if (selectedDifficulty === "medium") backendDifficulty = "intermediate";
+    if (selectedDifficulty === "hard") backendDifficulty = "hard";
+
+    const payload = {
+        testType: selectedTestType,       
+        difficulty: backendDifficulty,   
+        userId: userId,
+        objectives: objectives
+    };
+
+    console.log("Payload trimis:", payload);
+
+    fetch("http://localhost:3001/generate-test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Test generat:", data);
+        // alert("Test generat cu succes! Verifică consola pentru răspuns.");
+        
+        // 🔹 salvezi testul pentru pagina următoare
+        localStorage.setItem("currentTest", JSON.stringify(data));
+
+        // 🔹 redirect către pagina de test
+        window.location.href = "/test.html";
+    })
+    .catch(err => console.error("Eroare la generare test:", err));
+}
 
 </script>
+
 
 </body>
 </html>

@@ -10,24 +10,24 @@
 <body>
 
 <!-- ===== HEADER CU LOGO-URI ===== -->
-<div class="header">
+<!-- <div class="header">
     <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
     <img src="../images/upt.png" alt="University Logo" width="257" height="88">
     <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
-</div>
+</div> -->
 
 <!-- ===== APLICAȚIE TEST ===== -->
 <div class="app">
 
     <!-- TOOLBAR -->
-    <header class="toolbar">
+    <!-- <header class="toolbar">
         <button>Submit</button>
         <button>Previous Question</button>
         <button>Next</button>
         <button>Review questions!</button>
         <button class="danger">Done the test</button>
         <button class="mark">Mark this Question for Review!</button>
-    </header>
+    </header> -->
 
     <!-- HEADER ÎNTREBARE -->
     <section class="question-header">
@@ -49,11 +49,11 @@
     <section class="answers" id="answersForm"></section>
 
     <!-- FOOTER PROGRES -->
-    <footer class="progress">
+    <!-- <footer class="progress">
         <div>Test Progress</div>
         <progress value="0" max="100"></progress>
         <div>Question 4 from 20</div>
-    </footer>
+    </footer> -->
 
 </div>
 
@@ -67,57 +67,99 @@
 <!-- ===== SCRIPT ===== -->
 <script>
 /* ===== JSON EXACT ===== */
-const question = {
-  "format" : "TEXT_UP_IMG_TEXT_DOWN_RASPUNSURI",
-  "type" : "MIDLELEVELQUESTION",
-  "id" : "ManipulateDataUsingStringBuilder102",
-  "estimateSeconds" : 100,
-  "Content": {
-    "text": {
-      "textUP": "What is the output ...",
-      "img": "../images/itlabs.png",
+// const question = {
+//   "format" : "TEXT_UP_IMG_TEXT_DOWN_RASPUNSURI",
+//   "type" : "MIDLELEVELQUESTION",
+//   "id" : "ManipulateDataUsingStringBuilder102",
+//   "estimateSeconds" : 100,
+//   "Content": {
+//     "text": {
+//       "textUP": "What is the output ...",
+//       "img": "../images/itlabs.png",
+//     }
+//   },
+//   "responses" : [
+//     { "respoonse" : "cars" },
+//     { "respoonse" : "cars carts" },
+//     { "respoonse" : "ccars arts" },
+//     { "respoonse" : "The code does not compile." },
+//     { "respoonse" : "The code compiles but throws an exception at runtime." }
+//   ],
+//   "answers" : [
+//     { "answer" : false },
+//     { "answer" : false },
+//     { "answer" : false },
+//     { "answer" : false },
+//     { "answer" : true }
+//   ],
+//   "hint" : "Use invalid index"
+// };
+
+// /* ===== RANDĂRE ÎNTREBARE ===== */
+// document.getElementById("textUp").textContent =
+//     question.Content.text.textUP;
+
+// document.getElementById("questionImage").src =
+//     question.Content.text.img;
+
+// /* ===== RANDĂRE RĂSPUNSURI ===== */
+// const answersForm = document.getElementById("answersForm");
+
+// question.responses.forEach((resp, index) => {
+//     const div = document.createElement("div");
+//     div.className = "answer";
+
+//     div.innerHTML = `
+//         <label>
+//             <input type="checkbox" value="${index}">
+//             ${resp.respoonse}
+//         </label>
+//     `;
+
+//     answersForm.appendChild(div);
+// });
+window.renderQuestion = function(question, index, total) {
+
+    /* ===== HEADER ===== */
+    document.querySelector(".question-number").textContent =
+        `Question ${index + 1}`;
+
+    document.querySelector(".question-id").textContent =
+        question.id;
+
+    /* ===== TEXT SUS ===== */
+    document.getElementById("textUp").textContent =
+        question.Content.textUP;
+
+    /* ===== IMAGINE ===== */
+    const imgEl = document.getElementById("questionImage");
+    if (question.Content.img) {
+        imgEl.src = question.Content.img;
+        imgEl.style.display = "block";
+    } else {
+        imgEl.style.display = "none";
     }
-  },
-  "responses" : [
-    { "respoonse" : "cars" },
-    { "respoonse" : "cars carts" },
-    { "respoonse" : "ccars arts" },
-    { "respoonse" : "The code does not compile." },
-    { "respoonse" : "The code compiles but throws an exception at runtime." }
-  ],
-  "answers" : [
-    { "answer" : false },
-    { "answer" : false },
-    { "answer" : false },
-    { "answer" : false },
-    { "answer" : true }
-  ],
-  "hint" : "Use invalid index"
+
+    /* ===== RĂSPUNSURI ===== */
+    const answersForm = document.getElementById("answersForm");
+    answersForm.innerHTML = "";
+
+    question.responses.forEach((resp, i) => {
+        answersForm.innerHTML += `
+            <div class="answer">
+                <label>
+                    <input type="checkbox" data-index="${i}">
+                    ${resp.respoonse}
+                </label>
+            </div>
+        `;
+    });
+
+    /* ===== PROGRESS ===== */
+    const progress = document.querySelector("progress");
+    progress.value = Math.round(((index + 1) / total) * 100);
 };
 
-/* ===== RANDĂRE ÎNTREBARE ===== */
-document.getElementById("textUp").textContent =
-    question.Content.text.textUP;
-
-document.getElementById("questionImage").src =
-    question.Content.text.img;
-
-/* ===== RANDĂRE RĂSPUNSURI ===== */
-const answersForm = document.getElementById("answersForm");
-
-question.responses.forEach((resp, index) => {
-    const div = document.createElement("div");
-    div.className = "answer";
-
-    div.innerHTML = `
-        <label>
-            <input type="checkbox" value="${index}">
-            ${resp.respoonse}
-        </label>
-    `;
-
-    answersForm.appendChild(div);
-});
 </script>
 
 </body>
