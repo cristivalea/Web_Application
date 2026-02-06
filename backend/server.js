@@ -1192,6 +1192,43 @@ app.post("/generate-test", async (req, res) => {
   }
 });
 
+// Aceasta este ruta apelată de butonul "Done the test" din frontend
+app.post('/submit-test', async (req, res) => {
+    try {
+        // req.body conține lista de obiecte TestResolveItemDTO trimisă de tine
+        // { idUser, idTest, idQuestion, selectedAnswers }
+        const userResponses = req.body.responses; 
+
+        console.log("Trimitere răspunsuri către Spring Boot la /testResolve/evaluate...");
+
+        // Facem legătura cu API-ul de Java
+        const springResponse = await axios.post('http://localhost:8080/testResolve/evaluate', userResponses, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        // Spring Boot returnează un obiect de tip TestResolveResultDTO
+        const evaluationResult = springResponse.data;
+
+        console.log("Rezultat evaluare primit:", evaluationResult);
+
+        // Trimitem rezultatul înapoi la Frontend
+        res.status(200).json(evaluationResult);
+
+    } catch (error) {
+        console.error("Eroare la comunicarea cu API-ul Java:", error.message);
+        
+        if (error.response) {
+            // Eroare venită de la Spring Boot
+            res.status(error.response.status).json(error.response.data);
+        } else {
+            // Eroare de rețea sau server Node.js
+            res.status(500).json({ error: "Nu s-a putut contacta serviciul de evaluare." });
+        }
+    }
+});
+
 
 app.listen(3001, () => {
   console.log("✅ Server pornit pe http://localhost:3001");

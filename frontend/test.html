@@ -17,8 +17,11 @@
     <button id="prevBtn">Previous Question</button>
     <button id="nextBtn">Next</button>
     <button id="reviewBtn">Review questions!</button>
-    <button class="danger">Done the test</button>
-    <button class="mark">Mark this Question for Review!</button>
+    <button class="danger" id="doneBtn">Done the test</button>
+    <button class="mark" id="markBtn">Mark this Question for Review!</button>
+    <div id="timer-display" style="font-weight: bold; font-size: 1.2rem; color: #d9534f; margin-right: 15px;">
+        Time: --:--
+    </div>
 </header>
 
     <div id="question-container"></div>
@@ -134,28 +137,235 @@
 //     }
 // }
 
+// 1. Inițializăm lista globală de răspunsuri
+let allUserAnswers = [];
 const testData = JSON.parse(localStorage.getItem("currentTest"));
 let currentQuestionIndex = 0;
+const questions = testData.quesyions || testData.questions;
+let markedQuestions = []; // Lista cu indecșii întrebărilor marcate
+let currentReviewIndex = -1; // Urmărește unde suntem în lista de review
+
+function saveCurrentAnswer() {
+    const container = document.getElementById("question-container");
+    
+    // 1. Luăm întrebarea brută (cea care conține string-ul .question)
+    const rawQuestionData = questions[currentQuestionIndex]; 
+    
+    // 2. Parsăm conținutul (obiectul pe care l-ai trimis în log-ul anterior)
+    let questionObj;
+    try {
+        questionObj = JSON.parse(rawQuestionData.question);
+    } catch (e) {
+        console.error("Eroare la parsarea JSON-ului întrebării");
+        return;
+    }
+
+    // 3. Colectăm răspunsurile bifate
+    const selectedInputs = container.querySelectorAll('input:checked');
+    if (selectedInputs.length === 0) {
+        alert("Te rugăm să selectezi cel puțin un răspuns înainte de Submit!");
+        return;
+    }
+
+    const selectedTexts = Array.from(selectedInputs).map(input => {
+        // Căutăm textul în label sau părinte
+        const label = container.querySelector(`label[for="${input.id}"]`);
+        return label ? label.innerText.trim() : input.parentElement.innerText.trim();
+    });
+
+    // 4. CONSTRUCȚIA JSON-ULUI - Folosim proprietățile reale descoperite
+    const answerEntry = {
+        "idUser": localStorage.getItem("userId"),
+        "idTest": testData.test.idTest, 
+        // Aici folosim 'id' din interiorul obiectului de întrebare parsat
+        "idQuestion": questionObj.id, 
+        "selectedAnswers": selectedTexts
+    };
+
+    // 5. Salvare în listă (Update sau Push)
+    const existingIndex = allUserAnswers.findIndex(item => item.idQuestion === answerEntry.idQuestion);
+    
+    if (existingIndex !== -1) {
+        allUserAnswers[existingIndex] = answerEntry;
+    } else {
+        allUserAnswers.push(answerEntry);
+    }
+
+    // Afișăm în consolă pentru confirmare
+    console.log("JSON Generat:", JSON.stringify(answerEntry, null, 2));
+    console.log("Lista completă de răspunsuri:", allUserAnswers);
+    
+    alert(`Răspuns salvat pentru: ${answerEntry.idQuestion}`);
+}
+
+async function finishTest() {
+    if (allUserAnswers.length === 0) {
+        if (!confirm("Nu ai salvat niciun răspuns prin butonul Submit. Sigur vrei să închei testul?")) {
+            return;
+        }
+    }
+
+    console.log("Se trimit răspunsurile către backend:", allUserAnswers);
+
+    try {
+        const response = await fetch("http://localhost:3001/submit-test", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                idUser: localStorage.getItem("userId") || "U00033",
+                idTest: testData.test.idTest,
+                responses: allUserAnswers
+            })
+        });
+
+        if (response.ok) {
+            const result = await response.json(); // Acesta este obiectul {totalQuestions: 2, ...}
+            
+            // --- PASUL CRITIC: Salvează rezultatul pentru pagina results.html ---
+            localStorage.setItem("lastTestResult", JSON.stringify(result));
+            
+            alert("Testul a fost trimis cu succes!");
+            
+            // Redirecționare (asigură-te că calea este corectă față de fișierul curent)
+            window.location.href = "results.html"; 
+        } else {
+            const errorData = await response.json();
+            console.error("Eroare server:", errorData);
+            throw new Error("Eroare la trimiterea testului.");
+        }
+    } catch (error) {
+        console.error("Eroare fetch:", error);
+        alert("A apărut o problemă la comunicarea cu serverul.");
+    }
+}
+
+// Funcția pentru a marca/demarca întrebarea curentă
+function toggleMark() {
+    const index = currentQuestionIndex;
+    const pos = markedQuestions.indexOf(index);
+
+    if (pos === -1) {
+        markedQuestions.push(index);
+        markedQuestions.sort((a, b) => a - b); // Menținem ordinea întrebărilor
+        alert(`Întrebarea ${index + 1} a fost marcată.`);
+    } else {
+        markedQuestions.splice(pos, 1);
+        alert(`Întrebarea ${index + 1} a fost scoasă din lista de review.`);
+    }
+    console.log("Întrebări marcate:", markedQuestions);
+}
+
+// Funcția pentru navigarea prin întrebările marcate
+function reviewMarkedQuestions() {
+    if (markedQuestions.length === 0) {
+        alert("Nu ai nicio întrebare marcată pentru review.");
+        return;
+    }
+
+    // Trecem la următoarea întrebare marcată
+    currentReviewIndex++;
+
+    // Dacă am ajuns la finalul listei de marcaje, revenim la prima
+    if (currentReviewIndex >= markedQuestions.length) {
+        currentReviewIndex = 0;
+        alert("Ai parcurs toate întrebările marcate. Revenim la prima.");
+    }
+
+    const nextMarkedIndex = markedQuestions[currentReviewIndex];
+    currentQuestionIndex = nextMarkedIndex;
+    loadQuestion(currentQuestionIndex);
+}
+
 
 // ATENȚIE: Verifică dacă în API cheia este "quesyions" sau "questions"
 // Din log-ul tău rezultă că este "quesyions" (cu 'y')
-const questions = testData.quesyions || testData.questions;
 
-// 1. Inițializare butoane din Toolbar (cele de sus)
+
+// // 1. Inițializare butoane din Toolbar (cele de sus)
+// document.addEventListener("DOMContentLoaded", () => {
+//     const nextBtn = document.getElementById("nextBtn");
+//     const prevBtn = document.getElementById("prevBtn");
+//     const submitBtn = document.getElementById("submitBtn");
+
+//     if (nextBtn) nextBtn.addEventListener("click", nextQuestion);
+//     if (prevBtn) prevBtn.addEventListener("click", prevQuestion);
+//     if (submitBtn) submitBtn.addEventListener("click", () => {
+//         saveCurrentAnswer();
+//         // Aici poți adăuga logica de trimitere a răspunsurilor către backend
+//         // alert("Răspunsurile au fost salvate! Verifică consola pentru detalii.");
+//     });
+
+//     // Încărcăm prima întrebare
+//     if (questions && questions.length > 0) {
+//         loadQuestion(currentQuestionIndex);
+//     } else {
+//         console.error("Nu există întrebări în test.");
+//     }
+// });
+
+let timeLeft = testData.test.estimatedDuration; // Durata venită din API în secunde
+let timerInterval;
+
+function startTimer() {
+    const display = document.getElementById("timer-display");
+
+    timerInterval = setInterval(() => {
+        // Calculăm minutele și secundele
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+
+        // Formatăm să arate mereu 2 cifre (ex: 05:09)
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.innerText = `Time: ${minutes}:${seconds}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert("Timpul a expirat! Testul va fi trimis automat.");
+            finishTest(); // Trimitem testul automat când expiră timpul
+        }
+
+        timeLeft--; // Scădem o secundă
+    }, 1000);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const nextBtn = document.getElementById("nextBtn");
     const prevBtn = document.getElementById("prevBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const doneBtn = document.getElementById("doneBtn");
+    const markBtn = document.getElementById("markBtn"); // Buton nou
+    const reviewBtn = document.getElementById("reviewBtn"); // Buton nou
+
+    if (questions && questions.length > 0) {
+        loadQuestion(currentQuestionIndex);
+        startTimer(); // Pornim cronometrul aici
+    }
 
     if (nextBtn) nextBtn.addEventListener("click", nextQuestion);
     if (prevBtn) prevBtn.addEventListener("click", prevQuestion);
+    
+    // Butonul Submit salvează răspunsul curent
+    if (submitBtn) {
+        submitBtn.addEventListener("click", saveCurrentAnswer);
+    }
 
-    // Încărcăm prima întrebare
+    if (doneBtn) {
+        doneBtn.addEventListener("click", finishTest);
+    }
+
+    if (markBtn) markBtn.addEventListener("click", toggleMark);
+    if (reviewBtn) reviewBtn.addEventListener("click", reviewMarkedQuestions);
+
     if (questions && questions.length > 0) {
         loadQuestion(currentQuestionIndex);
-    } else {
-        console.error("Nu există întrebări în test.");
     }
 });
+
+
 
 function loadQuestion(index) {
     const q = questions[index];
@@ -202,9 +412,42 @@ function loadQuestion(index) {
             if (typeof renderQuestion === "function") {
                 renderQuestion(questionObj, index, questions.length);
                 updateProgressBar(index, questions.length);
+                restoreUserAnswer(questionObj.id);
             }
         }, 50);
     });
+
+    // Adaugă asta în loadQuestion
+    const markBtn = document.getElementById("markBtn");
+    if (markedQuestions.includes(index)) {
+        markBtn.style.backgroundColor = "yellow";
+        markBtn.innerText = "Unmark Question";
+    } else {
+        markBtn.style.backgroundColor = "";
+        markBtn.innerText = "Mark this Question for Review!";
+    }
+}
+
+function restoreUserAnswer(questionId) {
+    // Căutăm dacă avem deja un răspuns salvat pentru acest ID de întrebare
+    const savedEntry = allUserAnswers.find(item => item.idQuestion === questionId);
+    
+    if (savedEntry && savedEntry.selectedAnswers.length > 0) {
+        const container = document.getElementById("question-container");
+        const inputs = container.querySelectorAll('input');
+
+        inputs.forEach(input => {
+            // Căutăm textul label-ului asociat input-ului
+            const label = container.querySelector(`label[for="${input.id}"]`);
+            const labelText = label ? label.innerText.trim() : input.parentElement.innerText.trim();
+
+            // Dacă textul se află în lista de răspunsuri salvate, bifăm input-ul
+            if (savedEntry.selectedAnswers.includes(labelText)) {
+                input.checked = true;
+            }
+        });
+        console.log(`Restaurat răspuns pentru întrebarea: ${questionId}`);
+    }
 }
 
 function nextQuestion() {
@@ -217,9 +460,41 @@ function nextQuestion() {
 }
 
 function prevQuestion() {
+    autoSaveSelection();
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
         loadQuestion(currentQuestionIndex);
+    }
+}
+
+function autoSaveSelection() {
+    const container = document.getElementById("question-container");
+    const selectedInputs = container.querySelectorAll('input:checked');
+    
+    // Dacă nu e nimic bifat, nu salvăm nimic (sau lăsăm vechiul răspuns)
+    if (selectedInputs.length === 0) return;
+
+    // Reutilizăm logica de parsare din saveCurrentAnswer, dar fără alert-uri
+    const rawQuestionData = questions[currentQuestionIndex]; 
+    let questionObj = JSON.parse(rawQuestionData.question);
+
+    const selectedTexts = Array.from(selectedInputs).map(input => {
+        const label = container.querySelector(`label[for="${input.id}"]`);
+        return label ? label.innerText.trim() : input.parentElement.innerText.trim();
+    });
+
+    const answerEntry = {
+        "idUser": localStorage.getItem("userId"),
+        "idTest": testData.test.idTest, 
+        "idQuestion": questionObj.id, 
+        "selectedAnswers": selectedTexts
+    };
+
+    const existingIndex = allUserAnswers.findIndex(item => item.idQuestion === answerEntry.idQuestion);
+    if (existingIndex !== -1) {
+        allUserAnswers[existingIndex] = answerEntry;
+    } else {
+        allUserAnswers.push(answerEntry);
     }
 }
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+
+   <div class="header">
+        <img src="/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="/images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="/images/ac.png" alt="Faculty Logo" width="296" height="90">
+    </div>
+
+    <div class="login-container">
+       <h1 class="title">Test Results</h1>
+       <div class="results-card">
+            <div class="result-item">
+                <span>Total întrebări:</span>
+                <b id="res-total">-</b> 
+            </div>
+            <div class="result-item">
+                <span>Întrebări corecte:</span>
+                <b id="res-correct" style="color: #4A59AA;">-</b>
+            </div>
+            <div class="result-item">
+                <span>Întrebări greșite:</span>
+                <b id="res-wrong" style="color: #4A59AA;">-</b>
+            </div>
+            <div class="percentage" id="percentageContainer">
+                Scor: <span id="res-percent">-</span>%
+            </div>
+
+            <div style="margin-top: 100px; text-align: center;">
+                <button class="login-btn" onclick="goToProfile()">Finalizare</button>
+            </div>
+       </div>
+    </div>
+
+   <div class="footer">
+        <p>&copy; 2025 ITLabs. All rights reserved.</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rawData = localStorage.getItem("lastTestResult");
+            console.log("Date brute din storage:", rawData); // Verifică asta în Consolă (F12)
+            
+            if (rawData) {
+                const resultData = JSON.parse(rawData);
+                
+                const total = resultData.totalQuestions || 0;
+                const correct = resultData.correctQuestions || 0;
+                const wrong = total - correct;
+                // Verificăm dacă percentage există, altfel calculăm noi
+                const percent = resultData.percentage !== undefined ? 
+                                parseFloat(resultData.percentage).toFixed(1) : 
+                                ((correct / total) * 100).toFixed(1);
+
+                // Acum ID-urile de aici se potrivesc cu cele din HTML de mai sus
+                const elTotal = document.getElementById("res-total");
+                const elCorrect = document.getElementById("res-correct");
+                const elWrong = document.getElementById("res-wrong");
+                const elPercent = document.getElementById("res-percent");
+
+                if(elTotal) elTotal.innerText = total;
+                if(elCorrect) elCorrect.innerText = correct;
+                if(elWrong) elWrong.innerText = wrong;
+                if(elPercent) elPercent.innerText = percent;
+
+            } else {
+                console.error("Nu s-au găsit date sub cheia 'lastTestResult'");
+            }
+        });
+
+        function goToProfile() {
+            localStorage.removeItem("lastTestResult");
+            localStorage.removeItem("currentTest");
+            window.location.href = "/profile.html"; 
+        }
+    </script>
+</body>
+</html>
