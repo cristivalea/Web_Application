@@ -132,12 +132,29 @@ window.renderQuestion = function(question, index, total) {
         question.Content.textUP;
 
     /* ===== IMAGINE ===== */
-    const imgEl = document.getElementById("questionImage");
-    if (question.Content.img) {
-        imgEl.src = question.Content.img;
-        imgEl.style.display = "block";
-    } else {
-        imgEl.style.display = "none";
+    // const imgEl = document.getElementById("questionImage");
+    // if (question.Content.img) {
+    //     imgEl.src = question.Content.img;
+    //     imgEl.style.display = "block";
+    // } else {
+    //     imgEl.style.display = "none";
+    // }
+
+        /* ===== IMAGE ===== */
+   const img = document.getElementById("questionImage");
+    
+    // URL-ul este acum către backend-ul tău Node (port 3001)
+    // Node se va ocupa de restul!
+    const proxyUrl = `http://localhost:3001/api/proxy-image/${question.id}`;
+
+    if (img) {
+        img.src = proxyUrl;
+        img.style.display = "block";
+        
+        // Dacă imaginea nu există, o ascundem automat
+        img.onerror = function() {
+            this.style.display = "none";
+        };
     }
 
     /* ===== RĂSPUNSURI ===== */

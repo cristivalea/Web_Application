@@ -155,32 +155,85 @@ window.renderQuestion = function(question, index, total) {
 };
 
 
+// function simpleJavaHighlight(code) {
+//     // 1. Escape HTML
+//     code = code
+//         .replace(/&/g, "&amp;")
+//         .replace(/</g, "&lt;")
+//         .replace(/>/g, "&gt;");
+
+//     // 2. Protejăm stringurile temporar
+//     const strings = [];
+//     code = code.replace(/"(.*?)"/g, (m) => {
+//         strings.push(m); // stocăm stringul
+//         return "___STR___" + (strings.length - 1); // înlocuim cu placeholder
+//     });
+
+//     // 3. Aplicăm regex pe keywords
+//     const keywords = ["public", "class", "static", "void", "for", "if", "else", "new", "return", "import", "package", "private", "protected"];
+//     keywords.forEach(k => {
+//         const r = new RegExp(`\\b${k}\\b`, "g");
+//          code = code.replace(r, `<span class="kw">${k}</span>`);
+//     });
+
+//     // 4. Aplicăm regex pentru tipuri speciale
+//     code = code.replace(/\b(StringBuilder|String|System|Indexing)\b/g, '<span class="type">$1</span>');
+
+//     // 5. Punem stringurile înapoi
+//     code = code.replace(/___STR___(\d+)/g, (_, i) => `<span class="str">${strings[i]}</span>`);
+
+//     return code;
+// }
+// function simpleJavaHighlight(code) {
+//     // 1. Escape HTML
+//     code = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+//     // 2. Protejăm String-urile (le scoatem din text ca să nu le stricăm)
+//     const strings = [];
+//     code = code.replace(/"(.*?)"/g, (m) => {
+//         strings.push(m);
+//         return `__STR${strings.length - 1}__`;
+//     });
+
+//     // 3. Înlocuim cuvintele cheie folosind un singur Regex Global
+//     // Aceasta este cheia: căutăm toate cuvintele deodată, deci nu trecem de mai multe ori prin același text
+//     const kwRegex = /\b(public|class|static|void|for|if|else|new|return|private|protected|boolean|int)\b/g;
+//     code = code.replace(kwRegex, '<span class="kw">$1</span>');
+
+//     // 4. Specific pentru tipuri/clase (String, System, etc.)
+//     code = code.replace(/\b(String|StringBuilder|System|Indexing|Keyboard)\b/g, '<span class="java-class">$1</span>');
+
+//     // 5. Punem string-urile înapoi
+//     code = code.replace(/__STR(\d+)__/g, (m, index) => {
+//         return `<span class="str">${strings[index]}</span>`;
+//     });
+
+//     return code;
+// }
+
 function simpleJavaHighlight(code) {
     // 1. Escape HTML
-    code = code
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+    code = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-    // 2. Protejăm stringurile temporar
+    // 2. Protejăm String-urile (le scoatem din text ca să nu le stricăm)
     const strings = [];
     code = code.replace(/"(.*?)"/g, (m) => {
-        strings.push(m); // stocăm stringul
-        return "___STR___" + (strings.length - 1); // înlocuim cu placeholder
+        strings.push(m);
+        return `__STR${strings.length - 1}__`;
     });
 
-    // 3. Aplicăm regex pe keywords
-    const keywords = ["public", "class", "static", "void", "for", "if", "else", "new", "return", "import", "package", "private", "protected"];
-    keywords.forEach(k => {
-        const r = new RegExp(`\\b${k}\\b`, "g");
-        // code = code.replace(r, `<span class="kw">${k}</span>`);
+    // 3. Înlocuim cuvintele cheie folosind un singur Regex Global
+    // Aceasta este cheia: căutăm toate cuvintele deodată, deci nu trecem de mai multe ori prin același text
+    const kwRegex = /\b(public|class|static|void|for|if|else|new|return|private|protected|boolean|int)\b/g;
+    code = code.replace(kwRegex, '<span class="kw">$1</span>');
+
+    // 4. Specific pentru tipuri/clase (String, System, etc.)
+    code = code.replace(/\b(String|StringBuilder|System|Indexing|Keyboard)\b/g, '<span class="java-class">$1</span>');
+
+    // 5. Punem string-urile înapoi
+    code = code.replace(/__STR(\d+)__/g, (m, index) => {
+        return `<span class="str">${strings[index]}</span>`;
     });
-
-    // 4. Aplicăm regex pentru tipuri speciale
-    code = code.replace(/\b(StringBuilder|String|System|Indexing)\b/g, '<span class="type">$1</span>');
-
-    // 5. Punem stringurile înapoi
-    code = code.replace(/___STR___(\d+)/g, (_, i) => `<span class="str">${strings[i]}</span>`);
 
     return code;
 }

@@ -1229,6 +1229,39 @@ app.post('/submit-test', async (req, res) => {
     }
 });
 
+app.get('/api/proxy-image/:idQuestion', async (req, res) => {
+    try {
+        const idQuestion = req.params.idQuestion;
+        
+        // 1. Întrebăm Java care este fișierul pentru acest ID
+        // (Sau dacă Node are deja acces la baza de date, luăm de acolo filePath)
+        const javaResponse = await axios.get(`http://localhost:8080/api/question_image/allImages`);
+        const imageData = javaResponse.data.find(img => img.idQuestion === idQuestion);
+
+        if (!imageData) {
+            return res.status(404).send('Imaginea nu a fost găsită');
+        }
+        const dbPath = imageData.imagePath; // "/images/questions/CQ100159/f8de...png"
+        const fileName = dbPath.split('/').pop(); // Rezultă: "f8de...png
+
+        // 2. Cerem imaginea efectivă de la Java
+        const imageUrl = `http://localhost:8080/api/question_image/images/questions/${idQuestion}/${fileName}`;
+        
+        const imageStream = await axios({
+            method: 'get',
+            url: imageUrl,
+            responseType: 'stream'
+        });
+
+        // 3. Trimitem fluxul de date (stream) direct către Frontend
+        imageStream.data.pipe(res);
+
+    } catch (error) {
+        console.error("Eroare Proxy:", error.message);
+        res.status(500).send("Eroare la preluarea imaginii");
+    }
+});
+
 
 app.listen(3001, () => {
   console.log("✅ Server pornit pe http://localhost:3001");

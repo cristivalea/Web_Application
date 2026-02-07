@@ -33,109 +33,6 @@
     </footer>
 
 <script>
-//     const testData = JSON.parse(localStorage.getItem("currentTest"));
-//     console.log("Test primit în test.html:", testData);
-
-// let currentQuestionIndex = 0;
-// const questions = testData.quesyions;
-
-// // loadQuestion(currentQuestionIndex);
-// if (!questions || questions.length === 0) {
-//     console.error("Nu există întrebări în test:", testData);
-// } else {
-//     loadQuestion(currentQuestionIndex);
-// }
-
-
-// function loadQuestion(index) {
-//     const q = questions[index];
-
-//     let questionObj;
-//     try {
-//         questionObj = JSON.parse(q.question);
-//     } catch (e) {
-//         console.error("JSON invalid pentru întrebare:", q.question);
-//         return;
-//     }
-
-//     const format = questionObj.format;
-//     console.log("FORMAT:", format);
-
-//     // mapare format → fișier HTML
-//     const formatMap = {
-//         "TEXT_UP": "text_up.html",
-//         "TEXT_UP_COD": "text_up_code.html",  // Fișierul specific pentru întrebările cu cod
-//         "TEXT_UP_IMAGE": "text_up_image.html",  // Și alte fișiere specifice
-//         "TEXT_UP_COD_IMAGE_TEXT_DOWN": "text_up_code_image_text_down.html",
-//         "TEXT_UP_IMAGE_TEXT_DOWN": "text_up_image_text_down_responses.html",
-//         "TEXT_UP_COD_TEXT_DOWN": "text_up_code_text_down.html"
-//     };
-
-//     const page = formatMap[format];
-//     if (!page) {
-//         console.error("Format necunoscut:", format);
-//         return;
-//     }
-
-//     // fetch(`../question_type/${page}`)
-//     // .then(res => res.text())
-//     // .then(html => {
-//     //     const container = document.getElementById("question-container");
-//     //     container.innerHTML = html;
-
-//     //     // Apelăm funcția renderQuestion definită în fișierul specific
-//     //     if (typeof renderQuestion === "function") {
-//     //         renderQuestion(questionObj, index, questions.length);
-//     //     }
-
-//     //     // Adăugăm event listener pentru Next
-//     //     const nextBtn = container.querySelector("#nextButton");
-//     //     if (nextBtn) nextBtn.addEventListener("click", nextQuestion);
-
-//     //     // Adăugăm event listener pentru Previous
-//     //     const prevBtn = container.querySelector("#prevButton");
-//     //     if (prevBtn) prevBtn.addEventListener("click", prevQuestion);
-//     // });
-//     fetch(`../question_type/${page}`)
-//     .then(res => res.text())
-//     .then(html => {
-//         const container = document.getElementById("question-container");
-//         container.innerHTML = html;
-
-//         // Căutăm scripturile în HTML-ul proaspăt injectat
-//         const scripts = container.querySelectorAll("script");
-//         scripts.forEach(oldScript => {
-//             const newScript = document.createElement("script");
-//             newScript.textContent = oldScript.textContent;
-//             document.body.appendChild(newScript); // Această linie forțează execuția
-//         });
-
-//         // Așteptăm un mic delay pentru ca browserul să proceseze scriptul nou
-//         setTimeout(() => {
-//             if (typeof renderQuestion === "function") {
-//                 renderQuestion(questionObj, index, questions.length);
-//             } else {
-//                 console.error("renderQuestion nu a fost găsită în " + page);
-//             }
-//         }, 50);
-//     });
-// }
-
-
-// // navigare
-// function nextQuestion() {
-//     if (currentQuestionIndex < questions.length - 1) {
-//         currentQuestionIndex++;
-//         loadQuestion(currentQuestionIndex);
-//     }
-// }
-
-// function prevQuestion() {
-//     if (currentQuestionIndex > 0) {
-//         currentQuestionIndex--;
-//         loadQuestion(currentQuestionIndex);
-//     }
-// }
 
 // 1. Inițializăm lista globală de răspunsuri
 let allUserAnswers = [];
@@ -195,7 +92,7 @@ function saveCurrentAnswer() {
     console.log("JSON Generat:", JSON.stringify(answerEntry, null, 2));
     console.log("Lista completă de răspunsuri:", allUserAnswers);
     
-    alert(`Răspuns salvat pentru: ${answerEntry.idQuestion}`);
+    // alert(`Răspuns salvat pentru: ${answerEntry.idQuestion}`);
 }
 
 async function finishTest() {
@@ -408,13 +305,48 @@ function loadQuestion(index) {
         });
 
         // Apelăm funcția de randare după un mic delay ca să fim siguri că scriptul e încărcat
+        // setTimeout(() => {
+        //     if (typeof renderQuestion === "function") {
+        //         renderQuestion(questionObj, index, questions.length);
+        //         updateProgressBar(index, questions.length);
+        //         restoreUserAnswer(questionObj.id);
+        //     }
+        // }, 50);
+
+        // setTimeout(() => {
+        //     if (typeof renderQuestion === "function") {
+        //         // Căutăm dacă avem o imagine pentru ID-ul acestei întrebări în map-ul nostru
+        //         const mappedImageUrl = questionImagesMap[questionObj.id];
+
+        //         // Dacă am găsit o imagine în baza de date, suprascriem proprietatea din obiect
+        //         if (mappedImageUrl) {
+        //             console.log(`Asociem imaginea din DB pentru ${questionObj.id}: ${mappedImageUrl}`);
+        //             // Depinde cum ai denumit câmpul în obiectul de conținut (ex: image, imgPath, etc.)
+        //             if (questionObj.conteent) {
+        //                 questionObj.conteent.image = mappedImageUrl; 
+        //                 questionObj.conteent.imgPath = mappedImageUrl;
+        //             }
+        //         }
+
+        //         renderQuestion(questionObj, index, questions.length);
+        //         updateProgressBar(index, questions.length);
+        //         restoreUserAnswer(questionObj.id);
+        //     }
+        // }, 50);
         setTimeout(() => {
-            if (typeof renderQuestion === "function") {
-                renderQuestion(questionObj, index, questions.length);
-                updateProgressBar(index, questions.length);
-                restoreUserAnswer(questionObj.id);
-            }
-        }, 50);
+    if (typeof renderQuestion === "function") {
+        // Obținem URL-ul din map-ul nostru (încărcat la începutul testului)
+        const dbImageUrl = questionImagesMap[questionObj.id];
+
+        if (dbImageUrl) {
+            // Injectăm proprietatea nouă în obiect înainte de a-l trimite la render
+            questionObj.mappedImage = dbImageUrl;
+        }
+
+        renderQuestion(questionObj, index, questions.length);
+        // ... restul funcțiilor
+    }
+}, 50);
     });
 
     // Adaugă asta în loadQuestion
