@@ -333,20 +333,16 @@ function loadQuestion(index) {
         //         restoreUserAnswer(questionObj.id);
         //     }
         // }, 50);
-        setTimeout(() => {
-    if (typeof renderQuestion === "function") {
-        // Obținem URL-ul din map-ul nostru (încărcat la începutul testului)
-        const dbImageUrl = questionImagesMap[questionObj.id];
-
-        if (dbImageUrl) {
-            // Injectăm proprietatea nouă în obiect înainte de a-l trimite la render
-            questionObj.mappedImage = dbImageUrl;
-        }
-
-        renderQuestion(questionObj, index, questions.length);
-        // ... restul funcțiilor
-    }
-}, 50);
+      setTimeout(() => {
+            if (typeof renderQuestion === "function") {
+                // Ștergem liniile cu questionImagesMap care dădeau eroare
+                // Apelăm direct funcția de randare
+                renderQuestion(questionObj, index, questions.length);
+                
+                updateProgressBar(index, questions.length);
+                restoreUserAnswer(questionObj.id);
+            }
+        }, 50);
     });
 
     // Adaugă asta în loadQuestion
