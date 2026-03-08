@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete Security Question</title>
-    <link rel="stylesheet" href="../frontend/style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 <body>
     <div class="header">
-        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
-        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
-        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+        <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
     </div>
 
     <div class="secQuest-container">
@@ -26,8 +26,8 @@
 
     <div class="footer">
         <p>&copy; 2025 ITLabs. All rights reserved.</p>
-        <a href="../frontend/feedback.html" class="feedback">Feedback</a>
-        <a href="../frontend/contact.html" class="contact">Contact Information</a>
+        <a href="../feedback.html" class="feedback">Feedback</a>
+        <a href="../contact.html" class="contact">Contact Information</a>
     </div>
 
     <script>
@@ -43,7 +43,7 @@
 
             if (!questions.length) {
             const li = document.createElement("li");
-            li.textContent = "Nu există întrebări de securitate active.";
+            li.textContent = "There are no active security questions.";
             li.style.color = "#5365A8";
             li.style.fontWeight = "500";
             li.style.listStyleType = "none";
@@ -69,7 +69,7 @@
             btn.style.marginLeft = "10px";
 
         btn.onclick = async () => {
-            if (!confirm("Sigur vrei să ștergi această întrebare?")) return;
+            if (!confirm("Are you sure you want to delete this question?")) return;
 
             try {
             const res = await fetch(
@@ -82,7 +82,7 @@
             await loadSecurityQuestions();
             } catch (err) {
             console.error("Error deleting question:", err);
-            alert("Eroare la ștergerea întrebării!");
+            alert("Error deleting question!");
             }
         };
 
@@ -93,11 +93,11 @@
 
         } catch (err) {
             console.error("Error loading security questions:", err);
-            listEl.innerHTML = "<li>Eroare la încărcarea întrebărilor!</li>";
+            listEl.innerHTML = "<li>Error loading questions!</li>";
         }
         }
 
-        // Apelăm funcția la încărcarea paginii
+
         window.addEventListener("DOMContentLoaded", loadSecurityQuestions);
     </script>
 </body>

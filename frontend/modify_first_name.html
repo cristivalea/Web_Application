@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modify First Name</title>
-    <link rel="stylesheet" href="../frontend/style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 <body>
     <div class="header">
-        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
-        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
-        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+        <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
     </div>
 
     <div class="firstName-container">
@@ -37,12 +37,12 @@
 
         const newFirstName = document.getElementById("firstNameInput").value;
         const userId = localStorage.getItem("userId");
-        console.log("userId din localStorage:", localStorage.getItem("userId"));
+        console.log("userId from localStorage:", localStorage.getItem("userId"));
         console.log("newFirstName:", newFirstName);
 
 
         if (!userId) {
-            alert("Trebuie să fii autentificat pentru a modifica prenumele!");
+            alert("You must be logged in to change your first name!");
             return;
         }
 
@@ -56,14 +56,14 @@
             const data = await response.json();
 
             if (response.ok) {
-            alert("Nume actualizat cu succes!");
+            alert("First name updated successfully!");
             document.getElementById("firstNameInput").value = "";
             } else {
             alert("Eroare: " + data.message);
             }
         } catch (error) {
-            console.error("Eroare la actualizarea prenumelui:", error);
-            alert("A apărut o eroare. Te rugăm să încerci din nou mai târziu.");
+            console.error("Error updating first name:", error);
+            alert("An error occurred. Please try again later.");
         }
         });
     </script>

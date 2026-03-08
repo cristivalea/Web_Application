@@ -400,14 +400,83 @@
 //         container.appendChild(div);
 //     });
 // }
+// function confirmSelection() {
+//     let userId = localStorage.getItem("userId");
+//     localStorage.setItem("userId", "U00033");
+//     if (!userId) {
+//         alert("Nu ești autentificat!");
+//         return;
+//     }
+
+//     if (!selectedTestType) {
+//         alert("Selectează tipul de test!");
+//         return;
+//     }
+
+//     if (selectedTestType === "final" && !selectedDifficulty) {
+//         alert("Selectează dificultatea!");
+//         return;
+//     }
+
+//     const objectives = [];
+//     document.querySelectorAll(".objective-checkbox:checked").forEach(cb => {
+//         objectives.push(parseInt(cb.value));
+//     });
+
+//     if ((selectedTestType === "main" || selectedTestType === "sub") && objectives.length === 0) {
+//         alert("Selectează cel puțin un obiectiv!");
+//         return;
+//     }
+
+//     // 🔹 Transformare dificultate pentru backend
+//     let backendDifficulty;
+//     if (selectedDifficulty === "easy") backendDifficulty = "beginner";
+//     if (selectedDifficulty === "medium") backendDifficulty = "intermediate";
+//     if (selectedDifficulty === "hard") backendDifficulty = "hard";
+
+//     const payload = {
+//         testType: selectedTestType,       
+//         difficulty: backendDifficulty,   
+//         userId: userId,
+//         objectives: objectives
+//     };
+
+//     console.log("Payload trimis:", payload);
+
+//     fetch("http://localhost:3001/generate-test", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(payload)
+//     })
+//     .then(res => res.json())
+//     .then(data => {
+//         console.log("Test generat:", data);
+//         // alert("Test generat cu succes! Verifică consola pentru răspuns.");
+        
+//         // 🔹 salvezi testul pentru pagina următoare
+//         localStorage.setItem("currentTest", JSON.stringify(data));
+
+//         // 🔹 redirect către pagina de test
+//         window.location.href = "/test.html";
+//     })
+//     .catch(err => console.error("Eroare la generare test:", err));
+// }
+
 function confirmSelection() {
+    // 1. Extrage ID-ul stocat la login
     let userId = localStorage.getItem("userId");
-    localStorage.setItem("userId", "U00033");
+
+    // STERGEM SAU COMENTAM LINIA DE MAI JOS (EA ERA HARDCODAREA):
+    // localStorage.setItem("userId", "U00033"); 
+
+    // 2. Verificăm dacă utilizatorul este într-adevăr logat
     if (!userId) {
-        alert("Nu ești autentificat!");
+        alert("Sesiunea a expirat sau nu ești autentificat! Te rugăm să te loghezi din nou.");
+        window.location.href = "/login.html"; // Redirect către login dacă nu există ID
         return;
     }
 
+    // 3. Verificări pentru tipul de test și dificultate
     if (!selectedTestType) {
         alert("Selectează tipul de test!");
         return;
@@ -428,38 +497,38 @@ function confirmSelection() {
         return;
     }
 
-    // 🔹 Transformare dificultate pentru backend
+    // 4. Transformare dificultate pentru backend
     let backendDifficulty;
     if (selectedDifficulty === "easy") backendDifficulty = "beginner";
-    if (selectedDifficulty === "medium") backendDifficulty = "intermediate";
-    if (selectedDifficulty === "hard") backendDifficulty = "hard";
+    else if (selectedDifficulty === "medium") backendDifficulty = "intermediate";
+    else if (selectedDifficulty === "hard") backendDifficulty = "hard";
 
     const payload = {
         testType: selectedTestType,       
         difficulty: backendDifficulty,   
-        userId: userId,
+        userId: userId, // Acum este ID-ul din localStorage
         objectives: objectives
     };
 
-    console.log("Payload trimis:", payload);
+    console.log("Payload trimis către backend:", payload);
 
     fetch("http://localhost:3001/generate-test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) throw new Error("Eroare la generarea testului");
+        return res.json();
+    })
     .then(data => {
-        console.log("Test generat:", data);
-        // alert("Test generat cu succes! Verifică consola pentru răspuns.");
-        
-        // 🔹 salvezi testul pentru pagina următoare
         localStorage.setItem("currentTest", JSON.stringify(data));
-
-        // 🔹 redirect către pagina de test
         window.location.href = "/test.html";
     })
-    .catch(err => console.error("Eroare la generare test:", err));
+    .catch(err => {
+        console.error("Eroare la generare test:", err);
+        alert("Serverul nu a putut genera testul. Încearcă din nou.");
+    });
 }
 
 </script>

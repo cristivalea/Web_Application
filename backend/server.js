@@ -1262,6 +1262,83 @@ app.get('/api/proxy-image/:idQuestion', async (req, res) => {
     }
 });
 
+app.get('/learning-curve/:userId', async (req, res) => {
+    try {
+        const response = await fetch(`http://localhost:8080/testResults/learning-curve/${req.params.userId}`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        res.status(500).send("Eroare comunicare cu API Java");
+    }
+});
+
+app.get('/api/ai-analysis/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const response = await axios.get(`http://localhost:8080/statistics/analysis/${userId}`);
+        res.json(response.data);
+    } catch (error) {
+        console.error("Eroare la conectarea cu Spring Boot:", error);
+        res.status(500).json({ error: "Nu s-a putut obține analiza AI" });
+    }
+});
+
+// Exemplu rută în Node.js (port 3001)
+app.post('/save-duration', async (req, res) => {
+    try {
+        const durationData = req.body;
+
+        // Trimitere date către API-ul Spring Boot (port 8080)
+        const apiResponse = await fetch("http://localhost:8080/test_duration/addTestDuration", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(durationData)
+        });
+
+        if (apiResponse.ok) {
+            res.status(200).json({ message: "Durata a fost salvată în Spring Boot" });
+        } else {
+            res.status(500).json({ message: "Eroare la comunicarea cu Spring Boot" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/user-stats/:userId', async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        console.log(`Solicitare statistici pentru user: ${userId}`);
+
+        // 1. Apelăm API-ul Spring Boot care calculează statisticile
+        // Presupunem că URL-ul de Spring Boot este cel de mai jos:
+        const springBootUrl = `http://localhost:8080/statistics/personal-report/${userId}`;
+        
+        const response = await fetch(springBootUrl);
+
+        if (!response.ok) {
+            throw new Error(`Eroare Spring Boot: ${response.statusText}`);
+        }
+
+        const statsData = await response.json();
+
+        // 2. Trimitem datele (array-ul de obiecte) înapoi către frontend
+        res.json(statsData);
+
+    } catch (error) {
+        console.error("Eroare la procesarea statisticilor:", error);
+        
+        // Dacă Spring Boot nu e pornit, putem trimite datele tale "mock" de test (opțional)
+        // res.status(500).json({ error: "Nu s-au putut prelua datele din baza de date." });
+        
+        // DOAR PENTRU TEST (dacă vrei să vezi cum arată pagina fără Spring Boot pornit):
+        res.json([
+            { "obiectiv": "1", "grup": "Incepator", "mediePunctaj": 31.11, "medieTimp": 43.6, "statusDificultate": "La nivel Medium" },
+            { "obiectiv": "2", "grup": "Incepator", "mediePunctaj": 21.66, "medieTimp": 36.0, "statusDificultate": "La nivel Medium" }
+        ]);
+    }
+});
 
 app.listen(3001, () => {
   console.log("✅ Server pornit pe http://localhost:3001");

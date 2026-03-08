@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="../frontend/style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 <body>
     <div class="header">
-        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
-        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
-        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+        <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
     </div>
 
     <div class="container">
@@ -97,7 +97,7 @@
 
                 <div class="terms-section">
                     <input type="checkbox" id="terms" name="terms" required>
-                    <a href="../frontend/terms_and_conditions.html" class="terms-conditions">I have read the terms and conditions</a>
+                    <a href="../terms_and_conditions.html" class="terms-conditions">I have read the terms and conditions</a>
                     <div class="error-message" id="termsError">You must accept the terms!</div>
                 </div>
 
@@ -132,8 +132,8 @@
 
     <div class="footer">
         <p>&copy; 2025 ITLabs. All rights reserved.</p>
-        <a href="../frontend/feedback.html" class="feedback">Feedback</a>
-        <a href="../frontend/contact.html" class="contact">Contact Information</a>
+        <a href="../feedback.html" class="feedback">Feedback</a>
+        <a href="../contact.html" class="contact">Contact Information</a>
     </div>
 
 <script>
@@ -151,8 +151,8 @@
             const data = await res.json();
             alert(data.message);
         } catch (err) {
-            console.error("Eroare trimitere cod email:", err);
-            alert("Nu s-a putut trimite codul pe email.");
+            console.error("Error sending email code:", err);
+            alert("The code could not be sent via email.");
         }
     }
 
@@ -163,14 +163,13 @@
 
 
     if (!phoneInput) {
-        alert("Completează telefonul!");
+        alert("Complete the phone!");
         return;
     }
 
 
     let phoneNumber = phoneInput.startsWith("0") ? countryCode + phoneInput.slice(1) : countryCode + phoneInput;
 
-    // console.log("Număr trimis la backend:", phoneNumber); 
 
     try {
         const res = await fetch("http://localhost:3001/sendSMSCode", {
@@ -181,8 +180,8 @@
         const data = await res.json();
         alert(data.message);
     } catch (err) {
-        console.error("Eroare trimitere SMS:", err);
-        alert("Nu s-a putut trimite codul SMS.");
+        console.error("SMS sending error:", err);
+        alert("The SMS code could not be sent.");
     }
 }
 
@@ -197,7 +196,7 @@
             const data = await res.json();
             return data.success;
         } catch (err) {
-            console.error("Eroare verificare cod:", err);
+            console.error("Code verification error:", err);
             return false;
         }
     }
@@ -292,13 +291,13 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
                 });
             }
 
-            alert("Înregistrarea și întrebările de securitate au fost salvate cu succes!");
+            alert("Registration and security questions have been successfully saved!");
         } else {
-            alert(data.message || "Eroare la înregistrare");
+            alert(data.message || "Registration error");
         }
     } catch (err) {
-        console.error("Eroare trimitere:", err);
-        alert("A apărut o eroare la trimiterea datelor!");
+        console.error("Sending error:", err);
+        alert("An error occurred while sending data!");
     }
 });
 

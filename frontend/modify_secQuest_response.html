@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modify Security Question Response</title>
-    <link rel="stylesheet" href="../frontend/style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
 </head>
 <body>
     <div class="header">
-        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
-        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
-        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+        <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
     </div>
 
     <div class="secQuest-container">
@@ -20,8 +20,8 @@
 </div>
     <div class="footer">
         <p>&copy; 2025 ITLabs. All rights reserved.</p>
-        <a href="../frontend/feedback.html" class="feedback">Feedback</a>
-        <a href="../frontend/contact.html" class="contact">Contact Information</a>
+        <a href="../feedback.html" class="feedback">Feedback</a>
+        <a href="../contact.html" class="contact">Contact Information</a>
     </div>
 
     <script>
@@ -30,7 +30,7 @@
             const listEl = document.getElementById("secQuestList");
 
             if (!userId) {
-                alert("Trebuie să fii autentificat pentru a modifica întrebările de securitate!");
+                alert("You must be logged in to change your security questions!");
                 return;
             }
 
@@ -39,19 +39,19 @@
 
         if (!response.ok) {
             const text = await response.text();
-            console.error("Răspuns backend:", text);
-            throw new Error(`Eroare la încărcarea întrebărilor: ${response.status}`);
+            console.error("Backend response:", text);
+            throw new Error(`Error loading questions: ${response.status}`);
         }
 
         const questions = await response.json();
-        console.log("Întrebări primite:", questions);
+        console.log("Questions received:", questions);
 
-                console.log("Întrebări primite:", questions);
+                console.log("Questions received", questions);
                 listEl.innerHTML = "";
 
                 if (!questions.length) {
                     const noQuestionsDiv = document.createElement("div");
-                    noQuestionsDiv.textContent = "Nu există întrebări de securitate active.";
+                    noQuestionsDiv.textContent = "There are no active security questions.";
                     noQuestionsDiv.style.color = "#5365A8";
                     noQuestionsDiv.style.fontStyle = "italic";
                     listEl.appendChild(noQuestionsDiv);
@@ -87,7 +87,7 @@
                     updateBtn.onclick = async () => {
                         const newResponse = input.value.trim();
                         if (!newResponse) {
-                            alert("Introdu un răspuns nou!");
+                            alert("Enter a new answer!");
                             return;
                         }
                         try {
@@ -99,8 +99,8 @@
                             alert(data.message);
                             await loadSecurityQuestions(); 
                         } catch (err) {
-                            console.error("Eroare la actualizarea răspunsului:", err);
-                            alert("Eroare la actualizarea răspunsului!");
+                            console.error("Error updating response:", err);
+                            alert("Error updating answer!");
                         }
                     };
 
@@ -111,8 +111,8 @@
                     listEl.appendChild(container);
                 });
             } catch (err) {
-                console.error("Eroare la încărcarea întrebărilor:", err);
-                listEl.innerHTML = "<div>Eroare la încărcarea întrebărilor!</div>";
+                console.error("Error loading questions:", err);
+                listEl.innerHTML = "<div>Error loading questions!</div>";
             }
         }
 

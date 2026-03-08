@@ -553,17 +553,23 @@ textarea {
 
 #profileForm {
   display: flex;
-  flex-wrap: wrap; 
-  gap: 25px;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 30px;             
+  align-items: flex-start;
+  max-width: 400px;      
+  justify-content: flex-start; 
+  align-items: flex-start;     
+  
+
+  padding-left: 50px; 
+  margin: 20px 0;    
 }
 
 .profile-group {
   display: flex;
   flex-direction: row;  
   align-items: center;
-  gap: 10px;
+  gap:10px;
   background: transparent; 
   padding: 0;              
   border-radius: 0;
@@ -573,7 +579,7 @@ textarea {
 label {
   font-weight: 600;
   color: #5365A8; 
-  font-size: 16px;
+  font-size: 22px;
 }
 
 .profile-value {
@@ -1164,3 +1170,93 @@ body {
             text-align: center;
             margin-top: 20px;
         }
+
+        .chart-container {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(83, 101, 168, 0.2);
+    border: 1px solid #8EBFE4;
+}
+
+.chart-container h3 {
+    color: #4A59AA;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 20px;
+}
+
+#learningCurveChart {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.action-card {
+    display: flex;       
+    flex-direction: row; 
+    justify-content: center; 
+    gap: 100px;           
+    margin-top: 50px;    
+    width: 100%;
+}
+
+.btn-test {
+    background-color: #8EBFE4;
+    color: #4A59AA;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+    width: auto;
+    flex: 1;
+    max-width: 400px;
+    margin-top: 50px;
+}
+
+.btn-test:hover {
+    background-color: #3b498f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Containerul principal care va alinia profilul și graficul */
+.profile-content-layout {
+    display: flex;
+    flex-direction: row; /* Aliniere orizontală */
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px; /* Spațiu între profil și grafic */
+    margin-top: 20px;
+    text-align: left; /* Resetăm centrarea din containerul părinte */
+}
+
+/* Ajustăm formularul de profil să ocupe partea stângă */
+#profileForm {
+    flex: 1; /* Ocupă spațiul disponibil pe stânga */
+    margin: 0; 
+    padding-left: 0; /* Scoatem padding-ul vechi dacă e cazul */
+}
+
+/* Ajustăm secțiunea de statistici să ocupe partea dreaptă */
+.stats-section {
+    flex: 1; /* Ocupă spațiul disponibil pe dreapta */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px; /* Prevenim lărgirea excesivă a graficului */
+}
+
+/* Modificare pentru Responsivitate (Mobile) */
+@media (max-width: 1024px) {
+    .profile-content-layout {
+        flex-direction: column; /* Pe ecrane mici revin unul sub altul */
+        align-items: center;
+    }
+    #profileForm, .stats-section {
+        width: 100%;
+        max-width: 100%;
+    }
+}

@@ -96,20 +96,41 @@ function saveCurrentAnswer() {
 }
 
 async function finishTest() {
+    // 1. Verificare dacă există răspunsuri
     if (allUserAnswers.length === 0) {
         if (!confirm("Nu ai salvat niciun răspuns prin butonul Submit. Sigur vrei să închei testul?")) {
             return;
         }
     }
 
-    console.log("Se trimit răspunsurile către backend:", allUserAnswers);
+    // 2. Calculare date pentru JSON-ul de durată (test_duration)
+    const initialDuration = testData.test.estimatedDuration; 
+    const timeTaken = initialDuration - timeLeft;
+
+    const now = new Date();
+    const formattedFinishTime = now.getFullYear() + "-" + 
+        String(now.getMonth() + 1).padStart(2, '0') + "-" + 
+        String(now.getDate()).padStart(2, '0') + " " + 
+        String(now.getHours()).padStart(2, '0') + ":" + 
+        String(now.getMinutes()).padStart(2, '0') + ":" + 
+        String(now.getSeconds()).padStart(2, '0');
+
+    const durationData = {
+        "difficulty": testData.test.difficulty || "INTERMEDIATE", 
+        "finishTime": formattedFinishTime,
+        "timeTakenSeconds": timeTaken,
+        "idTest": testData.test.idTest,
+        "idUser": localStorage.getItem("userId") || "U00035"
+    };
 
     try {
-        const response = await fetch("http://localhost:3001/submit-test", {
+        console.log("Se trimit datele către backend...");
+
+        // 3. Trimitem ambele cereri către Node.js
+        // Prima cerere: Salvarea răspunsurilor și obținerea rezultatului
+        const responseSubmit = await fetch("http://localhost:3001/submit-test", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 idUser: localStorage.getItem("userId") || "U00033",
                 idTest: testData.test.idTest,
@@ -117,26 +138,122 @@ async function finishTest() {
             })
         });
 
-        if (response.ok) {
-            const result = await response.json(); // Acesta este obiectul {totalQuestions: 2, ...}
+        // A doua cerere: Trimiterea datelor de durată către Node.js (care va face proxy către portul 8080)
+        // Notă: Aici folosim portul 3001 deoarece ai specificat că Node-ul le va transmite mai departe
+        const responseDuration = await fetch("http://localhost:3001/save-duration", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(durationData)
+        });
+
+        if (responseSubmit.ok) {
+            const result = await responseSubmit.json();
             
-            // --- PASUL CRITIC: Salvează rezultatul pentru pagina results.html ---
+            // Salvare rezultat pentru pagina de rezultate
             localStorage.setItem("lastTestResult", JSON.stringify(result));
-            
-            alert("Testul a fost trimis cu succes!");
-            
-            // Redirecționare (asigură-te că calea este corectă față de fișierul curent)
-            window.location.href = "results.html"; 
+
+            if (!responseDuration.ok) {
+                console.warn("Atenție: Răspunsurile au fost salvate, dar durata nu a putut fi procesată de backend.");
+            }
+
+            alert("Testul a fost finalizat cu succes!");
+            window.location.href = "results.html";
         } else {
-            const errorData = await response.json();
-            console.error("Eroare server:", errorData);
+            const errorData = await responseSubmit.json();
+            console.error("Eroare server (răspunsuri):", errorData);
             throw new Error("Eroare la trimiterea testului.");
         }
+
     } catch (error) {
         console.error("Eroare fetch:", error);
         alert("A apărut o problemă la comunicarea cu serverul.");
     }
 }
+
+// async function finishTest() {
+//     if (allUserAnswers.length === 0) {
+//         if (!confirm("Nu ai salvat niciun răspuns prin butonul Submit. Sigur vrei să închei testul?")) {
+//             return;
+//         }
+//     }
+
+//     console.log("Se trimit răspunsurile către backend:", allUserAnswers);
+
+//     try {
+//         const response = await fetch("http://localhost:3001/submit-test", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify({
+//                 idUser: localStorage.getItem("userId") || "U00033",
+//                 idTest: testData.test.idTest,
+//                 responses: allUserAnswers
+//             })
+//         });
+
+//         if (response.ok) {
+//             const result = await response.json(); // Acesta este obiectul {totalQuestions: 2, ...}
+            
+//             // --- PASUL CRITIC: Salvează rezultatul pentru pagina results.html ---
+//             localStorage.setItem("lastTestResult", JSON.stringify(result));
+            
+//             alert("Testul a fost trimis cu succes!");
+            
+//             // Redirecționare (asigură-te că calea este corectă față de fișierul curent)
+//             window.location.href = "results.html"; 
+//         } else {
+//             const errorData = await response.json();
+//             console.error("Eroare server:", errorData);
+//             throw new Error("Eroare la trimiterea testului.");
+//         }
+//     } catch (error) {
+//         console.error("Eroare fetch:", error);
+//         alert("A apărut o problemă la comunicarea cu serverul.");
+//     }
+
+//     const initialDuration = testData.test.estimatedDuration; 
+//     const timeTaken = initialDuration - timeLeft;
+
+//     const now = new Date();
+//     const formattedFinishTime = now.getFullYear() + "-" + 
+//         String(now.getMonth() + 1).padStart(2, '0') + "-" + 
+//         String(now.getDate()).padStart(2, '0') + " " + 
+//         String(now.getHours()).padStart(2, '0') + ":" + 
+//         String(now.getMinutes()).padStart(2, '0') + ":" + 
+//         String(now.getSeconds()).padStart(2, '0');
+
+//     const durationData = {
+//         "difficulty": testData.test.difficulty || "INTERMEDIATE", 
+//         "finishTime": formattedFinishTime,
+//         "timeTakenSeconds": timeTaken,
+//         "idTest": testData.test.idTest,
+//         "idUser": localStorage.getItem("userId") || "U00035"
+//     };
+
+//     console.log("Trimitere durată către Spring Boot:", durationData);
+
+//     try {
+//         const durationResponse = await fetch("http://localhost:8080/test_duration/addTestDuration", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(durationData)
+//         });
+
+//         if (!durationResponse.ok) {
+//             console.warn("Atenție: Nu s-a putut salva durata testului în Spring Boot.");
+//         }
+
+//         alert("Testul a fost finalizat și salvat!");
+//         window.location.href = "results.html";
+
+//     } catch (error) {
+//         console.error("Eroare la finalizarea testului:", error);
+//         alert("A apărut o problemă la salvarea datelor.");
+//     }
+// }
 
 // Funcția pentru a marca/demarca întrebarea curentă
 function toggleMark() {

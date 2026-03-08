@@ -4,75 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authorization</title>
-    <link rel="stylesheet" href="../frontend/style/style.css">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="header">
-        <img src="../frontend/images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
-        <img src="../frontend/images/upt.png" alt="University Logo" width="257" height="88">
-        <img src="../frontend/images/ac.png" alt="Faculty Logo" width="296" height="90">
+        <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
+        <img src="../images/upt.png" alt="University Logo" width="257" height="88">
+        <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
     </div>
 
   <div class="profile-container">
     <div class="profile-menu">
-      <button onclick="window.location.href='../frontend/add_new_security_quest.html'">Add Security Question</button>
-      <button onclick="window.location.href='../frontend/delete_security_question.html'">Delete Security Question</button>
-      <button onclick="window.location.href='../frontend/modify_secQuest_response.html'">Modify Security Question</button>
-      <button onclick="window.location.href='../frontend/modify_first_name.html'">Modify First Name</button>
-      <button onclick="window.location.href='../frontend/modify_second_name.html'">Modify Second Name</button>
-      <button onclick="window.location.href='../frontend/modify_password.html'">Modify Password</button>
-      <button id="addEmailBtn" onclick="window.location.href='../frontend/add_new_email_address.html'">Add Email</button>
+      <button onclick="window.location.href='../add_new_security_quest.html'">Add Security Question</button>
+      <button onclick="window.location.href='../delete_security_question.html'">Delete Security Question</button>
+      <button onclick="window.location.href='../modify_secQuest_response.html'">Modify Security Question</button>
+      <button onclick="window.location.href='../modify_first_name.html'">Modify First Name</button>
+      <button onclick="window.location.href='../modify_second_name.html'">Modify Second Name</button>
+      <button onclick="window.location.href='../modify_password.html'">Modify Password</button>
+      <button id="addEmailBtn" onclick="window.location.href='../add_new_email_address.html'">Add Email</button>
     </div>
 
     <h1 class="title">Me Profile</h1>
 
-    <form id="profileForm">
-        <div class="profile-group">
-          <label>User ID:</label>
-          <span id="userId" class="profile-value"></span>
-        </div>
+    <div class="profile-content-layout">
+      <form id="profileForm">
+          <div class="profile-group">
+            <label>User ID:</label>
+            <span id="userId" class="profile-value"></span>
+          </div>
 
-        <div class="profile-group">
-          <label>Prenume:</label>
-          <span id="firstName" class="profile-value"></span>
-        </div>
+          <div class="profile-group">
+            <label>First Name:</label>
+            <span id="firstName" class="profile-value"></span>
+          </div>
 
-        <div class="profile-group">
-          <label>Nume:</label>
-          <span id="secondName" class="profile-value"></span>
-        </div>
+          <div class="profile-group">
+            <label>Second Name:</label>
+            <span id="secondName" class="profile-value"></span>
+          </div>
 
-        <div class="profile-group">
-          <label>Rol:</label>
-          <span id="role" class="profile-value"></span>
-        </div>
+          <div class="profile-group">
+            <label>Role:</label>
+            <span id="role" class="profile-value"></span>
+          </div>
 
-        <div class="profile-group">
-          <label>Status:</label>
-          <span id="status" class="profile-value"></span>
-        </div>
+          <div class="profile-group">
+            <label>Status:</label>
+            <span id="status" class="profile-value"></span>
+          </div>
 
-        <div class="profile-group">
-          <label>Emailuri:</label>
-          <ul id="emailList"></ul>
-        </div>
-    </form>
-   
+          <div class="profile-group">
+            <label>Emails:</label>
+            <ul id="emailList"></ul>
+          </div>
+      </form>
+    
+      <div class="stats-section">
+          <div class="chart-container">
+              <h3>Learning Curve</h3>
+              <canvas id="learningCurveChart"></canvas>
+          </div>
+      </div>
+
+    
+    </div>  
+
+    <div class="action-card">
+              <button onclick="window.location.href='generate_tests.html'" class="btn-test">Taking a test</button>
+              <button onclick="window.location.href='statistically.html'" class="btn-test">Statistically</button>
+    </div>
+
+
   </div>
 
   <div class="footer">
     <p>&copy; 2025 ITLabs. All rights reserved.</p>
-    <a href="../frontend/feedback.html" class="feedback">Feedback</a>
-    <a href="../frontend/contact.html" class="contact">Contact Information</a>
+    <a href="../feedback.html" class="feedback">Feedback</a>
+    <a href="../contact.html" class="contact">Contact Information</a>
   </div>
 
     <script>
+
+        async function loadLearningCurve(userId) {
+          try {
+              const response = await fetch(`http://localhost:3001/learning-curve/${userId}`);
+              const data = await response.json();
+
+              const labels = data.map(item => `Test ${item.attempt}`);
+              const scores = data.map(item => item.score);
+              const objectives = data.map(item => item.objective);
+
+              const ctx = document.getElementById('learningCurveChart').getContext('2d');
+              new Chart(ctx, {
+                  type: 'line',
+                  data: {
+                      labels: labels,
+                      datasets: [{
+                          label: 'Score Obtained (%)',
+                          data: scores,
+                          borderColor: '#5365A8',
+                          backgroundColor: 'rgba(83, 101, 168, 0.2)',
+                          fill: true,
+                          tension: 0.3
+                      }]
+                  },
+                  options: {
+                      plugins: {
+                          tooltip: {
+                              callbacks: {
+                                  afterLabel: function(context) {
+                                      return 'Obiective: ' + objectives[context.dataIndex];
+                                  }
+                              }
+                          }
+                      },
+                      scales: {
+                          y: { beginAtZero: true, max: 100 }
+                      }
+                  }
+              });
+          } catch (err) {
+              console.error("Eroare la încărcarea graficului:", err);
+          }
+      }
+
+
         async function getUserProfile() {
           const userId = localStorage.getItem("userId");
           const emails = JSON.parse(localStorage.getItem("emails") || "[]");
 
           if (!userId) {
-            alert("Nu ești logat!");
+            alert("You are not logged in!");
             window.location.href = "../frontend/login.html";
             return;
           }
@@ -87,11 +150,13 @@
             document.getElementById("role").textContent = user.role;
             document.getElementById("status").textContent = user.status;
 
+            loadLearningCurve(userId);
+
             const emailList = document.getElementById("emailList");
             emailList.innerHTML = "";
             if (emails.length === 0) {
               const li = document.createElement("li");
-              li.textContent = "Nu există emailuri asociate acestui cont.";
+              li.textContent = "There are no emails associated with this account.";
               li.style.color = "#5365A8";
               li.style.fontWeight = "500";
               li.style.listStyleType = "none";
@@ -109,8 +174,8 @@
               });
             }
           } catch (err) {
-            console.error("Eroare la obținerea profilului:", err);
-            alert("Eroare la încărcarea profilului!");
+            console.error("Error getting profile:", err);
+            alert("Error loading profile!");
           }
         }
 
@@ -133,16 +198,16 @@
               body: JSON.stringify({ newName: secondName }),
             });
 
-            alert("Profil actualizat cu succes!");
+            alert("Profile updated successfully!");
           } catch (err) {
-            console.error("Eroare la actualizare:", err);
-            alert("Eroare la actualizarea profilului!");
+            console.error("Update error:", err);
+            alert("Error updating profile!");
           }
         });
 
         window.addEventListener("DOMContentLoaded", getUserProfile);
         document.getElementById("addEmailBtn").addEventListener("click", () => {
-          window.location.href = "../frontend/add_new_email_address.html";
+          window.location.href = "../add_new_email_address.html";
         });
     </script>
   </body>
