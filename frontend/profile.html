@@ -23,6 +23,7 @@
       <button onclick="window.location.href='../modify_second_name.html'">Modify Second Name</button>
       <button onclick="window.location.href='../modify_password.html'">Modify Password</button>
       <button id="addEmailBtn" onclick="window.location.href='../add_new_email_address.html'">Add Email</button>
+      <button id="logoutBtn">Logout</button>
     </div>
 
     <h1 class="title">Me Profile</h1>
@@ -86,47 +87,163 @@
 
     <script>
 
-        async function loadLearningCurve(userId) {
-          try {
-              const response = await fetch(`http://localhost:3001/learning-curve/${userId}`);
-              const data = await response.json();
+      //   async function loadLearningCurve(userId) {
+      //     try {
+      //         const response = await fetch(`http://localhost:3001/learning-curve/${userId}`);
+      //         const data = await response.json();
 
-              const labels = data.map(item => `Test ${item.attempt}`);
-              const scores = data.map(item => item.score);
-              const objectives = data.map(item => item.objective);
+      //         const labels = data.map(item => `Test ${item.attempt}`);
+      //         const scores = data.map(item => item.score);
+      //         const objectives = data.map(item => item.objective);
 
-              const ctx = document.getElementById('learningCurveChart').getContext('2d');
-              new Chart(ctx, {
-                  type: 'line',
-                  data: {
-                      labels: labels,
-                      datasets: [{
-                          label: 'Score Obtained (%)',
-                          data: scores,
-                          borderColor: '#5365A8',
-                          backgroundColor: 'rgba(83, 101, 168, 0.2)',
-                          fill: true,
-                          tension: 0.3
-                      }]
-                  },
-                  options: {
-                      plugins: {
-                          tooltip: {
-                              callbacks: {
-                                  afterLabel: function(context) {
-                                      return 'Obiective: ' + objectives[context.dataIndex];
-                                  }
-                              }
-                          }
-                      },
-                      scales: {
-                          y: { beginAtZero: true, max: 100 }
+      //         const ctx = document.getElementById('learningCurveChart').getContext('2d');
+      //         new Chart(ctx, {
+      //             type: 'line',
+      //             data: {
+      //                 labels: labels,
+      //                 datasets: [{
+      //                     label: 'Score Obtained (%)',
+      //                     data: scores,
+      //                     borderColor: '#5365A8',
+      //                     backgroundColor: 'rgba(83, 101, 168, 0.2)',
+      //                     fill: true,
+      //                     tension: 0.3
+      //                 }]
+      //             },
+      //             options: {
+      //                 plugins: {
+      //                     tooltip: {
+      //                         callbacks: {
+      //                             afterLabel: function(context) {
+      //                                 return 'Obiective: ' + objectives[context.dataIndex];
+      //                             }
+      //                         }
+      //                     }
+      //                 },
+      //                 scales: {
+      //                     y: { beginAtZero: true, max: 100 }
+      //                 }
+      //             }
+      //         });
+      //     } catch (err) {
+      //         console.error("Eroare la încărcarea graficului:", err);
+      //     }
+      // }
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        const userId = localStorage.getItem("userId");
+
+        try {
+            const response = await fetch(`http://localhost:3001/api/logout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userId })
+            });
+
+            if (response.ok) {
+                localStorage.clear(); 
+
+                alert("You have successfully logged out!");
+                
+                window.location.href = "login.html";
+            } else {
+                alert("Error logging out of the server.");
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    });
+
+      async function loadLearningCurve(userId) {
+        try {
+          const response = await fetch(`http://localhost:3001/learning-curve/${userId}`);
+          const result = await response.json(); 
+
+          const actualData = result.actual;
+          const predictionData = result.predictions;
+
+          const labels = [
+            ...actualData.map(item => `Test ${item.attempt}`),
+            ...predictionData.map(item => `Predicție ${item.attempt}`)
+          ];
+
+          const actualScores = actualData.map(item => item.score);
+          
+          const objectives = actualData.map(item => item.objective);
+
+
+          const lastActualScore = actualScores[actualScores.length - 1];
+          const predictedScores = [
+            ...new Array(actualScores.length - 1).fill(null), // Gol în dreptul testelor vechi
+            lastActualScore,                                 // Punct de legătură
+            ...predictionData.map(item => item.score)        // Valorile prezise
+          ];
+
+          const ctx = document.getElementById('learningCurveChart').getContext('2d');
+          
+          // Distrugem graficul vechi dacă există (pentru a evita suprapunerea la refresh)
+          if (window.myChart) { window.myChart.destroy(); }
+
+          window.myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: 'Scor Real (%)',
+                  data: actualScores,
+                  borderColor: '#5365A8',
+                  backgroundColor: 'rgba(83, 101, 168, 0.2)',
+                  fill: true,
+                  tension: 0.3,
+                  pointRadius: 5
+                },
+                {
+                  label: 'Predicție AI (%)',
+                  data: predictedScores,
+                  borderColor: '#E18741', // Portocaliu pentru distincție
+                  borderDash: [5, 5],      // Linie punctată pentru a indica estimarea
+                  backgroundColor: 'transparent',
+                  fill: false,
+                  tension: 0.3,
+                  pointRadius: 4
+                }
+              ]
+            },
+            options: {
+              plugins: {
+                tooltip: {
+                  callbacks: {
+                    afterLabel: function(context) {
+                      // Afișăm obiectivele doar pentru punctele reale
+                      if (context.datasetIndex === 0 && objectives[context.dataIndex]) {
+                        return 'Obiective: ' + objectives[context.dataIndex];
                       }
+                      if (context.datasetIndex === 1) {
+                        return 'Estimare bazată pe trendul actual';
+                      }
+                      return null;
+                    }
                   }
-              });
-          } catch (err) {
-              console.error("Eroare la încărcarea graficului:", err);
-          }
+                }
+              },
+              scales: {
+                y: { 
+                  beginAtZero: true, 
+                  max: 100,
+                  title: { display: true, text: 'Punctaj %' }
+                },
+                x: {
+                  title: { display: true, text: 'Evoluție Teste' }
+                }
+              }
+            }
+          });
+        } catch (err) {
+          console.error("Eroare la încărcarea graficului cu predicții:", err);
+        }
       }
 
 

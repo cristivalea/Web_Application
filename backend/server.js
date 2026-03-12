@@ -1244,7 +1244,6 @@ app.get('/api/proxy-image/:idQuestion', async (req, res) => {
         const dbPath = imageData.imagePath; // "/images/questions/CQ100159/f8de...png"
         const fileName = dbPath.split('/').pop(); // Rezultă: "f8de...png
 
-        // 2. Cerem imaginea efectivă de la Java
         const imageUrl = `http://localhost:8080/api/question_image/images/questions/${idQuestion}/${fileName}`;
         
         const imageStream = await axios({
@@ -1253,7 +1252,6 @@ app.get('/api/proxy-image/:idQuestion', async (req, res) => {
             responseType: 'stream'
         });
 
-        // 3. Trimitem fluxul de date (stream) direct către Frontend
         imageStream.data.pipe(res);
 
     } catch (error) {
@@ -1283,12 +1281,12 @@ app.get('/api/ai-analysis/:userId', async (req, res) => {
     }
 });
 
-// Exemplu rută în Node.js (port 3001)
+
 app.post('/save-duration', async (req, res) => {
     try {
         const durationData = req.body;
 
-        // Trimitere date către API-ul Spring Boot (port 8080)
+
         const apiResponse = await fetch("http://localhost:8080/test_duration/addTestDuration", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1311,8 +1309,6 @@ app.get('/api/user-stats/:userId', async (req, res) => {
     try {
         console.log(`Solicitare statistici pentru user: ${userId}`);
 
-        // 1. Apelăm API-ul Spring Boot care calculează statisticile
-        // Presupunem că URL-ul de Spring Boot este cel de mai jos:
         const springBootUrl = `http://localhost:8080/statistics/personal-report/${userId}`;
         
         const response = await fetch(springBootUrl);
@@ -1323,20 +1319,49 @@ app.get('/api/user-stats/:userId', async (req, res) => {
 
         const statsData = await response.json();
 
-        // 2. Trimitem datele (array-ul de obiecte) înapoi către frontend
         res.json(statsData);
 
     } catch (error) {
         console.error("Eroare la procesarea statisticilor:", error);
         
-        // Dacă Spring Boot nu e pornit, putem trimite datele tale "mock" de test (opțional)
-        // res.status(500).json({ error: "Nu s-au putut prelua datele din baza de date." });
-        
-        // DOAR PENTRU TEST (dacă vrei să vezi cum arată pagina fără Spring Boot pornit):
         res.json([
             { "obiectiv": "1", "grup": "Incepator", "mediePunctaj": 31.11, "medieTimp": 43.6, "statusDificultate": "La nivel Medium" },
             { "obiectiv": "2", "grup": "Incepator", "mediePunctaj": 21.66, "medieTimp": 36.0, "statusDificultate": "La nivel Medium" }
         ]);
+    }
+});
+
+app.get('/api/general-stats/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        // URL-ul către Controller-ul Spring Boot creat anterior
+        const response = await fetch(`http://localhost:8080/statistics/general/${userId}`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: "Eroare la comunicarea cu Spring Boot" });
+    }
+});
+
+app.post('/api/logout', async (req, res) => {
+    try {
+        const token = req.headers['authorization'];
+
+        const springResponse = await fetch('http://localhost:8080/auth/logout', {
+            method: 'POST',
+            headers: {
+                'Authorization': token, 
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (springResponse.ok) {
+            res.status(200).json({ message: "Delogat cu succes din Spring" });
+        } else {
+            res.status(springResponse.status).json({ message: "Eroare la logout în Spring" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Eroare comunicare backend" });
     }
 });
 

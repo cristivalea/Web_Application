@@ -542,7 +542,7 @@ textarea {
 .profile-container {
   background-color: #E18741;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   min-height: 700px;
   margin: 50px auto;
   padding: 60px;
@@ -767,8 +767,8 @@ label {
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.25s ease, transform 0.1s ease;
-  width: 170px; /* toate butoanele au aceeași lățime */
-  text-align: center; /* centrăm textul */
+  width: 170px; 
+  text-align: center; 
 }
 
 .profile-menu button:hover {
@@ -1123,22 +1123,20 @@ body {
 
     .form-group input,
     .form-group label {
-        width: 100%; /* Asigură-te că input-urile și etichetele ocupă toată lățimea disponibilă */
-        margin-bottom: 10px; /* Spațiu între elemente */
+        width: 100%; 
+        margin-bottom: 10px; 
     }
 
     .index_img {
-        max-width: 80%;  /* Face imaginea mai mică pe dispozitive mici */
+        max-width: 80%; 
         margin-bottom: 15px;
     }
 
-    /* Centrează butoanele pe ecrane mici */
     .buttons {
         flex-direction: column;
         gap: 15px;
     }
 
-    /* Asigură-te că butoanele au o lățime de 100% pe dispozitive mici */
     .login-btn, .register-btn {
         width: 100%;
     }

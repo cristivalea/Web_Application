@@ -1,92 +1,9 @@
-<!-- <!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authorization</title>
-    <link rel="stylesheet" href="../style/style.css">
-</head>
-<body>
-   <div class="header">
-        <img src="../images/itLabs.png" alt="ITLabs Logo" width="279" height="110">
-        <img src="../images/upt.png" alt="University Logo" width="257" height="88">
-        <img src="../images/ac.png" alt="Faculty Logo" width="296" height="90">
-    </div>
-
-    <div class="container" style="width: 92%; max-width: 1200px;margin: 40px auto;
-    min-height: calc(100vh - 80px); display: flex; flex-direction: column;        
-    background: #E18741; padding: 40px; border-radius: 20px; box-shadow: 0 8px 20px #5365A8; color: #4A59AA;box-sizing: border-box;">
-
-    <h1 class="title" style="text-align: center;">Statistici și Analiză AI</h1>
-        
-        <div id="ai-advice-card" style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; display: none; border-left: 5px solid #5365A8;">
-            <div id="ai-text-content" style="line-height: 1.6; font-size: 18px;">
-                Loading intelligent analysis...
-            </div>
-        </div>
-
-        <div id="mastery-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-            </div>
-    </div>
-
-
-    </div>
-
-        <div class="footer">
-            <p>&copy; 2025 ITLabs. All rights reserved.</p>
-            <a href="../feedback.html" class="feedback">Feedback</a>
-            <a href="../contact.html" class="contact">Contact Information</a>
-        </div>
-<script>
-    async function fetchAIAnalysis() {
-        const userId = localStorage.getItem("userId");
-        if (!userId) return;
-
-        try {
-            const response = await fetch(`http://localhost:3001/api/ai-analysis/${userId}`);
-            const data = await response.json();
-
-            const adviceCard = document.getElementById("ai-advice-card");
-            const textContent = document.getElementById("ai-text-content");
-            
-            adviceCard.style.display = "block";
-            textContent.innerHTML = data.advice.replace(/\n/g, "<br>").replace(/###/g, "<strong>").replace(/🌟|⚠️|💡|✅/g, (match) => `<span style="font-size: 24px;">${match}</span>`);
-
-            const masteryContainer = document.getElementById("mastery-container");
-            masteryContainer.innerHTML = ""; 
-
-            for (const [obj, value] of Object.entries(data.mastery)) {
-                const percentage = Math.round(value * 100);
-                const color = percentage > 70 ? "#4CAF50" : (percentage > 40 ? "#FF9800" : "#F44336");
-                
-                masteryContainer.innerHTML += `
-                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #5365A8;">
-                        <h4 style="margin: 0; color: #5365A8;">${obj}</h4>
-                        <div style="font-size: 24px; font-weight: bold;">${percentage}%</div>
-                        <div style="width: 100%; background: #ddd; height: 8px; border-radius: 4px; margin-top: 10px;">
-                            <div style="width: ${percentage}%; background: ${color}; height: 100%; border-radius: 4px;"></div>
-                        </div>
-                    </div>
-                `;
-            }
-        } catch (error) {
-            console.error("Error fetching AI data:", error);
-            document.getElementById("ai-text-content").innerText = "Momentan analiza AI nu este disponibilă.";
-        }
-    }
-
-    window.addEventListener("DOMContentLoaded", fetchAIAnalysis);
-</script>
-        
-</body>
-</html     -->
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistici Performanță</title>
+    <title>Performance Statistics</title>
     <link rel="stylesheet" href="../style/style.css">
     <style>
         .stats-grid {
@@ -163,11 +80,16 @@
 
     <div class="container" style="width: 92%; max-width: 1200px; margin: 40px auto; background: #E18741; padding: 40px; border-radius: 20px; box-shadow: 0 8px 20px #5365A8; box-sizing: border-box;">
         
-        <h1 style="text-align: center; color: white; margin-bottom: 10px;">Statistici Performanță pe Obiective</h1>
-        <p style="text-align: center; color: rgba(255,255,255,0.9); margin-bottom: 30px;">Analiza rezultatelor medii pentru utilizatorul curent</p>
+        <h1 style="text-align: center; color: white; margin-bottom: 10px;">Performance Statistics by Objectives</h1>
+        <p style="text-align: center; color: rgba(255,255,255,0.9); margin-bottom: 30px;">Analysis of average results for the current user</p>
+
+        <div id="general-stats-container" style="margin-bottom: 30px; display: none;">
+            </div>
+
+        <h2 style="color: white; text-align: center; font-size: 1.5em; margin-top: 40px;">Detailed Performance by Objectives</h2>
 
         <div id="stats-container" class="stats-grid">
-            <p style="color: white; text-align: center; grid-column: 1/-1;">Se încarcă datele...</p>
+            <p style="color: white; text-align: center; grid-column: 1/-1;">Loading data...</p>
         </div>
     </div>
 
@@ -178,38 +100,64 @@
     </div>
 
     <script>
-        async function loadStatistics() {
-            const userId = localStorage.getItem("userId") || "U00035"; // Fallback pentru teste
+      async function loadStatistics() {
+            const userId = localStorage.getItem("userId");
             const container = document.getElementById("stats-container");
+            const generalContainer = document.getElementById("general-stats-container");
 
             try {
-                // Aici facem fetch către noul tău endpoint care returnează JSON-ul de statistici
-                const response = await fetch(`http://localhost:3001/api/user-stats/${userId}`);
-                
-                if (!response.ok) throw new Error("Nu am putut prelua datele.");
-                
-                const statsData = await response.json();
-                
-                container.innerHTML = ""; // Ștergem mesajul de loading
+                const [resObjectives, resGeneral] = await Promise.all([
+                    fetch(`http://localhost:3001/api/user-stats/${userId}`),
+                    fetch(`http://localhost:3001/api/general-stats/${userId}`) 
+                ]);
 
+                if (resGeneral.ok) {
+                    const generalData = await resGeneral.json();
+                    generalContainer.style.display = "block";
+                    generalContainer.innerHTML = `
+                        <div style="background: white; padding: 25px; border-radius: 20px; border-left: 10px solid #4A59AA; box-shadow: 0 4px 15px rgba(0,0,0,0.3); max-width: 600px; margin: 0 auto;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h2 style="margin: 0; color: #4A59AA;">Statut Global: <span style="color: #E18741;">${generalData.grup}</span></h2>
+                                <span style="font-size: 0.9em; color: #666;">ID: ${userId}</span>
+                            </div>
+                            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+                            <div style="display: flex; justify-content: space-around; text-align: center;">
+                                <div>
+                                    <div style="font-size: 1.8em; font-weight: bold; color: #2ecc71;">${generalData.mediePunctaj.toFixed(2)}%</div>
+                                    <div style="font-size: 0.8em; color: #888;">SCOR MEDIU</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 1.8em; font-weight: bold; color: #e67e22;">${generalData.medieTimp.toFixed(1)}s</div>
+                                    <div style="font-size: 0.8em; color: #888;">TIMP MEDIU</div>
+                                </div>
+                            </div>
+                            <div class="status-box" style="margin-top: 20px; background: #5365A8; color: white;">
+                                🎯 ${generalData.statusDificultate}
+                            </div>
+                        </div>
+                    `;
+                }
+
+             
+                if (!resObjectives.ok) throw new Error("I couldn't take over the objectives.");
+                const statsData = await resObjectives.json();
+                
+                container.innerHTML = "";
                 statsData.forEach(item => {
                     const card = `
                         <div class="stat-card">
                             <div class="obj-header">
-                                <span class="obj-number">Obiectiv ${item.obiectiv}</span>
+                                <span class="obj-number">Objective ${item.obiectiv}</span>
                                 <span class="group-badge">${item.grup}</span>
                             </div>
-                            
                             <div class="data-row">
-                                <span>🎯 Medie Punctaj:</span>
+                                <span>🎯 Average Score:</span>
                                 <span class="highlight-score">${item.mediePunctaj.toFixed(2)}%</span>
                             </div>
-                            
                             <div class="data-row">
-                                <span>⏱️ Medie Timp:</span>
+                                <span>⏱️ Average Time:</span>
                                 <span class="highlight-time">${item.medieTimp.toFixed(1)}s</span>
                             </div>
-                            
                             <div class="status-box">
                                 📊 ${item.statusDificultate}
                             </div>
@@ -219,11 +167,10 @@
                 });
 
             } catch (error) {
-                console.error("Eroare:", error);
-                container.innerHTML = `<p style="color: white; text-align: center; grid-column: 1/-1;">Eroare la încărcarea datelor. Asigură-te că serverul Node.js este pornit.</p>`;
+                console.error("Error", error);
+                container.innerHTML = `<p style="color: white; text-align: center; grid-column: 1/-1;">Error loading data. Check your connection to the servers.</p>`;
             }
         }
-
         window.addEventListener("DOMContentLoaded", loadStatistics);
     </script>
 </body>
