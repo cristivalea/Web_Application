@@ -166,7 +166,7 @@
 
           const labels = [
             ...actualData.map(item => `Test ${item.attempt}`),
-            ...predictionData.map(item => `Predicție ${item.attempt}`)
+            ...predictionData.map(item => `Prediction ${item.attempt}`)
           ];
 
           const actualScores = actualData.map(item => item.score);
@@ -192,7 +192,7 @@
               labels: labels,
               datasets: [
                 {
-                  label: 'Scor Real (%)',
+                  label: 'Real Score (%)',
                   data: actualScores,
                   borderColor: '#5365A8',
                   backgroundColor: 'rgba(83, 101, 168, 0.2)',
@@ -201,7 +201,7 @@
                   pointRadius: 5
                 },
                 {
-                  label: 'Predicție AI (%)',
+                  label: 'AI Prediction (%)',
                   data: predictedScores,
                   borderColor: '#E18741', // Portocaliu pentru distincție
                   borderDash: [5, 5],      // Linie punctată pentru a indica estimarea
@@ -219,10 +219,10 @@
                     afterLabel: function(context) {
                       // Afișăm obiectivele doar pentru punctele reale
                       if (context.datasetIndex === 0 && objectives[context.dataIndex]) {
-                        return 'Obiective: ' + objectives[context.dataIndex];
+                        return 'Objective: ' + objectives[context.dataIndex];
                       }
                       if (context.datasetIndex === 1) {
-                        return 'Estimare bazată pe trendul actual';
+                        return 'Estiomation based on the real trend';
                       }
                       return null;
                     }
@@ -233,10 +233,10 @@
                 y: { 
                   beginAtZero: true, 
                   max: 100,
-                  title: { display: true, text: 'Punctaj %' }
+                  title: { display: true, text: 'Point %' }
                 },
                 x: {
-                  title: { display: true, text: 'Evoluție Teste' }
+                  title: { display: true, text: 'Test evolution' }
                 }
               }
             }
